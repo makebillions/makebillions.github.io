@@ -196,7 +196,7 @@ function countAlerts(stock, jump) {
         .then((r) => r.json())
         .then((res) => {
             if (res.result) {
-                setSelections(res.payload);
+                // setSelections(res.payload);
             } else {
                 // throw res;
             }
