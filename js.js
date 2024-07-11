@@ -67,8 +67,8 @@ function toggleSwitch(toggleId) {
     // toggle.click();
 }
 // const host = process.env.REACT_APP_API;
-// const host = "http://localhost:4000";
-const host = "https://modern-vocal-reptile.ngrok-free.app";
+const host = "http://localhost:4000";
+// const host = "https://modern-vocal-reptile.ngrok-free.app";
 function url(url) {
     return `${host}${url}`;
 }
@@ -229,7 +229,7 @@ function countAlerts(
     post(url("/api/getuser")).then((res) => {
         if (res) setIsLoggedIn(true);
     });
-    fetch(url("/api/stocks"), { credentials: "include", method: "GET" })
+    fetch(url("/api/stocks"), { method: "GET" })
         .then((r) => r.json())
         .then((r) => {
             setStocks(r.payload);
@@ -237,15 +237,15 @@ function countAlerts(
         })
         .catch((e) => console.error(e));
 
-    fetch(url("/api/algos"), { credentials: "include", method: "GET" })
-        .then((r) => r.json())
-        .then((res) => {
-            if (res.result) {
-                setSelections(res.payload);
-            } else {
-                // throw res;
-            }
-        });
+    // fetch(url("/api/algos"), { credentials: "include", method: "GET" })
+    //     .then((r) => r.json())
+    //     .then((res) => {
+    //         if (res.result) {
+    //             setSelections(res.payload);
+    //         } else {
+    //             // throw res;
+    //         }
+    //     });
 })();
 function setStock(arr) {
     selectedItems = arr;
