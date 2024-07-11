@@ -45,8 +45,17 @@ function createDebouncedChangeHandler(debounceDelay) {
             const stock = selectedItems[selectedItems.length - 1]?.ticker;
 
             if (!stock || jumpValue <= 0) return;
-
-            countAlerts(stock, jumpValue).then((data) => {
+            trendSensValue = trendSens.value;
+            boSensValue = boSens.value;
+            psSensValue = psSens.value;
+            showLoader();
+            countAlerts(stock, {
+                jumpValue,
+                boSensValue,
+                psSensValue,
+                trendSensValue,
+            }).then((data) => {
+                hideLoader();
                 setChart(data);
             });
         }, debounceDelay);
@@ -58,6 +67,7 @@ function toggleSwitch(toggleId) {
     // toggle.click();
 }
 // const host = process.env.REACT_APP_API;
+// const host = "http://localhost:4000";
 const host = "https://modern-vocal-reptile.ngrok-free.app";
 function url(url) {
     return `${host}${url}`;
@@ -70,6 +80,33 @@ const resultsDiv = document.getElementById("autocomplete-results");
 const selectedItemsContainer = document.getElementById("selected-items");
 const confirmForm = document.getElementById("code-confirmation-form");
 const autocompleteContainer = document.getElementById("autocompleteContainer");
+const trendSens = document.getElementById("trendSens");
+const boSens = document.getElementById("boSens");
+const psSens = document.getElementById("psSens");
+
+for (el of [trendSens, boSens, psSens])
+    el.addEventListener("change", createDebouncedChangeHandler(1000));
+
+function showLoader() {
+    const chart = document.getElementById("chart");
+    const loader = document.getElementById("chartLoader");
+
+    // Set loader size to match chart
+    loader.style.width = chart.offsetWidth + "px";
+    loader.style.height = chart.offsetHeight + "px";
+
+    // Position loader
+    const rect = chart.getBoundingClientRect();
+    loader.style.top = rect.top + "px";
+    loader.style.left = rect.left + "px";
+
+    // Show loader
+    loader.classList.remove("hidden");
+}
+
+function hideLoader() {
+    document.getElementById("chartLoader").classList.add("hidden");
+}
 
 const sliderThumb = document.getElementById("sliderThumb");
 const sliderTrail = document.getElementById("sliderTrail");
@@ -84,7 +121,10 @@ let selectedItems = [],
     isLoggedIn = false;
 //page.js
 
-function countAlerts(stock, jump) {
+function countAlerts(
+    stock,
+    { jumpValue: jump, boSensValue, psSensValue, trendSensValue }
+) {
     const client_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const queryString = new URLSearchParams({
         stock,
@@ -93,15 +133,20 @@ function countAlerts(stock, jump) {
     }).toString();
 
     // Make the fetch call with the query string
-    return post(`${url("/api/alerts/chart")}`, { stock, jump, client_tz }).then(
-        (res) => {
-            if (res.result) {
-                return res.data;
-            } else {
-                // throw res;
-            }
+    return post(`${url("/api/alerts/chart")}`, {
+        stock,
+        jump,
+        client_tz,
+        boSensValue,
+        psSensValue,
+        trendSensValue,
+    }).then((res) => {
+        if (res.result) {
+            return res.data;
+        } else {
+            // throw res;
         }
-    );
+    });
 }
 (async () => {
     const handleSubmit = (e) => {
@@ -196,7 +241,7 @@ function countAlerts(stock, jump) {
         .then((r) => r.json())
         .then((res) => {
             if (res.result) {
-                // setSelections(res.payload);
+                setSelections(res.payload);
             } else {
                 // throw res;
             }
@@ -229,7 +274,7 @@ autocompleteContainer.addEventListener(
 function createSelectedItem(item) {
     const span = document.createElement("span");
     span.className = "selected-item"; // Apply the new class
-    span.textContent = item.ticker.slice(0, 5); // Ensure it's uppercase and limited to 5 letters
+    span.textContent = item.ticker.slice(0, 8); // Ensure it's uppercase and limited to 5 letters
     span.onclick = function () {
         selectedItems = selectedItems.filter((i) => i.ticker !== item.ticker);
         renderSelectedItems();
@@ -289,8 +334,8 @@ document.addEventListener("click", function (e) {
 //charts.js
 
 var chart = LightweightCharts.createChart(document.getElementById("chart"), {
-    width: 450,
-    height: 250,
+    width: 600,
+    height: 600,
     timeScale: {
         timeVisible: true,
         borderColor: "rgba(0,0,0, 0)",
@@ -304,7 +349,7 @@ var chart = LightweightCharts.createChart(document.getElementById("chart"), {
             topColor: "rgba(0,0,0, 0)",
             bottomColor: "rgba(0,0,0, 0)",
         },
-        textColor: "rgba(255,255,255, 0.4)",
+        textColor: "rgba(255,255,255, 1)",
     },
     grid: {
         horzLines: {
@@ -316,23 +361,24 @@ var chart = LightweightCharts.createChart(document.getElementById("chart"), {
     },
 });
 chart.applyOptions({
-    handleScroll: {
-        mouseWheel: false,
-        pressedMouseMove: true,
-    },
-    handleScale: {
-        mouseWheel: false,
-        pinch: false,
-    },
+    // handleScroll: {
+    //     mouseWheel: false,
+    //     pressedMouseMove: true,
+    // },
+    // handleScale: {
+    //     mouseWheel: false,
+    //     pinch: false,
+    // },
 });
 var series = chart.addCandlestickSeries({
     upColor: "rgba(255,255,255,0.7)",
-    downColor: "#008ddc",
+    // downColor: "#008ddc",
+    downColor: "rgba(255,0,0,0.7)",
     wickUpColor: "white",
-    wickDownColor: "white",
+    wickDownColor: "red",
     borderUpColor: "white",
-    borderDownColor: "white",
-    borderVisible: true,
+    borderDownColor: "red",
+    borderVisible: false,
 });
 
 // var markers = [
@@ -373,17 +419,52 @@ function setChart(data) {
     //     to: data.candles[lastIndex].time,
     // });
     series.setData(data.candles);
-    const markers = data.alerts.map((alert) => ({
-        time: alert.time,
-        position: alert.direction ? "aboveBar" : "belowBar",
-        color: alert.direction ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.5)",
-        shape: alert.direction ? "circle" : "circle",
-        // text: alert.direction ? "-" : "+",
-    }));
+    const markerColorF = (a) => ({
+        "5t": "rgba(255, 165, 0, " + a + ")", // Orange color for 5-minute timeframe
+        "15t": "rgba(255, 0, 0, " + a + ")", // Red color for 15-minute timeframe
+        "1d": "rgba(0, 50, 255, " + a + ")", // Blue color for 30-minute timeframe
+        "sudden": "rgba(150, 0, 255, " + a + ")", // Purple color for 2-hour timeframe
+        "1d-2": "rgba(255, 100, 0, " + a + ")", // Purple color for 2-hour timeframe
+        "1d-3": "rgba(0, 255, 0, " + a + ")", // Purple color for 2-hour timeframe
+        "bo": "rgba(255, 255, 0, " + a + ")", // Purple color for 2-hour timeframe
+        "4h": "rgba(255, 165, 0, " + a + ")", // Purple color for 2-hour timeframe
+    });
+    const markerColorS = markerColorF("1");
+    const markers = [];
+    // const markers = data.alerts.map((alert) => ({
+    //     time: alert.time,
+    //     position: alert.direction ? "aboveBar" : "belowBar",
+    //     color: alert.direction ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.5)",
+    //     shape: alert.direction ? "circle" : "circle",
+    //     // text: alert.direction ? "-" : "+",
+    // }));
     // chart.timeScale().fitContent();
-    chart.timeScale().setVisibleRange({
-        from: data.candles[lastIndex].time - 3600 * 24 * 5,
-        to: data.candles[lastIndex].time,
+    // chart.timeScale().setVisibleRange({
+    //     from: data.candles[lastIndex].time - 3600 * 24 * 5,
+    //     to: data.candles[lastIndex].time,
+    // });
+    data.alerts.forEach((alert) => {
+        const signalType = alert.value;
+
+        if (signalType === "buy") {
+            markers.push({
+                time: alert.time,
+                position: "belowBar",
+                color: markerColorS[alert.type],
+                // color: 'black',
+                shape: "arrowUp",
+                // text: alert.text, // Display the timeframe as text on the marker
+            });
+        } else if (signalType === "sell") {
+            markers.push({
+                time: alert.time,
+                position: "aboveBar",
+                // color: 'black',
+                color: markerColorS[alert.type],
+                shape: "arrowDown",
+                // text: alert.text, // Display the timeframe as text on the marker
+            });
+        }
     });
     chart.priceScale("right").applyOptions({
         scaleMargins: {

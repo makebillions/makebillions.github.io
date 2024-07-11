@@ -5,12 +5,12 @@
     <meta charSet="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="output.css" crossorigin="" />
-    <script src="https://unpkg.com/lightweight-charts@4.1/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="./lightweight-charts.standalone.production.js"></script>
 </head>
 
 <body class="flex flex-col background">
     <div class="flex flex-col lg:flex-row">
-        <div class="flex-1">
+        <div class="flex-1 lg:w-1/2 w-full ">
             <header class="pt-3">
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <nav class="relative z-50 flex justify-between">
@@ -63,8 +63,8 @@
             </header>
             <main class="gap-4 p-6">
                 <section id="features" aria-label="Features for running your books" class="flex-1">
-
-                    <!-- The rest of your HTML content including tabs -->
+                    <!-- Header caption -->
+                    <!-- Header caption -->
 
                     <div class="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
                         <h2 class="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-4xl">
@@ -76,14 +76,15 @@
                     </div>
 
 
+                    <!-- Autocomplete Component -->
+                    <!-- Autocomplete Component -->
                     <div class="autocomplete-container flex justify-center items-center" id="autocompleteContainer">
-                        <!-- Autocomplete Component -->
                         <div class="relative w-full max-w-lg">
                             <div id="selected-items" class="flex flex-wrap gap-2 p-2">
                                 <!-- Selected items will appear here -->
                             </div>
                             <input
-                                class="w-full py-3 px-6 bg-white/10 border border-white/10 rounded-xl text-white placeholder-gray-300 shadow-xl shadow-black/5 ring-1 ring-slate-700/10 text-lg"
+                                class="w-full py-3 px-6 bg-white/100 border border-white/10 rounded-xl text-black placeholder-black-500 shadow-xl shadow-black/5 ring-1 ring-slate-700/10 text-lg"
                                 id="autocomplete" type="text" placeholder="Pick a stock" autocomplete="off">
                             <!-- <input
                         class="w-full py-3 px-6 bg-white/10 border border-white/10 rounded-xl shadow-lg text-white placeholder-gray-300"
@@ -96,209 +97,56 @@
                                 <!-- Results will be injected here -->
                             </div>
                         </div>
-
-
-                        <!-- Autocomplete Component -->
-
                     </div>
+                    <!-- Autocomplete Component -->
+                    <!-- Autocomplete Component -->
 
+
+                    <!-- Chart -->
+                    <div id="chartLoader"
+                        class="hidden absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                        <div class="loader"></div>
+                    </div>
                     <div id="chart" class="flex justify-center items-center mt-4 mb-4"></div>
-
-                    <div class="flex flex-wrap justify-center gap-4">
-                        <!-- Column 1 -->
-                        <div class="w-full sm:w-[350px] pt-4 border border-white/10 rounded-xl shadow-lg"
-                            style="background-color: rgb(119 59 188 / 28%)">
-                            <div class="px-6">
-                                <h3 class="flex items-center justify-between" onclick="toggleSwitch('toggle1')">
-                                    <span class="text-lg text-white font-medium">Trend following alerts</span>
-
-                                    <!-- Toggle Component -->
-                                    <div class="toggle-switch flex items-center mt-1">
-                                        <label for="toggle1"
-                                            class="inline-flex relative items-center cursor-pointer mr-2">
-                                            <input type="checkbox" id="toggle1" class="sr-only peer" checked>
-                                            <div
-                                                class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
-                                            </div>
-                                        </label>
-                                    </div>
-
-
-
-                                </h3>
-                                <!-- Vector Picture -->
-                                <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
-                                    <!-- Insert your vector image here -->
-                                </div>
-
-                                <!-- Slider -->
-                                <div class="text-white self-center text-base font-medium">Price increment (<span
-                                        id="selectedValue">0.5</span>)
-                                </div>
-
-                                <div class="slider-container mt-4 mb-0 mx-auto w-[280px]" id="customSliderContainer">
-                                    <div class="slider-labels text-md text-white font-medium">
-                                        <div class="label" style="left:2%">0.5</div>
-                                        <div class="label" style="left:15%">1</div>
-                                        <div class="label" style="left:30%">1.5</div>
-                                        <div class="label" style="left:50%">3</div>
-                                        <div class="label" style="left:100%">10</div>
-                                    </div>
-                                    <div class="slider-track" id="sliderTrack">
-                                        <div class="slider-trail" id="sliderTrail"></div>
-                                        <div class="slider-thumb" id="sliderThumb" tabindex="0"></div>
-                                    </div>
-                                </div>
+                    <div class="max-w-full mx-auto bg-white/10 p-4 rounded-lg mt-4">
+                        <div class="flex flex-wrap sm:flex-nowrap justify-between text-sm">
+                            <div class="flex items-center w-1/2 sm:w-auto mb-1 sm:mb-0">
+                                <span class="text-[rgb(0,50,255)] mr-1 text-xl">&#x25B2;</span>
+                                <span class="text-white">Тренд</span>
                             </div>
-                            <!-- Description -->
-                            <p class="mt-4 mr-6 mb-6 ml-6 text-sm text-white">
-                                Watch trends and market regime. Stay constantly informed what is happening to your
-                                stocks.
-                                Set
-                                price step fluctuation in the input below and every time it goes up or down you will
-                                recieve
-                                an
-                                alert. Change is counted from start of a day.
-                            </p>
-
-
-                        </div>
-
-                        <!-- Column 2 -->
-                        <div class="w-full sm:w-[350px] pt-4 pb-6 px-6 bg-white/10 border border-white/10 rounded-xl shadow-lg"
-                            style="background-color: rgb(119 59 188 / 9%);">
-                            <h3 class="flex items-center justify-between" onclick="toggleSwitch('toggle2')">
-                                <span class="text-lg text-white font-medium">Trend reversals / Dip</span>
-
-                                <!-- Toggle Component -->
-                                <div class="toggle-switch flex items-center mt-1">
-                                    <label for="toggle2" class="inline-flex relative items-center cursor-pointer mr-2">
-                                        <input type="checkbox" id="toggle2" class="sr-only peer" checked>
-                                        <div
-                                            class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
-                                        </div>
-                                    </label>
-                                </div>
-
-
-
-                            </h3>
-                            <!-- Vector Picture -->
-                            <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
-                                <!-- Insert your vector image here -->
+                            <div class="flex items-center w-1/2 sm:w-auto mb-1 sm:mb-0">
+                                <span class="text-[rgb(255,255,0)] mr-1 text-xl">&#x25B2;</span>
+                                <span class="text-white">Пробой уровня</span>
                             </div>
-
-
-                            <div class="flex justify-between">
-                                <!-- Slider -->
-                                <span class="text-white self-center text-base font-medium mt-4">Sensitivity</span>
-                                <!-- 3-state Slider with Labels on Top -->
-                                <div class="w-[12rem]">
-                                    <div class="flex justify-between text-sm font-medium text-white">
-                                        <label for="three-state-slider">Global</label>
-                                        <label for="three-state-slider">Intraday</label>
-                                        <label for="three-state-slider">Often</label>
-                                    </div>
-                                    <input type="range" id="three-state-slider" name="three-state-slider" min="0"
-                                        max="2" value="1"
-                                        class="slider3 w-full h-2 mt-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
-                                </div>
+                            <div class="flex items-center w-1/2 sm:w-auto mb-1 sm:mb-0">
+                                <span class="text-[rgb(150,0,255)] mr-1 text-xl">&#x25B2;</span>
+                                <span class="text-white">Скачок цены</span>
                             </div>
-
-
-                            <!-- Description -->
-                            <p class="mt-4 text-sm text-white">Spots intraday dip or reversal of positive / negative
-                                trend of last days. It tracks general market trendchange or operates on single stock
-                                exclusively.
-                            </p>
-
-
-                        </div>
-
-                        <!-- Column 3 Container adjusted for correct placement -->
-                        <!-- Column 3 -->
-                        <div
-                            class="w-full sm:w-[250px] pt-4 pb-6 px-6 bg-white/10 border border-white/10 rounded-xl shadow-lg">
-                            <h3 class="flex items-center justify-between">
-                                <span class="text-lg text-white font-medium">Range breakout</span>
-
-                                <!-- Toggle Component -->
-                                <div class="toggle-switch flex items-center mt-1">
-                                    <label for="toggle3" class="inline-flex relative items-center cursor-pointer mr-2">
-                                        <input type="checkbox" id="toggle3" class="sr-only peer">
-                                        <div
-                                            class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
-                                        </div>
-                                    </label>
-                                </div>
-
-
-
-                            </h3>
-                            <!-- Vector Picture -->
-                            <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
-                                <!-- Insert your vector image here -->
+                            <div class="flex items-center w-1/2 sm:w-auto">
+                                <span class="text-[rgb(255,100,0)] mr-1 text-xl">&#x25B2;</span>
+                                <span class="text-white">Усиление тренда</span>
                             </div>
-
-
-
-                            <!-- Description -->
-                            <p class="mt-4 text-sm text-white">Description for option 1. This could include
-                                details
-                                about
-                                the
-                                service or product.</p>
-
-
-                        </div>
-                        <!-- Column 4 -->
-                        <div
-                            class="w-full sm:w-[250px] pt-4 pb-6 px-6 bg-white/10 border border-white/10 rounded-xl shadow-lg">
-                            <h3 class="flex items-center justify-between">
-                                <span class="text-lg text-white font-medium">Volume spike</span>
-
-                                <!-- Toggle Component -->
-                                <div class="toggle-switch flex items-center mt-1">
-                                    <label for="toggle4" class="inline-flex relative items-center cursor-pointer mr-2">
-                                        <input type="checkbox" id="toggle4" class="sr-only peer">
-                                        <div
-                                            class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
-                                        </div>
-                                    </label>
-                                </div>
-
-
-
-                            </h3>
-                            <!-- Vector Picture -->
-                            <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
-                                <!-- Insert your vector image here -->
-                            </div>
-
-
-
-                            <!-- Description -->
-                            <p class="mt-4 text-sm text-white">Description for option 1. This could include
-                                details
-                                about
-                                the
-                                service or product.</p>
-
-
                         </div>
                     </div>
+
 
 
                 </section>
 
             </main>
         </div>
-        <!-- Second Column (new content) -->
-        <div class="lg:w-1/3 w-full lg:order-2 lg:mt-[5rem] lg:mr-[1rem] lg:mb-0 lg:ml-0">
 
-            <div class="border border-white/10 rounded-xl overflow-hidden shadow-lg p-4"
+
+
+        <!-- Second Column (new content) -->
+        <!-- Second Column (new content) -->
+        <!-- Second Column (new content) -->
+        <!-- Second Column (new content) -->
+        <div class="lg:w-1/2 w-full lg:order-2 lg:mt-[4rem] lg:mr-[1rem] lg:mb-0 lg:ml-0">
+
+            <div class="mb-4 border border-white/10 rounded-xl overflow-hidden shadow-lg p-4"
                 style="background-color: #7c7c7c38;">
-                <div class="mb-4" id="no-result">
+                <div class="mb-3" id="no-result">
                     <h2 class=" text-xl font-bold text-white">Login to Telegram</h2>
                 </div>
                 <div class="mb-4 hidden" id="final-result">
@@ -320,7 +168,7 @@
                     <input name="code" type="text" placeholder="Enter Code"
                         class="w-auto mb-2 py-2 px-4 rounded-lg text-gray-700" />
                     <button type="submit"
-                        class="w-auto block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
+                        class="w-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
                         Confirm Code
                     </button>
                 </form>
@@ -331,6 +179,271 @@
                 <!-- Final Result (hidden initially) -->
                 <div id="final-result" class="mt-4 hidden">
                     <p class="text-white">Result: <span class="font-semibold">Success!</span></p>
+                </div>
+            </div>
+            <div class="flex flex-wrap justify-start gap-4">
+
+
+                <!-- Trend following alerts 1 -->
+                <!-- Trend following alerts 1 -->
+                <!-- Trend following alerts 1 -->
+                <!-- Trend following alerts 1 -->
+
+                <div class="w-full sm:w-[350px] pt-4 border border-white/10 rounded-xl shadow-lg"
+                    style="background-color: rgb(119 59 188 / 28%)">
+                    <div class="px-6">
+                        <h3 class="flex items-center justify-between" onclick="toggleSwitch('toggle1')">
+                            <span class="text-lg text-white font-medium">Trend following alerts</span>
+
+                            <!-- Toggle Component -->
+                            <div class="toggle-switch flex items-center mt-1">
+                                <label for="toggle1" class="inline-flex relative items-center cursor-pointer mr-2">
+                                    <input type="checkbox" id="toggle1" class="sr-only peer" checked>
+                                    <div
+                                        class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
+                                    </div>
+                                </label>
+                            </div>
+
+
+
+                        </h3>
+                        <!-- Vector Picture -->
+                        <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
+                            <!-- Insert your vector image here -->
+                        </div>
+
+                        <!-- Slider -->
+                        <div class="text-white self-center text-base font-medium">Sensitivity
+                            <!-- (<span                                        id="selectedValue">4</span>) -->
+                        </div>
+                        <div class="mt-1">
+                            <div class="flex justify-between text-sm font-medium text-white">
+                                <label>1</label><label>2</label><label>3</label><label>4</label>
+                                <label>5</label><label>6</label><label>7</label><label>8</label>
+                            </div>
+                            <input type="range" id="trendSens" min="1" max="8" step="1" value="6"
+                                class="slider1 w-full h-2 mt-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+                        </div>
+                    </div>
+                    <!-- Description -->
+                    <p class="mt-4 mr-6 mb-6 ml-6 text-sm text-white">
+                        Watch trends and market regime. Stay constantly informed what is happening to your
+                        stocks.
+                        Set
+                        price step fluctuation in the input below and every time it goes up or down you will
+                        recieve
+                        an
+                        alert. Change is counted from start of a day.
+                    </p>
+
+
+                </div>
+
+                <!-- Trend step alerts -->
+                <!-- Trend step alerts -->
+                <!-- Trend step alerts -->
+                <!-- Trend step alerts -->
+                <div class="w-full sm:w-[350px] pt-4 border border-white/10 rounded-xl shadow-lg"
+                    style="background-color: rgb(119 59 188 / 28%)">
+                    <div class="px-6">
+                        <h3 class="flex items-center justify-between" onclick="toggleSwitch('toggle1')">
+                            <span class="text-lg text-white font-medium">Trend step alerts</span>
+
+                            <!-- Toggle Component -->
+                            <div class="toggle-switch flex items-center mt-1">
+                                <label for="toggle1" class="inline-flex relative items-center cursor-pointer mr-2">
+                                    <input type="checkbox" id="toggle1" class="sr-only peer" checked>
+                                    <div
+                                        class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
+                                    </div>
+                                </label>
+                            </div>
+
+
+
+                        </h3>
+                        <!-- Vector Picture -->
+                        <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
+                            <!-- Insert your vector image here -->
+                        </div>
+
+                        <!-- Slider -->
+                        <div class="text-white self-center text-base font-medium">Price increment (<span
+                                id="selectedValue">0.5</span>)
+                        </div>
+
+                        <div class="slider-container mt-4 mb-0 mx-auto w-[280px]" id="customSliderContainer">
+                            <div class="slider-labels text-md text-white font-medium">
+                                <div class="label" style="left:2%">0.5</div>
+                                <div class="label" style="left:15%">1</div>
+                                <div class="label" style="left:30%">1.5</div>
+                                <div class="label" style="left:50%">3</div>
+                                <div class="label" style="left:100%">10</div>
+                            </div>
+                            <div class="slider-track" id="sliderTrack">
+                                <div class="slider-trail" id="sliderTrail"></div>
+                                <div class="slider-thumb" id="sliderThumb" tabindex="0"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Description -->
+                    <p class="mt-4 mr-6 mb-6 ml-6 text-sm text-white">
+                        Watch trends and market regime. Stay constantly informed what is happening to your
+                        stocks.
+                        Set
+                        price step fluctuation in the input below and every time it goes up or down you will
+                        recieve
+                        an
+                        alert. Change is counted from start of a day.
+                    </p>
+
+
+                </div>
+
+
+
+                <!-- Range BO old -->
+                <!-- Range BO old -->
+                <!-- Range BO old -->
+                <!-- Range BO old -->
+                <div class="w-full sm:w-[250px] pt-4 pb-6 px-6 bg-white/10 border border-white/10 rounded-xl shadow-lg">
+                    <h3 class="flex items-center justify-between">
+                        <span class="text-lg text-white font-medium">Range breakout</span>
+
+                        <!-- Toggle Component -->
+                        <div class="toggle-switch flex items-center mt-1">
+                            <label for="toggle3" class="inline-flex relative items-center cursor-pointer mr-2">
+                                <input type="checkbox" id="toggle3" class="sr-only peer" checked>
+                                <div
+                                    class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
+                                </div>
+                            </label>
+                        </div>
+
+
+
+                    </h3>
+                    <!-- Vector Picture -->
+                    <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
+                        <!-- Insert your vector image here -->
+                    </div>
+                    <div class="mt-1">
+                        <div class="flex justify-between text-sm font-medium text-white">
+                            <label>1</label><label>2</label><label>3</label><label>4</label>
+                        </div>
+                        <input type="range" id="boSens" min="1" max="4" step="1" value="2"
+                            class="slider3 w-full h-2 mt-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+                    </div>
+
+
+                    <!-- Description -->
+                    <p class="mt-4 text-sm text-white">Description for option 1. This could include
+                        details
+                        about
+                        the
+                        service or product.</p>
+
+
+                </div>
+                <!-- Volume spike??? -->
+                <!-- Volume spike??? -->
+                <!-- Volume spike??? -->
+                <!-- Volume spike??? -->
+                <!-- Volume spike??? -->
+                <div class="w-full sm:w-[250px] pt-4 pb-6 px-6 bg-white/10 border border-white/10 rounded-xl shadow-lg">
+                    <h3 class="flex items-center justify-between">
+                        <span class="text-lg text-white font-medium">Price spike</span>
+
+                        <!-- Toggle Component -->
+                        <div class="toggle-switch flex items-center mt-1">
+                            <label for="toggle4" class="inline-flex relative items-center cursor-pointer mr-2">
+                                <input type="checkbox" id="toggle4" class="sr-only peer" checked>
+                                <div
+                                    class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
+                                </div>
+                            </label>
+                        </div>
+
+
+
+                    </h3>
+                    <!-- Vector Picture -->
+                    <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
+                        <!-- Insert your vector image here -->
+                    </div>
+                    <div class="mt-1">
+                        <div class="flex justify-between text-sm font-medium text-white">
+                            <label>1</label><label>2</label><label>3</label><label>4</label>
+                        </div>
+                        <input type="range" id="psSens" min="1" max="4" step="1" value="3"
+                            class="slider3 w-full h-2 mt-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+                    </div>
+
+
+                    <!-- Description -->
+                    <p class="mt-4 text-sm text-white">Description for option 1. This could include
+                        details
+                        about
+                        the
+                        service or product.</p>
+
+
+                </div>
+
+                <!-- 3 step slider -->
+                <!-- 3 step slider -->
+                <!-- 3 step slider -->
+                <!-- 3 step slider -->
+                <!-- 3 step slider -->
+                <div class="w-full sm:w-[350px] pt-4 pb-6 px-6 bg-white/10 border border-white/10 rounded-xl shadow-lg"
+                    style="background-color: rgb(119 59 188 / 9%);">
+                    <h3 class="flex items-center justify-between" onclick="toggleSwitch('toggle2')">
+                        <span class="text-lg text-white font-medium">Trend reversals / Dip</span>
+
+                        <!-- Toggle Component -->
+                        <div class="toggle-switch flex items-center mt-1">
+                            <label for="toggle2" class="inline-flex relative items-center cursor-pointer mr-2">
+                                <input type="checkbox" id="toggle2" class="sr-only peer">
+                                <div
+                                    class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
+                                </div>
+                            </label>
+                        </div>
+
+
+
+                    </h3>
+                    <!-- Vector Picture -->
+                    <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
+                        <!-- Insert your vector image here -->
+                    </div>
+
+
+                    <div class="flex justify-between">
+                        <!-- Slider -->
+                        <span class="text-white self-center text-base font-medium mt-4">Sensitivity</span>
+                        <!-- 3-state Slider with Labels on Top -->
+                        <div class="w-[12rem]">
+                            <div class="flex justify-between text-sm font-medium text-white">
+                                <label for="three-state-slider">Global</label>
+                                <label for="three-state-slider">Intraday</label>
+                                <label for="three-state-slider">Often</label>
+                            </div>
+                            <input type="range" id="three-state-slider" name="three-state-slider" min="0" max="2"
+                                value="1"
+                                class="slider3 w-full h-2 mt-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
+                        </div>
+                    </div>
+
+
+                    <!-- Description -->
+                    <p class="mt-4 text-sm text-white">Spots intraday dip or reversal of positive / negative
+                        trend of last days. It tracks general market trendchange or operates on single stock
+                        exclusively.
+                    </p>
+
+
                 </div>
             </div>
         </div>
