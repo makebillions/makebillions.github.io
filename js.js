@@ -48,12 +48,14 @@ function createDebouncedChangeHandler(debounceDelay) {
             trendSensValue = trendSens.value;
             boSensValue = boSens.value;
             psSensValue = psSens.value;
+            more_eventsValue = more_events.checked;
             showLoader();
             countAlerts(stock, {
                 jumpValue,
                 boSensValue,
                 psSensValue,
                 trendSensValue,
+                more_eventsValue,
             }).then((data) => {
                 hideLoader();
                 setChart(data);
@@ -64,11 +66,11 @@ function createDebouncedChangeHandler(debounceDelay) {
 
 function toggleSwitch(toggleId) {
     const toggle = document.getElementById(toggleId);
-    // toggle.click();
+    toggle.click();
 }
 // const host = process.env.REACT_APP_API;
-const host = "http://localhost:4000";
-// const host = "https://modern-vocal-reptile.ngrok-free.app";
+// const host = "http://localhost:4000";
+const host = "https://modern-vocal-reptile.ngrok-free.app";
 function url(url) {
     return `${host}${url}`;
 }
@@ -83,21 +85,22 @@ const autocompleteContainer = document.getElementById("autocompleteContainer");
 const trendSens = document.getElementById("trendSens");
 const boSens = document.getElementById("boSens");
 const psSens = document.getElementById("psSens");
+const more_events = document.getElementById("toggle_more");
 
-for (el of [trendSens, boSens, psSens])
+for (el of [trendSens, boSens, psSens, more_events])
     el.addEventListener("change", createDebouncedChangeHandler(1000));
 
 function showLoader() {
     const chart = document.getElementById("chart");
     const loader = document.getElementById("chartLoader");
-
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     // Set loader size to match chart
     loader.style.width = chart.offsetWidth + "px";
     loader.style.height = chart.offsetHeight + "px";
 
     // Position loader
     const rect = chart.getBoundingClientRect();
-    loader.style.top = rect.top + "px";
+    loader.style.top = rect.top + scrollTop + "px";
     loader.style.left = rect.left + "px";
 
     // Show loader
@@ -123,7 +126,13 @@ let selectedItems = [],
 
 function countAlerts(
     stock,
-    { jumpValue: jump, boSensValue, psSensValue, trendSensValue }
+    {
+        jumpValue: jump,
+        boSensValue,
+        psSensValue,
+        trendSensValue,
+        more_eventsValue: more_events,
+    }
 ) {
     const client_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const queryString = new URLSearchParams({
@@ -140,6 +149,7 @@ function countAlerts(
         boSensValue,
         psSensValue,
         trendSensValue,
+        more_events,
     }).then((res) => {
         if (res.result) {
             return res.data;
