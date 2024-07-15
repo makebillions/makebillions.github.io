@@ -239,7 +239,7 @@ function countAlerts(
     post(url("/api/getuser")).then((res) => {
         if (res) setIsLoggedIn(true);
     });
-    fetch(url("/api/stocks"), { method: "GET" })
+    fetch(url("/api/stocks"), { method: "POST" })
         .then((r) => r.json())
         .then((r) => {
             setStocks(r.payload);
