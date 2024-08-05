@@ -1,4 +1,14 @@
 // page code
+function openHelpPopup(section) {
+    document.getElementById("helpPopup").style.display = "block";
+    if (section) {
+        document.querySelector(section).scrollIntoView({ behavior: "smooth" });
+    }
+}
+
+function closeHelpPopup() {
+    document.getElementById("helpPopup").style.display = "none";
+}
 function post(url, data = {}) {
     return fetch(url, {
         method: "post",
@@ -16,17 +26,35 @@ function post(url, data = {}) {
 
             return r.json();
         })
+        .catch((e) => {
+            throw new Error("server unavailble");
+        })
         .then((res) => {
-            if (res.result || res.data) {
+            if (res && (res.result || res.data)) {
                 return res;
             } else {
-                // throw res;
+                // console.log("throw");
+                throw res;
             }
-        })
-        .catch((e) => {
-            console.log(e);
-            return null;
         });
+}
+
+function collectInputs() {
+    const stocks = selectedItems;
+
+    // if (!stock || jumpValue <= 0) return;
+    trendSensValue = trendSens.value;
+    boSensValue = boSens.value;
+    psSensValue = psSens.value;
+    more_eventsValue = more_events.checked;
+    return {
+        stocks,
+        jumpValue,
+        boSensValue,
+        psSensValue,
+        trendSensValue,
+        more_eventsValue,
+    };
 }
 
 // Higher-order function to create a debounced change handler
@@ -42,13 +70,16 @@ function createDebouncedChangeHandler(debounceDelay) {
             //     sliderContainer.value ||
             //     parseFloat(event.detail || event.target.value);
             // Determine the last selected item's ticker
-            const stock = selectedItems[selectedItems.length - 1]?.ticker;
-
+            const {
+                stocks,
+                jumpValue,
+                boSensValue,
+                psSensValue,
+                trendSensValue,
+                more_eventsValue,
+            } = collectInputs();
+            const stock = stocks[stocks.length - 1]?.ticker;
             if (!stock || jumpValue <= 0) return;
-            trendSensValue = trendSens.value;
-            boSensValue = boSens.value;
-            psSensValue = psSens.value;
-            more_eventsValue = more_events.checked;
             showLoader();
             countAlerts(stock, {
                 jumpValue,
@@ -81,11 +112,14 @@ const sensetivitySlider = document.getElementById("three-state-slider");
 const resultsDiv = document.getElementById("autocomplete-results");
 const selectedItemsContainer = document.getElementById("selected-items");
 const confirmForm = document.getElementById("code-confirmation-form");
+const initText = document.getElementById("initial-text");
+const afterLogin = document.getElementById("final-result");
 const autocompleteContainer = document.getElementById("autocompleteContainer");
 const trendSens = document.getElementById("trendSens");
 const boSens = document.getElementById("boSens");
 const psSens = document.getElementById("psSens");
 const more_events = document.getElementById("toggle_more");
+const submitAlertsButton = document.getElementById("submit_alerts");
 
 for (el of [trendSens, boSens, psSens, more_events])
     el.addEventListener("change", createDebouncedChangeHandler(1000));
@@ -116,6 +150,7 @@ const sliderTrail = document.getElementById("sliderTrail");
 const sliderTrack = document.getElementById("sliderTrack");
 const selectedValueDisplay = document.getElementById("selectedValue");
 const sliderContainer = document.getElementById("customSliderContainer");
+const selectionsContainer = document.getElementById("selections");
 
 let allStocks;
 let selectedItems = [],
@@ -158,36 +193,73 @@ function countAlerts(
         }
     });
 }
+const AlertMes = {
+    0: (alert) =>
+        `${alert.stock.map((s) => s.ticker).join(" ")} ${alert.percentage}%`,
+};
 (async () => {
+    function setSelections(selections) {
+        selectionsContainer.innerHTML = ""; // Clear existing content
+
+        selections.forEach((selection) => {
+            const selectionDiv = document.createElement("div");
+            selectionDiv.textContent = AlertMes[selection.alertType](selection);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.textContent = "Удалить";
+            deleteButton.className =
+                "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg ml-5";
+            deleteButton.onclick = () => handleDelete(selection.id);
+
+            selectionDiv.appendChild(deleteButton);
+            selectionsContainer.appendChild(selectionDiv);
+        });
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         // under ? because refetch better?
-
-        if (!stock.length) {
+        const {
+            stocks,
+            jumpValue,
+            boSensValue,
+            psSensValue,
+            trendSensValue,
+            more_eventsValue,
+        } = collectInputs();
+        if (!stocks.length) {
             // setSelections((prev) => [...prev, { stock, percentage }]);
             alert("set something");
             return;
         }
-        const sliderValue = sensetivitySlider.value;
-
         const data = {
-            percentage,
-            sliderValue,
-            checkboxValue,
+            percentage: jumpValue,
+            // sliderValue,
+            // checkboxValue,
             alertType: 0,
-            stock: selectedItems, //.map(item=>item.ticker),
+            stock: stocks, //.map(item=>item.ticker),
+        };
+        const otherData = {
+            boSensValue,
+            psSensValue,
+            trendSensValue,
+            more_eventsValue,
         };
 
         if (isLoggedIn)
-            post(url("/api/algos/new"), { algo: data })
+            post(url("/api/algos/new"), { algo: data, otherData })
                 .then((r) => {
                     // resetForm();
                     setSelections(r.payload);
-                    // alert("ok");
+                    alert(
+                        "Подписка выполнена! Отписаться можно внизу страницы или в БОТе."
+                    );
                 })
                 .catch((e) => {
                     alert(e);
                 });
+        else alert("Please login");
     };
 
     const resetForm = async () => {
@@ -200,7 +272,7 @@ function countAlerts(
         post(url("/api/algos/del"), { id })
             .then((r) => {
                 setSelections(r.payload);
-                // alert("ok");
+                alert("Удалено!");
             })
             .catch((e) => {
                 alert(e);
@@ -208,54 +280,50 @@ function countAlerts(
     };
 
     const confirmClick = async (code) => {
-        const res = await fetch(url("/api/setUser"), {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json", // Set the content type to JSON
-                // Add any other headers if needed
-            },
-            body: JSON.stringify({
-                code,
-            }), // Convert the data to JSON string
-            credentials: "include",
-        })
-            .then((r) => r.json())
-            .catch((e) => console.error(e));
+        const res = await post(url("/api/setUser"), {
+            code,
+        });
         if (res.result) {
             setIsLoggedIn(true);
         }
+        return res;
     };
     confirmForm.addEventListener("submit", function (e) {
         e.preventDefault();
         const code = e.target[0].value;
         // Show processing indicator
         document.getElementById("process-indicator").style.display = "block";
-        confirmClick(code).then(() => {
-            // Hide processing indicator
-            document.getElementById("process-indicator").style.display = "none";
-        });
+        confirmClick(code)
+            .then(() => {
+                // Hide processing indicator
+                document.getElementById("process-indicator").style.display =
+                    "none";
+            })
+            .catch((e) => {
+                document.getElementById("process-indicator").style.display =
+                    "none";
+                alert(e.error);
+            });
     });
+    submitAlertsButton.addEventListener("click", handleSubmit);
 
-    post(url("/api/getuser")).then((res) => {
-        if (res) setIsLoggedIn(true);
-    });
-    fetch(url("/api/stocks"), { method: "POST" })
-        .then((r) => r.json())
-        .then((r) => {
-            setStocks(r.payload);
-            setStock([r.payload[0], r.payload[1]]);
-        })
-        .catch((e) => console.error(e));
-
-    // fetch(url("/api/algos"), { credentials: "include", method: "GET" })
-    //     .then((r) => r.json())
+    // post(url("/api/getuser"))
     //     .then((res) => {
-    //         if (res.result) {
-    //             setSelections(res.payload);
-    //         } else {
-    //             // throw res;
-    //         }
+    //         setIsLoggedIn(true);
+    //     })
+    //     .catch((e) => {
+    //         console.log(e.error);
     //     });
+    post(url("/api/algos"))
+        .then((res) => {
+            setIsLoggedIn(true);
+            setSelections(res.payload);
+        })
+        .catch((e) => {});
+    post(url("/api/stocks")).then((r) => {
+        setStocks(r.payload);
+        setStock([r.payload[1], r.payload[0]]);
+    });
 })();
 function setStock(arr) {
     selectedItems = arr;
@@ -270,8 +338,9 @@ function setStocks(arr) {
 function setIsLoggedIn(v) {
     isLoggedIn = v;
     if (v) {
-        document.getElementById("final-result").style.display = "block";
-        document.getElementById("no-result").style.display = "none";
+        initText.style.display = "none";
+        confirmForm.style.display = "none";
+        afterLogin.style.display = "block";
     }
     // Show final result
 }
@@ -371,14 +440,14 @@ var chart = LightweightCharts.createChart(document.getElementById("chart"), {
     },
 });
 chart.applyOptions({
-    // handleScroll: {
-    //     mouseWheel: false,
-    //     pressedMouseMove: true,
-    // },
-    // handleScale: {
-    //     mouseWheel: false,
-    //     pinch: false,
-    // },
+    handleScroll: {
+        mouseWheel: false,
+        pressedMouseMove: true,
+    },
+    handleScale: {
+        mouseWheel: false,
+        pinch: false,
+    },
 });
 var series = chart.addCandlestickSeries({
     upColor: "rgba(255,255,255,0.7)",
