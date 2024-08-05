@@ -382,7 +382,7 @@ const autocompleteHandler = function () {
               item.ticker.toLowerCase().includes(inputVal.toLowerCase())
           )
         : allStocks;
-    filteredData = filteredData.slice(0, 20);
+    // filteredData = filteredData.slice(0, 20);
     filteredData.forEach((item) => {
         const div = document.createElement("div");
         div.className = "p-4 hover:bg-white/20 cursor-pointer";
