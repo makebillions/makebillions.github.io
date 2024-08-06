@@ -100,8 +100,8 @@ function toggleSwitch(toggleId) {
     toggle.click();
 }
 // const host = process.env.REACT_APP_API;
-// const host = "http://localhost:4000";
-const host = "https://modern-vocal-reptile.ngrok-free.app";
+const host = "http://localhost:4000";
+// const host = "https://modern-vocal-reptile.ngrok-free.app";
 function url(url) {
     return `${host}${url}`;
 }
@@ -411,10 +411,25 @@ document.addEventListener("click", function (e) {
     }
 });
 //charts.js
-
+if (window.innerWidth <= 768) {
+    // You can adjust this breakpoint
+    // On mobile, use the maximum available width
+    width = window.innerWidth - 40;
+    // Set height equal to width for a square chart
+    height = width;
+} else {
+    // On desktop, use the original dimensions
+    width = 600;
+    height = 600;
+}
 var chart = LightweightCharts.createChart(document.getElementById("chart"), {
-    width: 600,
-    height: 600,
+    width,
+    height,
+    handleScroll: {
+        mouseWheel: false,
+        pressedMouseMove: true,
+        vertTouchDrag: false,
+    },
     timeScale: {
         timeVisible: true,
         borderColor: "rgba(0,0,0, 0)",
@@ -440,10 +455,6 @@ var chart = LightweightCharts.createChart(document.getElementById("chart"), {
     },
 });
 chart.applyOptions({
-    handleScroll: {
-        mouseWheel: false,
-        pressedMouseMove: true,
-    },
     handleScale: {
         mouseWheel: false,
         pinch: false,
