@@ -543,6 +543,7 @@ function setChart(data) {
                 color: markerColorS[alert.type],
                 // color: 'black',
                 shape: "arrowUp",
+                size: 1.5,
                 // text: alert.text, // Display the timeframe as text on the marker
             });
         } else if (signalType === "sell") {
@@ -552,6 +553,7 @@ function setChart(data) {
                 // color: 'black',
                 color: markerColorS[alert.type],
                 shape: "arrowDown",
+                size: 1.5,
                 // text: alert.text, // Display the timeframe as text on the marker
             });
         }

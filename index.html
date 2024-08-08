@@ -103,7 +103,7 @@
                             </div>
                             <div class="flex items-center space-x-3 bg-white/5 p-3 rounded-lg">
                                 <span class="text-[rgb(255,255,0)] text-3xl">&#x25B2;</span>
-                                <span class="text-white">Пробой уровня</span>
+                                <span class="text-white">Выход из боковика</span>
                             </div>
                             <div class="flex items-center space-x-3 bg-white/5 p-3 rounded-lg">
                                 <span class="text-[rgb(150,0,255)] text-3xl">&#x25B2;</span>
@@ -199,7 +199,7 @@
                     style="background-color: rgb(119 59 188 / 28%)">
                     <div class="px-6">
                         <h3 class="flex items-center justify-between">
-                            <span class="text-lg text-white font-medium">Подписка на тренд<span class="help-icon"
+                            <span class="text-lg text-white font-medium">Уведомления на тренд<span class="help-icon"
                                     onclick="openHelpPopup('#trend-following')">?</span></span>
 
                             <!-- Toggle Component -->
@@ -286,7 +286,34 @@
                         </h3>
                         <!-- Vector Picture -->
                         <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
-                            <!-- Insert your vector image here -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 50 300 100" height="100" width="300">
+                                <defs>
+                                    <style>
+                                        .cls-1 {
+                                            fill: none;
+                                        }
+
+                                        .cls-2 {
+                                            fill: #1e40af;
+                                        }
+                                    </style>
+                                </defs>
+
+                                <!-- Price Chart -->
+                                <path d="M0,125 L75,75 L125,60 L175,100 L225,70 L275,125 L300,95" fill="none"
+                                    stroke="#1e40af" stroke-width="2"></path>
+
+                                <!-- Dip Area -->
+                                <path d="M125,60 L150,50 L175,100" fill="#1e40af" fill-opacity="0.2"></path>
+
+                                <!-- Measurement Line -->
+                                <line x1="150" y1="50" x2="275" y2="125" stroke="#1e40af" stroke-width="2"
+                                    stroke-dasharray="5,5"></line>
+
+                                <!-- Measurement Amount -->
+                                <text class="cls-2" x="180" y="60" font-size="14"
+                                    font-family="Arial, sans-serif">1%</text>
+                            </svg>
                         </div>
 
                         <!-- Slider -->
@@ -562,7 +589,7 @@
     </div>
     <script src="./lightweight-charts.standalone.production.js"></script>
 
-    <script src="js.js?v=2"></script>
+    <script src="js.js?v=21"></script>
 
 </body>
 
