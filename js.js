@@ -158,6 +158,23 @@ let selectedItems = [],
     sliderValue = 0.5,
     isLoggedIn = false;
 //page.js
+function submitFeedback(event) {
+    event.preventDefault();
+    const feedbackText = document.getElementById("feedbackText").value;
+
+    post(url("/api/feedback"), {
+        feedback: feedbackText,
+    })
+        .then((data) => {
+            alert("Thank you for your feedback!");
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert(
+                "An error occurred while submitting your feedback. Please try again."
+            );
+        });
+}
 
 function countAlerts(
     stock,

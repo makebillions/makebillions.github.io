@@ -32,7 +32,7 @@
                         class="inline-block rounded-lg px-2 py-1 text-sm text-slate-300 hover:bg-slate-100 hover:text-slate-900"
                         onclick="openHelpPopup('#conditions')" href="#">Справка</a><a
                         class="inline-block rounded-lg px-2 py-1 text-sm text-slate-300 hover:bg-slate-100 hover:text-slate-900"
-                        href="#testimonials">Оставить отзыв</a><a
+                        onclick="openHelpPopup('#testimonials')" href="#testimonials">Оставить отзыв</a><a
                         class="inline-block rounded-lg px-2 py-1 text-sm text-slate-300 hover:bg-slate-100 hover:text-slate-900"
                         href="#selections">Мои подписки</a></div>
             </div>
@@ -599,13 +599,25 @@
                         particularly useful for spotting buying opportunities during downtrends or for recognizing when
                         a bullish trend might be coming to an end.</p>
                 </div>
+                <div class="feedback-form mt-8 p-4 bg-gray-800 rounded-lg" id="testimonials">
+                    <h3 class="text-lg font-bold mb-4">Feedback</h3>
+                    <form id="feedbackForm" onsubmit="submitFeedback(event)">
+                        <div class="mb-4">
+                            <label for="feedbackText" class="block mb-2">Your feedback:</label>
+                            <textarea id="feedbackText" name="feedbackText" rows="4" class="w-full p-2 bg-gray-700 text-black rounded" required></textarea>
+                        </div>
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                            Submit Feedback
+                        </button>
+                    </form>
+                </div>
             </div>
             <span class="help-close" onclick="closeHelpPopup()">&times;</span>
         </div>
     </div>
     <script src="./lightweight-charts.standalone.production.js"></script>
 
-    <script src="js.js?v=4"></script>
+    <script src="js.js?v=5"></script>
 
 </body>
 
