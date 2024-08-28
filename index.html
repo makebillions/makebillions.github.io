@@ -53,10 +53,10 @@
             времени.
             Таким образом, у Вас больше контороля над Инвестицией: всегда в курсе что с поведением цены,
             защита от распродажи и вероятность взять хорошую точку входа.
-            Это бесплатный проект и работает на энтузиазме, в будущем будет больше типов событий,
-            такие как дип, внезапный объем, усиление/ослабление тренда, события в интрадэй и пр. Это
+            Это бесплатный проект и работает на энтузиазме, качество алгоритмов хорошее, но будет лучше, также будет больше типов событий,
+            такие как дип, объем, разные события в интрадэй и пр. Это
             требует огромных усилий, поэтому приветствуются любая помощь, полезная критика и предложения.
-            Пишите прямо в БОТ или на сайте.
+            Пишите в feedback БОТа или на сайте.
         </p>
     </div>
 
@@ -276,92 +276,6 @@
 
                 </div>
 
-                <!-- Trend step alerts -->
-                <!-- Trend step alerts -->
-                <!-- Trend step alerts -->
-                <!-- Trend step alerts -->
-                <div class="w-full sm:w-[350px] pt-4 border border-white/10 rounded-xl shadow-lg"
-                    style="background-color: rgb(119 59 188 / 28%)">
-                    <div class="px-6">
-                        <h3 class="flex items-center justify-between" onclick="toggleSwitch('toggle1')">
-                            <span class="text-lg text-white font-medium">Движение цены<span class="help-icon"
-                                    onclick="openHelpPopup('#trend-following')">?</span></span>
-
-                            <!-- Toggle Component -->
-                            <div class="toggle-switch flex items-center mt-1">
-                                <label for="toggle1" class="inline-flex relative items-center cursor-pointer mr-2">
-                                    <input type="checkbox" id="toggle1" class="sr-only peer" checked>
-                                    <div
-                                        class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
-                                    </div>
-                                </label>
-                            </div>
-
-
-
-                        </h3>
-                        <!-- Vector Picture -->
-                        <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 50 300 100" height="100" width="300">
-                                <defs>
-                                    <style>
-                                        .cls-1 {
-                                            fill: none;
-                                        }
-
-                                        .cls-2 {
-                                            fill: #1e40af;
-                                        }
-                                    </style>
-                                </defs>
-
-                                <!-- Price Chart -->
-                                <path d="M0,125 L75,75 L125,60 L175,100 L225,70 L275,125 L300,95" fill="none"
-                                    stroke="#1e40af" stroke-width="2"></path>
-
-                                <!-- Dip Area -->
-                                <path d="M125,60 L150,50 L175,100" fill="#1e40af" fill-opacity="0.2"></path>
-
-                                <!-- Measurement Line -->
-                                <line x1="150" y1="50" x2="275" y2="125" stroke="#1e40af" stroke-width="2"
-                                    stroke-dasharray="5,5"></line>
-
-                                <!-- Measurement Amount -->
-                                <text class="cls-2" x="180" y="60" font-size="14"
-                                    font-family="Arial, sans-serif">1%</text>
-                            </svg>
-                        </div>
-
-                        <!-- Slider -->
-                        <div class="text-white self-center text-base font-medium">Шаг цены (<span
-                                id="selectedValue">1</span> %)
-                        </div>
-
-                        <div class="slider-container mt-5 mb-0 mx-auto w-[280px]" id="customSliderContainer">
-                            <div class="slider-labels text-sm text-white font-medium">
-                                <div class="label" style="left:2%">0.5%</div>
-                                <div class="label" style="left:15%">1%</div>
-                                <div class="label" style="left:30%">1.5%</div>
-                                <div class="label" style="left:50%">3%</div>
-                                <div class="label" style="left:100%">10%</div>
-                            </div>
-                            <div class="slider-track" id="sliderTrack">
-                                <div class="slider-trail" id="sliderTrail"></div>
-                                <div class="slider-thumb" id="sliderThumb" tabindex="0"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Description -->
-                    <p class="mt-2 mr-6 mb-6 ml-6 text-sm text-white">
-                        Нестандартное. Уведомление каждый раз цена меняется на этот %.
-                        Начало отсчета - вчерашнее закрытие. Незаменимо,
-                        когда вплотную следите за акцией. Выберите несколько акций сразу и индекс.
-                        Срабатывает без задержки.
-                    </p>
-
-
-                </div>
-
 
 
                 <!-- Range BO old -->
@@ -444,6 +358,91 @@
                     <!-- Description -->
                     <p class="mt-4 text-sm text-white">Алерт на сильное изменение цены в период низкой и обычной
                         волатильности. Выставляйте уровень по графику.</p>
+
+
+                </div>
+
+                 <!-- Trend step alerts -->
+                <!-- Trend step alerts -->
+                <!-- Trend step alerts -->
+                <!-- Trend step alerts -->
+                <div class="w-full sm:w-[350px] pt-4 border border-white/10 rounded-xl shadow-lg"
+                    style="background-color: rgb(119 59 188 / 28%)">
+                    <div class="px-6">
+                        <h3 class="flex items-center justify-between" onclick="toggleSwitch('toggle1')">
+                            <span class="text-lg text-white font-medium">Инкремент<span class="help-icon"
+                                    onclick="openHelpPopup('#trend-following')">?</span></span>
+
+                            <!-- Toggle Component -->
+                            <div class="toggle-switch flex items-center mt-1">
+                                <label for="toggle1" class="inline-flex relative items-center cursor-pointer mr-2">
+                                    <input type="checkbox" id="toggle1" class="sr-only peer" checked>
+                                    <div
+                                        class="toggle-bg w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 shadow-inner">
+                                    </div>
+                                </label>
+                            </div>
+
+
+
+                        </h3>
+                        <!-- Vector Picture -->
+                        <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 50 300 100" height="100" width="300">
+                                <defs>
+                                    <style>
+                                        .cls-1 {
+                                            fill: none;
+                                        }
+
+                                        .cls-2 {
+                                            fill: #1e40af;
+                                        }
+                                    </style>
+                                </defs>
+
+                                <!-- Price Chart -->
+                                <path d="M0,125 L75,75 L125,60 L175,100 L225,70 L275,125 L300,95" fill="none"
+                                    stroke="#1e40af" stroke-width="2"></path>
+
+                                <!-- Dip Area -->
+                                <path d="M125,60 L150,50 L175,100" fill="#1e40af" fill-opacity="0.2"></path>
+
+                                <!-- Measurement Line -->
+                                <line x1="150" y1="50" x2="275" y2="125" stroke="#1e40af" stroke-width="2"
+                                    stroke-dasharray="5,5"></line>
+
+                                <!-- Measurement Amount -->
+                                <text class="cls-2" x="180" y="60" font-size="14"
+                                    font-family="Arial, sans-serif">1%</text>
+                            </svg>
+                        </div>
+
+                        <!-- Slider -->
+                        <div class="text-white self-center text-base font-medium">Шаг цены (<span
+                                id="selectedValue">1</span> %)
+                        </div>
+
+                        <div class="slider-container mt-5 mb-0 mx-auto w-[280px]" id="customSliderContainer">
+                            <div class="slider-labels text-sm text-white font-medium">
+                                <div class="label" style="left:2%">0.5%</div>
+                                <div class="label" style="left:15%">1%</div>
+                                <div class="label" style="left:30%">1.5%</div>
+                                <div class="label" style="left:50%">3%</div>
+                                <div class="label" style="left:100%">10%</div>
+                            </div>
+                            <div class="slider-track" id="sliderTrack">
+                                <div class="slider-trail" id="sliderTrail"></div>
+                                <div class="slider-thumb" id="sliderThumb" tabindex="0"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Description -->
+                    <p class="mt-2 mr-6 mb-6 ml-6 text-sm text-white">
+                        Нестандартное, не отображается на графике. Уведомление на инкремент цены на этот %.
+                        Начало отсчета - дно или пик. Незаменимо,
+                        когда вплотную следите за акцией. Выберите несколько акций и индекс.
+                    </p>
 
 
                 </div>
@@ -617,7 +616,7 @@
     </div>
     <script src="./lightweight-charts.standalone.production.js"></script>
 
-    <script src="js.js?v=8"></script>
+    <script src="js.js?v=9"></script>
 
 </body>
 
