@@ -9,6 +9,24 @@ function openHelpPopup(section) {
 function closeHelpPopup() {
     document.getElementById("helpPopup").style.display = "none";
 }
+// Debounce function
+function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+function onTimeRangeChange(fromTime, toTime) {
+    filteredfakes = filterByTimeRange(fromTime, toTime);
+}
+// Callback function to filter items by visible time range
+function filterByTimeRange(fromTime, toTime) {
+    return mfakes.filter(
+        (item) => item.time >= fromTime && item.time <= toTime
+    );
+}
+
 function post(url, data = {}) {
     return fetch(url, {
         method: "post",
@@ -43,17 +61,9 @@ function collectInputs() {
     const stocks = selectedItems;
 
     // if (!stock || jumpValue <= 0) return;
-    trendSensValue = trendSens.value;
-    boSensValue = boSens.value;
-    psSensValue = psSens.value;
-    more_eventsValue = more_events.checked;
     return {
         stocks,
         jumpValue,
-        boSensValue,
-        psSensValue,
-        trendSensValue,
-        more_eventsValue,
     };
 }
 
@@ -81,6 +91,7 @@ function createDebouncedChangeHandler(debounceDelay) {
             const stock = stocks[stocks.length - 1]?.ticker;
             if (!stock || jumpValue <= 0) return;
             showLoader();
+            showListLoader();
             countAlerts(stock, {
                 jumpValue,
                 boSensValue,
@@ -90,18 +101,137 @@ function createDebouncedChangeHandler(debounceDelay) {
             }).then((data) => {
                 hideLoader();
                 setChart(data);
+                setFakes(data);
+
+                renderEvents(filteredfakes);
+                hideListLoader();
             });
         }, debounceDelay);
     };
 }
+var mfakes = [];
+var filteredfakes = [];
+const fakes = [
+    "momentum down faded near consolidation support",
+    "move up inside consolidation",
+    "momentum up develops 1.5%",
+    "momentum up near resistance level",
+    "consolidation move down near resistance level",
+    "consolidation move down",
+    "consolidation move up",
+    "momentum up near resistance level",
+    "momentum up resistance breakout",
+    "move down false resistance breakout",
+    "move up resistance breakout",
+    "momentum up develops",
+    "move up by trend moderate",
+    "strong move up trend moderate",
+    "mode down trend moderate",
+    "strong move down 2%",
+    "direction change up 1%",
+    "price hike 3.5% in 2hrs",
+    "price hike 5% in 3.5 hrs",
+    "..shadow signals..",
+    "pullback after hike",
+    "dip 3.5% in 3hrs",
+    "move up by trend",
+    "direction change down 2%",
+    "move down against trend",
+    "dip 3% in 3.5 hrs",
+];
 
+function setFakes(data) {
+    // from alerts.length-fakes.length to alerts.length
+    mfakes = data.alerts
+        .slice(data.alerts.length - fakes.length)
+        .map((a, i) => ({
+            time: a.time,
+            text: fakes[i],
+        }));
+}
+function renderEvents(events) {
+    const eventsList = document.getElementById("eventsList");
+
+    eventsList.innerHTML = events
+        .reverse()
+        .slice(0, 7)
+        .map((event) => {
+            const date = new Date(event.time * 1000);
+            const dateStr =
+                String(date.getDate()).padStart(2, "0") +
+                "." +
+                String(date.getMonth() + 1).padStart(2, "0");
+            const timeStr =
+                String(date.getHours()).padStart(2, "0") +
+                ":" +
+                String(date.getMinutes()).padStart(2, "0");
+
+            return `
+           <div class="event-item flex items-start px-6 py-1 border-b border-white/5 hover:bg-white/5 transition-all duration-300 -translate-y-4 opacity-0">
+               <div class="flex-shrink-0 w-16 mr-4">
+                   <div class="text-xs text-white/50 leading-tight">${dateStr}<br>${timeStr}</div>
+               </div>
+               <div class="flex-1 text-sm text-white leading-5 line-clamp-2 overflow-hidden">
+                   ${event.text}
+               </div>
+           </div>
+       `;
+        })
+        .join("");
+    const items = document.querySelectorAll(".event-item");
+    // Reset items
+    items.forEach((item) => {
+        item.classList.add("-translate-y-4", "opacity-0");
+    });
+}
+function showListItems(item) {
+    const items = document.querySelectorAll(".event-item");
+    setTimeout(() => {
+        eventsList.classList.remove("opacity-50", "pointer-events-none");
+
+        // Animate items in sequence
+        items.forEach((item, index) => {
+            setTimeout(() => {
+                item.classList.remove("-translate-y-4", "opacity-0");
+            }, index * 100);
+        });
+    }, 100);
+}
+function hideListLoader() {
+    // Hide shimmer, show events
+    eventsList.classList.remove("hidden");
+    shimmer.classList.add("hidden");
+    const items = document.querySelectorAll(".event-item");
+
+    // Enable interactions
+    // setTimeout(() => {
+    eventsList.classList.remove("opacity-50", "pointer-events-none");
+
+    // Animate items in sequence
+    items.forEach((item, index) => {
+        setTimeout(() => {
+            item.classList.remove("-translate-y-4", "opacity-0");
+        }, index * 100);
+    });
+    // }, 100);
+}
+function showListLoader() {
+    shimmer.classList.remove("hidden");
+    eventsList.classList.add("hidden", "opacity-50", "pointer-events-none");
+    const items = document.querySelectorAll(".event-item");
+    // Reset items
+    items.forEach((item) => {
+        item.classList.add("-translate-y-4", "opacity-0");
+    });
+}
 function toggleSwitch(toggleId) {
     const toggle = document.getElementById(toggleId);
     toggle.click();
 }
 // const host = process.env.REACT_APP_API;
 // const host = "http://localhost:4000";
-const host = "https://modern-vocal-reptile.ngrok-free.app";
+// const host = "https://modern-vocal-reptile.ngrok-free.app";
+const host = "https://eeed87a36fac.ngrok-free.app";
 function url(url) {
     return `${host}${url}`;
 }
@@ -120,9 +250,11 @@ const boSens = document.getElementById("boSens");
 const psSens = document.getElementById("psSens");
 const more_events = document.getElementById("toggle_more");
 const submitAlertsButton = document.getElementById("submit_alerts");
+const shimmer = document.getElementById("shimmerLoader");
+const eventsList = document.getElementById("eventsList");
 
-for (el of [trendSens, boSens, psSens, more_events])
-    el.addEventListener("change", createDebouncedChangeHandler(1000));
+// for (el of [trendSens, boSens, psSens, more_events])
+// el.addEventListener("change", createDebouncedChangeHandler(1000));
 
 function showLoader() {
     const chart = document.getElementById("chart");
@@ -339,7 +471,7 @@ const AlertMes = {
         .catch((e) => {});
     post(url("/api/stocks")).then((r) => {
         setStocks(r.payload);
-        setStock([r.payload[1], r.payload[0]]);
+        setStock([r.payload[1], r.payload[142]]);
     });
 })();
 function setStock(arr) {
@@ -437,7 +569,7 @@ if (window.innerWidth <= 768) {
 } else {
     // On desktop, use the original dimensions
     width = 600;
-    height = 600;
+    height = 400;
 }
 var chart = LightweightCharts.createChart(document.getElementById("chart"), {
     width,
@@ -450,9 +582,15 @@ var chart = LightweightCharts.createChart(document.getElementById("chart"), {
     timeScale: {
         timeVisible: true,
         borderColor: "rgba(0,0,0, 0)",
+        barSpacing: 12, // Increase spacing between candles (default is 6)
+        minBarSpacing: 8, // Minimum spacing when zoomed in
     },
     rightPriceScale: {
         borderColor: "rgba(0,0,0, 0)",
+        scaleMargins: {
+            top: 0.1,
+            bottom: 0.1,
+        },
     },
     layout: {
         background: {
@@ -461,61 +599,65 @@ var chart = LightweightCharts.createChart(document.getElementById("chart"), {
             bottomColor: "rgba(0,0,0, 0)",
         },
         textColor: "rgba(255,255,255, 1)",
+        fontSize: 12,
     },
     grid: {
         horzLines: {
-            color: "rgba(0,0,0, 0)",
+            color: "rgba(255,255,255, 0.08)", // Subtle light grid lines
         },
         vertLines: {
-            color: "rgba(0,0,0, 0)",
+            color: "rgba(255,255,255, 0.08)", // Subtle light grid lines
+        },
+    },
+    crosshair: {
+        mode: LightweightCharts.CrosshairMode.Normal,
+        vertLine: {
+            color: "rgba(255, 255, 255, 0.5)",
+            width: 1,
+            style: LightweightCharts.LineStyle.Dashed,
+        },
+        horzLine: {
+            color: "rgba(255, 255, 255, 0.5)",
+            width: 1,
+            style: LightweightCharts.LineStyle.Dashed,
         },
     },
 });
+
 chart.applyOptions({
     handleScale: {
         mouseWheel: false,
         pinch: false,
     },
 });
+
 var series = chart.addCandlestickSeries({
-    upColor: "rgba(255,255,255,0.7)",
-    // downColor: "#008ddc",
-    downColor: "rgba(255,0,0,0.7)",
-    wickUpColor: "white",
-    wickDownColor: "red",
-    borderUpColor: "white",
-    borderDownColor: "red",
-    borderVisible: false,
+    upColor: "rgba(255,255,255,0.15)", // Slightly more visible fill
+    downColor: "rgba(255,0,0,0.15)", // Slightly more visible fill
+    wickUpColor: "rgba(255,255,255,0.8)", // Clean, visible wicks
+    wickDownColor: "rgba(255,0,0,0.8)", // Clean, visible wicks
+    borderUpColor: "rgba(255,255,255,0.6)", // More transparent borders
+    borderDownColor: "rgba(255,0,0,0.6)", // More transparent borders
+    borderVisible: true, // Thin borders for definition
+    priceFormat: {
+        type: "price",
+        precision: 2,
+        minMove: 0.01,
+    },
 });
 
-// var markers = [
-//     {
-//         time: data[data.length - 48].time,
-//         position: "aboveBar",
-//         color: "#f68410",
-//         shape: "circle",
-//         text: "D",
-//     },
-// ];
-// for (var i = 0; i < datesForMarkers.length; i++) {
-//     if (i !== indexOfMinPrice) {
-//         markers.push({
-//             time: datesForMarkers[i].time,
-//             position: "aboveBar",
-//             color: "#e91e63",
-//             shape: "arrowDown",
-//             text: "Sell @ " + Math.floor(datesForMarkers[i].high + 2),
-//         });
-//     } else {
-//         markers.push({
-//             time: datesForMarkers[i].time,
-//             position: "belowBar",
-//             color: "#2196F3",
-//             shape: "arrowUp",
-//             text: "Buy @ " + Math.floor(datesForMarkers[i].low - 2),
-//         });
-//     }
-// }
+// Optional: Add some padding around the chart data
+chart.timeScale().fitContent();
+// Subscribe to visible time range changes
+const debouncedTimeRangeCallback = debounce(() => {
+    const timeRange = chart.timeScale().getVisibleRange();
+    if (timeRange) {
+        onTimeRangeChange(timeRange.from, timeRange.to);
+        renderEvents(filteredfakes);
+        hideListLoader();
+    }
+}, 300);
+chart.timeScale().subscribeVisibleTimeRangeChange(debouncedTimeRangeCallback);
 
 // series.setMarkers(markers);
 function setChart(data) {
@@ -527,29 +669,24 @@ function setChart(data) {
     // });
     series.setData(data.candles);
     const markerColorF = (a) => ({
-        "5t": "rgba(255, 165, 0, " + a + ")", // Orange color for 5-minute timeframe
-        "15t": "rgba(255, 0, 0, " + a + ")", // Red color for 15-minute timeframe
-        "1d": "rgba(0, 50, 255, " + a + ")", // Blue color for 30-minute timeframe
-        "sudden": "rgba(150, 0, 255, " + a + ")", // Purple color for 2-hour timeframe
-        "1d-2": "rgba(255, 100, 0, " + a + ")", // Purple color for 2-hour timeframe
-        "1d-3": "rgba(0, 255, 0, " + a + ")", // Purple color for 2-hour timeframe
-        "bo": "rgba(255, 255, 0, " + a + ")", // Purple color for 2-hour timeframe
-        "4h": "rgba(255, 165, 0, " + a + ")", // Purple color for 2-hour timeframe
+        su: `rgba(0, 102, 204, ${a})`,
+        si: `rgba(255, 128, 0, ${a})`,
+        1: `rgba(0, 0, 0, ${a})`, // Dim Gray
+        2: `rgba(105, 105, 105, ${a})`, // Gray
+        3: `rgba(169, 169, 169, ${a})`, // Dark Gray
+        4: `rgba(0,255, 0, ${a})`, // Silv
+        5: `rgba(123, 126, 34, ${a})`,
+        6: `rgba(238, 130, 238, ${a})`,
+        7: `rgba(255, 192, 203, ${a})`,
     });
     const markerColorS = markerColorF("1");
     const markers = [];
-    // const markers = data.alerts.map((alert) => ({
-    //     time: alert.time,
-    //     position: alert.direction ? "aboveBar" : "belowBar",
-    //     color: alert.direction ? "rgba(0,0,0,0.2)" : "rgba(255,255,255,0.5)",
-    //     shape: alert.direction ? "circle" : "circle",
-    //     // text: alert.direction ? "-" : "+",
-    // }));
+
     // chart.timeScale().fitContent();
-    // chart.timeScale().setVisibleRange({
-    //     from: data.candles[lastIndex].time - 3600 * 24 * 5,
-    //     to: data.candles[lastIndex].time,
-    // });
+    chart.timeScale().setVisibleRange({
+        from: data.candles[lastIndex].time - 3600 * 24 * 4,
+        to: data.candles[lastIndex].time,
+    });
     data.alerts.forEach((alert) => {
         const signalType = alert.value;
 
@@ -560,7 +697,7 @@ function setChart(data) {
                 color: markerColorS[alert.type],
                 // color: 'black',
                 shape: "arrowUp",
-                size: 1.5,
+                size: 1,
                 // text: alert.text, // Display the timeframe as text on the marker
             });
         } else if (signalType === "sell") {
@@ -570,7 +707,7 @@ function setChart(data) {
                 // color: 'black',
                 color: markerColorS[alert.type],
                 shape: "arrowDown",
-                size: 1.5,
+                size: 1,
                 // text: alert.text, // Display the timeframe as text on the marker
             });
         }
@@ -680,3 +817,20 @@ function setChart(data) {
         }
     });
 })();
+function updateTrail() {
+    const slider = document.getElementById("sliderSens");
+    const trail = document.getElementById("trailSens");
+    const value = parseFloat(slider.value);
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+
+    // Calculate percentage based on the actual position, not including the thumb width
+    const percentage = ((value - min) / (max - min)) * 100;
+
+    trail.style.width = percentage + "%";
+}
+
+// Initialize trail on page load
+document.addEventListener("DOMContentLoaded", function () {
+    updateTrail();
+});
