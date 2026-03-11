@@ -64,6 +64,10 @@ function collectInputs() {
     return {
         stocks,
         jumpValue,
+        boSensValue: boSens ? parseFloat(boSens.value) : undefined,
+        psSensValue: psSens ? parseFloat(psSens.value) : undefined,
+        trendSensValue: trendSens ? parseFloat(trendSens.value) : undefined,
+        more_eventsValue: more_events ? more_events.checked : undefined,
     };
 }
 
@@ -184,19 +188,7 @@ function renderEvents(events) {
         item.classList.add("-translate-y-4", "opacity-0");
     });
 }
-function showListItems(item) {
-    const items = document.querySelectorAll(".event-item");
-    setTimeout(() => {
-        eventsList.classList.remove("opacity-50", "pointer-events-none");
 
-        // Animate items in sequence
-        items.forEach((item, index) => {
-            setTimeout(() => {
-                item.classList.remove("-translate-y-4", "opacity-0");
-            }, index * 100);
-        });
-    }, 100);
-}
 function hideListLoader() {
     // Hide shimmer, show events
     eventsList.classList.remove("hidden");
@@ -231,7 +223,7 @@ function toggleSwitch(toggleId) {
 // const host = process.env.REACT_APP_API;
 // const host = "http://localhost:4000";
 // const host = "https://modern-vocal-reptile.ngrok-free.app";
-const host = "https://328d7a97ebdd.ngrok-free.app";
+const host = "https://0d8e-185-245-34-165.ngrok-free.app";
 function url(url) {
     return `${host}${url}`;
 }
@@ -253,8 +245,19 @@ const submitAlertsButton = document.getElementById("submit_alerts");
 const shimmer = document.getElementById("shimmerLoader");
 const eventsList = document.getElementById("eventsList");
 
-// for (el of [trendSens, boSens, psSens, more_events])
-// el.addEventListener("change", createDebouncedChangeHandler(1000));
+// Add event listeners for sliders to trigger chart updates
+if (trendSens) {
+    trendSens.addEventListener("change", createDebouncedChangeHandler(1000));
+}
+if (boSens) {
+    boSens.addEventListener("change", createDebouncedChangeHandler(1000));
+}
+if (psSens) {
+    psSens.addEventListener("change", createDebouncedChangeHandler(1000));
+}
+if (more_events) {
+    more_events.addEventListener("change", createDebouncedChangeHandler(1000));
+}
 
 function showLoader() {
     const chart = document.getElementById("chart");
@@ -471,7 +474,7 @@ const AlertMes = {
         .catch((e) => {});
     post(url("/api/stocks")).then((r) => {
         setStocks(r.payload);
-        setStock([r.payload[1], r.payload[142]]);
+        setStock([r.payload[84], r.payload[43]]);
     });
 })();
 function setStock(arr) {
@@ -818,7 +821,7 @@ function setChart(data) {
     });
 })();
 function updateTrail() {
-    const slider = document.getElementById("sliderSens");
+    const slider = document.getElementById("trendSens");
     const trail = document.getElementById("trailSens");
     const value = parseFloat(slider.value);
     const min = parseFloat(slider.min);
