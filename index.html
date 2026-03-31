@@ -1,478 +1,260 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full scroll-smooth bg-white antialiased">
+<html lang="en" class="h-full scroll-smooth antialiased">
 
 <head>
-    <meta charSet="utf-8" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="output.css" crossorigin="" />
-    <!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-    m[i].l=1*new Date();
-    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
- 
-    ym(97901249, "init", {
-         clickmap:true,
-         trackLinks:true,
-         accurateTrackBounce:true
-    });
- </script>
- <noscript><div><img src="https://mc.yandex.ru/watch/97901249" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
- <!-- /Yandex.Metrika counter -->
 </head>
 
-<body class="flex flex-col background">
-    <header class="max-w-7xl px-4 sm:px-6 lg:px-8">
-        <nav class="relative z-50 flex justify-between">
-            <div class="flex items-center md:gap-x-12">
-                <img src="./icon.svg" alt="" class="h-9">
-                <div class="hidden md:flex md:gap-x-6"><a
-                        class="inline-block rounded-lg px-2 py-1 text-sm text-slate-300 hover:bg-slate-100 hover:text-slate-900"
-                        onclick="openHelpPopup('#conditions')" href="#">Справка</a><a
-                        class="inline-block rounded-lg px-2 py-1 text-sm text-slate-300 hover:bg-slate-100 hover:text-slate-900"
-                        onclick="openHelpPopup('#testimonials')" href="#testimonials">Оставить отзыв</a><a
-                        class="inline-block rounded-lg px-2 py-1 text-sm text-slate-300 hover:bg-slate-100 hover:text-slate-900"
-                        href="#selections">Мои подписки</a></div>
+<body class="flex flex-col min-h-screen background">
+
+    <!-- Header -->
+    <header class="w-full px-6 py-4">
+        <nav class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="./icon.svg" alt="BuyTheDip" class="h-8">
+            </div>
+            <div class="flex gap-1">
+                <a class="px-3 py-1.5 text-sm text-white/50 hover:text-white/90 hover:bg-white/5 rounded-lg transition-colors"
+                    onclick="openHelpPopup('#conditions')" href="#">Справка</a>
+                <a class="px-3 py-1.5 text-sm text-white/50 hover:text-white/90 hover:bg-white/5 rounded-lg transition-colors"
+                    onclick="openHelpPopup('#testimonials')" href="#">Отзыв</a>
             </div>
         </nav>
     </header>
 
-    <div class="flex flex-col lg:flex-row">
-        <div class="flex-1 lg:w-1/2 w-full">
-            <main class="gap-4 p-6 pt-1">
-                <section id="features" aria-label="Features for running your books" class="flex-1">
-                    <!-- Header caption -->
-                    <!-- Header caption -->
+    <!-- Main content -->
+    <main class="flex-1 w-full max-w-7xl mx-auto px-6">
 
-                    <div class="max-w-2xl md:mx-auto md:text-center xl:max-w-none my-5">
-                        <h2 class="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-4xl">
-                            Покупайте акции <span class="gradient-text">ЛЕГКО</span>
-                        </h2>
-                        <!-- <p class="mt-4 text-lg tracking-tight text-blue-100">
-                            Продвинутые уведомления, которых нет в брокерах. Узнавайте вовремя о происходящем с ценой.
-                            Бесплатно.
-                        </p> -->
-                    </div>
+        <!-- Hero + Stock picker -->
+        <section class="mb-6">
+            <h1 class="text-2xl font-semibold tracking-tight text-white mb-4">
+                Покупайте акции <span class="gradient-text">ЛЕГКО</span>
+            </h1>
 
-
-                    <!-- Autocomplete Component -->
-                    <!-- Autocomplete Component -->
-                    <div class="autocomplete-container flex justify-center items-center" id="autocompleteContainer">
-                        <div class="relative w-full max-w-lg">
-                            <div id="selected-items" class="flex flex-wrap gap-2 p-2">
-                                <!-- Selected items will appear here -->
-                            </div>
-                            <input
-                                class="w-full py-3 px-6 bg-white/100 border border-white/10 rounded-xl text-black placeholder-black-500 shadow-xl shadow-black/5 ring-1 ring-slate-700/10 text-lg"
-                                id="autocomplete" type="text" placeholder="Выберите акцию..." autocomplete="off">
-                            <!-- <input
-                        class="w-full py-3 px-6 bg-white/10 border border-white/10 rounded-xl shadow-lg text-white placeholder-gray-300"
-                        id="autocomplete" type="text" placeholder="Search..." autocomplete="off"> -->
-
-                            <!-- <div class="absolute left-0 right-0 z-10 bg-white/10 border border-white/10 mt-1 rounded-xl shadow-lg max-h-60 overflow-auto"
-                            id="autocomplete-results" style="display: none;">
-                        </div> -->
-                            <div id="autocomplete-results">
-                                <!-- Results will be injected here -->
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Autocomplete Component -->
-                    <!-- Autocomplete Component -->
-
-                    <div class="text-gray-400">График не в реальном времени, только уведомления в Телеграм.</div>
-                    <!-- Chart -->
-                    <div id="chartLoader"
-                        class="hidden absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                        <div class="loader"></div>
-                    </div>
-                    <div id="chart" class="flex justify-center items-center mt-4 mb-4"></div>
-
-                    <div class="w-full pt-4 border border-white/10 rounded-xl shadow-lg relative" style="background-color: rgb(119 59 188 / 28%)">
-                <div class="px-6 pb-4">
-                    <h3 class="text-lg text-white font-medium">
-                        Latest signals
-                    </h3>
+            <!-- Stock picker row — bottom-aligned -->
+            <div class="flex flex-col sm:flex-row items-end gap-3">
+                <div class="autocomplete-container relative w-full sm:max-w-md" id="autocompleteContainer">
+                    <div id="selected-items" class="flex flex-wrap gap-1.5 mb-2"></div>
+                    <input id="autocomplete" type="text" placeholder="Выберите акцию..." autocomplete="off">
+                    <div id="autocomplete-results"></div>
                 </div>
-    
-    <!-- Shimmer Loading -->
-                <div id="shimmerLoader" class="max-h-60 overflow-hidden">
-                    <div class="flex items-start px-6 py-3 border-b border-white/5 animate-pulse">
-                        <div class="flex-shrink-0 w-16 mr-4">
-                            <div class="h-3 bg-white/20 rounded mb-1"></div>
-                            <div class="h-3 bg-white/20 rounded w-10"></div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="h-3 bg-white/20 rounded mb-2"></div>
-                            <div class="h-3 bg-white/20 rounded w-3/4"></div>
-                        </div>
+
+                <!-- Mode switch inline, bottom-aligned with input -->
+                <div class="flex flex-col flex-shrink-0">
+                    <p class="text-xs text-white/40 mb-1.5" id="modeDescription">Trend signals with local moves.
+                        Balanced view.</p>
+                    <div class="card mode-switch flex rounded-lg overflow-hidden border border-white/10 p-1"
+                        id="modeSwitch">
+                        <button class="mode-btn flex-1 py-2 px-4 text-sm text-white/50 transition-all"
+                            data-mode="strategic">Strategic</button>
+                        <button
+                            class="mode-btn flex-1 py-2 px-4 text-sm text-white font-medium transition-all mode-active"
+                            data-mode="meaningful">Meaningful</button>
+                        <button class="mode-btn flex-1 py-2 px-4 text-sm text-white/50 transition-all"
+                            data-mode="frequent">Frequent</button>
                     </div>
-                    <div class="flex items-start px-6 py-3 border-b border-white/5 animate-pulse">
-                        <div class="flex-shrink-0 w-16 mr-4">
-                            <div class="h-3 bg-white/20 rounded mb-1"></div>
-                            <div class="h-3 bg-white/20 rounded w-10"></div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="h-3 bg-white/20 rounded mb-2"></div>
-                            <div class="h-3 bg-white/20 rounded w-3/4"></div>
-                        </div>
-                    </div>
-                    <div class="flex items-start px-6 py-3 border-b border-white/5 animate-pulse">
-                        <div class="flex-shrink-0 w-16 mr-4">
-                            <div class="h-3 bg-white/20 rounded mb-1"></div>
-                            <div class="h-3 bg-white/20 rounded w-10"></div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="h-3 bg-white/20 rounded mb-2"></div>
-                            <div class="h-3 bg-white/20 rounded w-3/4"></div>
-                        </div>
-                    </div>
-                    <div class="flex items-start px-6 py-3 border-b border-white/5 animate-pulse">
-                        <div class="flex-shrink-0 w-16 mr-4">
-                            <div class="h-3 bg-white/20 rounded mb-1"></div>
-                            <div class="h-3 bg-white/20 rounded w-10"></div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="h-3 bg-white/20 rounded mb-2"></div>
-                            <div class="h-3 bg-white/20 rounded w-3/4"></div>
-                        </div>
-                    </div>
-                    <div class="flex items-start px-6 py-3 animate-pulse">
-                        <div class="flex-shrink-0 w-16 mr-4">
-                            <div class="h-3 bg-white/20 rounded mb-1"></div>
-                            <div class="h-3 bg-white/20 rounded w-10"></div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="h-3 bg-white/20 rounded mb-2"></div>
-                            <div class="h-3 bg-white/20 rounded w-3/4"></div>
-                        </div>
-                    </div>
-                </div>
-    
-    <!-- Events List -->
-                <div id="eventsList" class="max-h-60 overflow-y-auto hidden opacity-50 pointer-events-none">
-                    <div class="event-item flex items-start px-6 border-b border-white/5 hover:bg-white/5 transition-all duration-300 -translate-y-4 opacity-0">
-                        <div class="flex-shrink-0 w-16 mr-4">
-                            <div class="text-xs text-white/50 leading-tight">15.08<br>14:23</div>
-                        </div>
-                        <div class="flex-1 text-sm text-white leading-5 line-clamp-2 overflow-hidden">
-                        </div>
-                    </div>
-                    
                 </div>
             </div>
+            <p class="mt-2 text-xs text-white/30">График не в реальном времени, только уведомления в Телеграм.</p>
+        </section>
 
-                </section>
+        <!-- Chart + Events — side by side -->
+        <section class="flex flex-col lg:flex-row gap-4 mb-6">
 
-            </main>
-        </div>
-
-
-
-        <!-- Second Column (new content) -->
-        <!-- Second Column (new content) -->
-        <!-- Second Column (new content) -->
-        <!-- Second Column (new content) -->
-        <div class="lg:w-1/2 w-full lg:order-2 lg:mt-2 lg:mr-[1rem] lg:mb-0 lg:ml-0">
-            
-            
-
-            <div class="mt-4 mb-4 border border-white/10 rounded-xl overflow-hidden shadow-lg p-4 text-sm">
-                <!-- style="background-color: #7c7c7c38;"> -->
-                <h2 class=" text-xl font-bold text-white">Инструкция</h2>
-                <div class="mb-4 text-blue-100 login-text hidden" id="final-result">
-                    <h2 class="text-xl font-bold text-white">Вход выполнен</h2>
-                    <p class=""> 1. Выберите одну или несколько нужных вам акций. Для последней в списке отображается
-                        график.</p>
-                    <p class="">2. Можете настроить параметры в боксах или оставить по умолчанию. График обновляется.
-                        БОТ будет слать алерты в течение торгового дня.</p>
+            <!-- Chart -->
+            <div class="card card-glow p-4 lg:w-3/5 relative">
+                <div id="chartLoader"
+                    class="hidden absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl z-10">
+                    <div class="loader"></div>
                 </div>
-                <div class="mb-4 text-blue-100 login-text" id="initial-text">
-                    <p class="">1. В <img class="w-8 inline"
-                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAER0lEQVR4nO1ZzW8TRxRfpYVDjy09UThBu2t6Qy0BUuCfqFrRC0LqpYeqt6JccoNKCAkpQQmKoPRYUGkVmHFCZINoGwklfMWJEkLsJHZwjGMH52Oevf56aMZxEn9lZ+y1A5J/0pMsrz37+719782bt5rWRBNN1I6b+IHuhKMGgXaDwF86YeM6hSWdsKQw8RnG+DX+G52yVq0DW7SdxqF+2GcQ9ptBYd6ggCqmEwgYhF04QNlnDSd+gK58ahC4qlNmqhIvEUKZqVPo/rxvZU9DyH9B4LROIFor8RIjENEpfF834odHcJdBodd24rQktHr4vewl34cf6RRovckbmyIIv6c95EdwVyPJGxsi2KDjJu6uWUAjwsaomODQXRN5B4Ufdoq8kTcC31VFXh9c/sSgsLjTAnQC0apKLK/z9STW5orjpckkTixncCGetXoKV5TI893Rjk2q2A45Ac8+SmD/QhpTWdyAb217AZyLow/2K3hftAe2Ef9m3dt+toX1FtwNpiVygV2QY9+BLaJPqZO3y+HiRFJmzXneNFryF11lDcRPrHs7AKWss9kshiJLODnjL/j+zKOE1NqOfva1RPhAey3eTlfw9ioDnPD5cfSlD9cgvikKEVsH41L30SmckxFwW5b4KXfO26/KeDuPZCqFc8HX+HRyGsemZxASZsF1P7OoQFsFELhlHUL84LHNIl9KeDsfLuGlGD6f8gny4945TJjJkt8NLEgk8KaNygiIVvL21ekUhhMWGYmIKyJc5gRxbhMzfvEkyuHyC6kEztuitYAK9T8Utya+NVzy9mJ2HlPpdMX//DhsygsgLFG1gPZREz2xTNmwKQ6XvHkDQcxkthfe5orbLMDitHV4IJcDvd4UjsUyJeGSt9lgSAjbDgtWLURVIWSRxMV2b7yUfCC0iDJwhZQSWC6JVcoot3NDhTH/KhxBWXRNKSWwXBlV3cja7q3ik3Xy7jEfXhuaQtMi7vP4aUQhgXMb2a/WIURZq+JjxT+f+YWAW89m8R/3/9j70INRKK35xTjljqvt+JR9JdnMMb/Kwr/8tygE3Bj2CQHcOt0e9K5VfhJRUy2BdcrmpKd5vHVVWfzIwBo+nvSK8OHkb7iG8bjzDR4ZjONQJFNWwMOwagKz81o9DzR/PAng9X89+LtrGI85YwWtBy+5xeiZTsmTJyxx8A7bq6mATwRUBJx+8Aa77o9iq3O57PUOT7LgXPDzY6UE7tRU4eiPfWz3oZ73/UHIonc1K8LLkPI+RKqem/JZpZ0CqjGHE76tivyGCAI9OyigS7Pl5QWFvxtOnsDdk/fxQ/uGuwRIAwXcsW24WzTk7W5E2Jy0y/PlwGeVdRk5EgjXnLBKc1MCV/gGUztxxtfo5GVbazT47sjbDtXeiVvuP+y88g5bF3RgCx868bkN79n5wYOf7HIv8JgpTnkEnvNrvCUWXeW78Jq1iSa09x9vAV7LaYWk/U+hAAAAAElFTkSuQmCC">
-                        <a href="t.me:buydipru_bot" class="font-bold text-blue-300">Telegram</a> найдите бот <a
-                            href="t.me:buydipru_bot" class="font-bold text-blue-300">buydipru_bot</a>
-                        и нажмите /start. Введите код в форму ниже и вход будет выполнен.
+                <div id="chart" class="flex justify-center items-center"></div>
+            </div>
+
+            <!-- Events feed -->
+            <div class="card card-glow lg:w-2/5 flex flex-col overflow-hidden" style="height: 420px;">
+                <div class="px-4 py-3 border-b border-white/5 flex-shrink-0">
+                    <h3 class="text-sm font-semibold text-white/80 uppercase tracking-wider">Latest signals</h3>
+                </div>
+
+                <!-- Shimmer Loading -->
+                <div id="shimmerLoader" class="flex-1 overflow-hidden">
+                    <div class="flex items-start px-4 py-3 border-b border-white/5 animate-pulse">
+                        <div class="flex-shrink-0 w-14 mr-3">
+                            <div class="h-2.5 bg-white/10 rounded mb-1.5"></div>
+                            <div class="h-2.5 bg-white/10 rounded w-10"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="h-2.5 bg-white/10 rounded mb-2"></div>
+                            <div class="h-2.5 bg-white/10 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-start px-4 py-3 border-b border-white/5 animate-pulse">
+                        <div class="flex-shrink-0 w-14 mr-3">
+                            <div class="h-2.5 bg-white/10 rounded mb-1.5"></div>
+                            <div class="h-2.5 bg-white/10 rounded w-10"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="h-2.5 bg-white/10 rounded mb-2"></div>
+                            <div class="h-2.5 bg-white/10 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-start px-4 py-3 border-b border-white/5 animate-pulse">
+                        <div class="flex-shrink-0 w-14 mr-3">
+                            <div class="h-2.5 bg-white/10 rounded mb-1.5"></div>
+                            <div class="h-2.5 bg-white/10 rounded w-10"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="h-2.5 bg-white/10 rounded mb-2"></div>
+                            <div class="h-2.5 bg-white/10 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                    <div class="flex items-start px-4 py-3 animate-pulse">
+                        <div class="flex-shrink-0 w-14 mr-3">
+                            <div class="h-2.5 bg-white/10 rounded mb-1.5"></div>
+                            <div class="h-2.5 bg-white/10 rounded w-10"></div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="h-2.5 bg-white/10 rounded mb-2"></div>
+                            <div class="h-2.5 bg-white/10 rounded w-3/4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Events List -->
+                <div id="eventsList" class="flex-1 overflow-y-auto hidden opacity-50 pointer-events-none"></div>
+            </div>
+        </section>
+
+        <!-- Login / Subscribe row -->
+        <section class="flex flex-col lg:flex-row gap-4 mb-6">
+
+            <!-- Instructions / Login card -->
+            <div class="card p-5 lg:w-1/2">
+                <h2 class="text-base font-semibold text-white mb-3">Инструкция</h2>
+
+                <div class="text-sm text-white/55 login-text hidden" id="final-result">
+                    <h2 class="text-base font-semibold text-white mb-2">Вход выполнен</h2>
+                    <p>1. Выберите одну или несколько нужных вам акций. Для последней в списке отображается график.</p>
+                    <p>2. Можете настроить параметры в боксах или оставить по умолчанию. График обновляется. БОТ будет
+                        слать алерты в течение торгового дня.</p>
+                </div>
+
+                <div class="text-sm text-white/55 login-text" id="initial-text">
+                    <p>1. В Telegram найдите бот <a href="https://t.me/buydipru_bot"
+                            class="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">buydipru_bot</a>
+                        и нажмите /start. Введите код в форму ниже.</p>
+                    <p>2. Выберите одну или несколько нужных вам акций.</p>
+                    <p>3. Настройте параметры или оставьте по умолчанию. БОТ будет слать алерты в течение торгового дня.
                     </p>
-                    <p class=""> 2. Выберите одну или несколько нужных вам акций. Для последней в списке отображается
-                        график.</p>
-                    <p class="">3. Можете настроить параметры в боксах или оставить по умолчанию. График обновляется
-                        при изменении.
-                        БОТ будет слать алерты в течение торгового дня.</p>
-                    <p>Отписаться от алертов можно в его простом интерфейсе. Сервис не хранит Ваши данные.</p>
+                    <p class="text-white/35">Отписаться от алертов можно в его интерфейсе. Сервис не хранит Ваши данные.
+                    </p>
                 </div>
-                <!-- Code Confirmation Form -->
-                <form id="code-confirmation-form">
-                    <input name="code" type="text" placeholder="Введите код от БОТа"
-                        class="w-auto mb-2 py-2 px-4 rounded-lg text-gray-700" />
+
+                <form id="code-confirmation-form" class="mt-3 flex gap-2">
+                    <input name="code" type="text" placeholder="Код от БОТа"
+                        class="flex-1 py-2 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:border-indigo-500 focus:outline-none transition-colors" />
                     <button type="submit"
-                        class="w-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
-                        Готово
+                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors">
+                        Войти
                     </button>
                 </form>
-                <!-- Process Indicator (hidden initially) -->
-                <div id="process-indicator" class="mt-4 hidden">
-                    <p class="text-white">Processing...</p>
+                <div id="process-indicator" class="mt-3 hidden">
+                    <p class="text-sm text-white/50">Processing...</p>
                 </div>
             </div>
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-2">
-                <button class="subscribe-button w-full sm:w-[350px] flex-shrink-0" id="submit_alerts">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="mr-2">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none"></path>
-                    </svg>
-                    Подписаться на уведомления
-                </button>
-                <p class="text-sm text-gray-400 flex-grow">Нажимая на Подписаться на уведомления, вы принимаете условия
-                    использования.
-                    Не является индивидуальной инвестиционной рекомендацией.</p>
+
+            <!-- Subscribe + subscriptions -->
+            <div class="lg:w-1/2 flex flex-col gap-3">
+                <div class="flex flex-col gap-2">
+                    <button class="subscribe-button w-full sm:w-auto" id="submit_alerts">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="mr-2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none"></path>
+                        </svg>
+                        Подписаться на уведомления
+                    </button>
+                    <p class="text-xs text-white/25">Нажимая на Подписаться, вы принимаете условия использования.
+                        Не является индивидуальной инвестиционной рекомендацией.</p>
+                </div>
+                <div id="selections" class="text-sm text-white/50">Пока нет уведомлений</div>
             </div>
-            <!-- <button type="submit"
-                class="w-full sm:w-[350px] bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
-                Подписаться на события
-            </button> -->
-            <div class="flex flex-wrap justify-start gap-4">
+        </section>
 
+    </main>
 
-                <!-- Trend following alerts 1 -->
-                <!-- Trend following alerts 1 -->
-                <!-- Trend following alerts 1 -->
-                <!-- Trend following alerts 1 -->
+    <!-- Footer -->
+    <footer class="w-full max-w-7xl mx-auto px-6 py-6 mt-auto">
+        <p class="text-xs text-white/20 leading-relaxed">
+            &copy; 2026 &mdash; <b>Предупреждение о риске:</b> Торговля финансовыми инструментами сопряжена с высокими
+            рисками,
+            включая риск потери части или всей суммы инвестиций. Информация на сайте носит ориентировочный характер.
+            Владелец сервиса отказывается от ответственности за любые потери, понесенные в результате торговых сделок,
+            совершенных с оглядкой на указанную информацию.
+        </p>
+    </footer>
 
-                <div class="w-full sm:w-[350px] pt-4 border border-white/10 rounded-xl shadow-lg"
-                    style="background-color: rgb(119 59 188 / 28%)">
-                    <div class="px-6">
-                        <h3 class="flex items-center justify-between">
-                            <span class="text-lg text-white font-medium">Уведомления на тренд<span class="help-icon"
-                                    onclick="openHelpPopup('#trend-following')">?</span></span>
-                        </h3>
-                        <!-- Vector Picture -->
-                        <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
-                            <!-- Insert your vector image here -->
-                        </div>
-
-                        <!-- Slider -->
-                        <div class="text-white self-center text-base font-medium">Чувствительность
-                            <!-- (<span                                        id="selectedValue">4</span>) -->
-                        </div>
-                        <div class="mt-1">
-                            <div class="flex justify-between text-sm font-medium text-white">
-                                <label>1</label><label>2</label><label>3</label><label>4</label>
-                                <label>5</label><label>6</label><label>7</label>
-                            </div>
-                            <div class="slider-container w-full mt-2">
-                                <div class="slider-track"></div>
-                                <div class="slider-trail" id="trailSens"></div>
-                                <input 
-                                    type="range" 
-                                    min="1" 
-                                    max="7" 
-                                    step="1"
-                                    value="6" 
-                                    class="custom-slider w-full relative z-10 bg-transparent"
-                                    id="trendSens"
-                                    oninput="updateTrail()"
-                                >
-                            </div>
-                        </div>
-                        <div class="flex justify-between mt-2">
-                            <!-- Slider -->
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <p class="mt-2 mr-6 mb-6 ml-6 text-sm text-white">
-                        Смена и продолжение тренда.
-                        Стоит подписаться на несколько акций и индекс, чтобы быть в курсе рынка.
-                        Чувствительность влияет на частоту алертов и зависит от волатильности. Смотрите график.
-                    </p>
-
-
-                </div>
-
-
-                 <!-- Trend step alerts -->
-                <!-- Trend step alerts -->
-                <!-- Trend step alerts -->
-                <!-- Trend step alerts -->
-                <div class="w-full sm:w-[350px] pt-4 border border-white/10 rounded-xl shadow-lg"
-                    style="background-color: rgb(119 59 188 / 28%)">
-                    <div class="px-6">
-                        <h3 class="flex items-center justify-between" onclick="toggleSwitch('toggle1')">
-                            <span class="text-lg text-white font-medium">Инкремент<span class="help-icon"
-                                    onclick="openHelpPopup('#trend-following')">?</span></span>
-
-                        </h3>
-                        <!-- Vector Picture -->
-                        <div class="mt-4 aspect-w-16 aspect-h-9 bg-cover bg-center rounded-lg overflow-hidden">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 50 300 100" height="100" width="300">
-                                <defs>
-                                    <style>
-                                        .cls-1 {
-                                            fill: none;
-                                        }
-
-                                        .cls-2 {
-                                            fill: #1e40af;
-                                        }
-                                    </style>
-                                </defs>
-
-                                <!-- Price Chart -->
-                                <path d="M0,125 L75,75 L125,60 L175,100 L225,70 L275,125 L300,95" fill="none"
-                                    stroke="#1e40af" stroke-width="2"></path>
-
-                                <!-- Dip Area -->
-                                <path d="M125,60 L150,50 L175,100" fill="#1e40af" fill-opacity="0.2"></path>
-
-                                <!-- Measurement Line -->
-                                <line x1="150" y1="50" x2="275" y2="125" stroke="#1e40af" stroke-width="2"
-                                    stroke-dasharray="5,5"></line>
-
-                                <!-- Measurement Amount -->
-                                <text class="cls-2" x="180" y="60" font-size="14"
-                                    font-family="Arial, sans-serif">1%</text>
-                            </svg>
-                        </div>
-
-                        <!-- Slider -->
-                        <div class="text-white self-center text-base font-medium">Шаг цены (<span
-                                id="selectedValue">1</span> %)
-                        </div>
-
-                        <div class="slider-container2 mt-5 mb-0 mx-auto w-[280px]" id="customSliderContainer">
-                            <div class="slider-labels text-sm text-white font-medium">
-                                <div class="label" style="left:2%">0.5%</div>
-                                <div class="label" style="left:15%">1%</div>
-                                <div class="label" style="left:30%">1.5%</div>
-                                <div class="label" style="left:50%">3%</div>
-                                <div class="label" style="left:100%">10%</div>
-                            </div>
-                            <div class="slider-track2" id="sliderTrack">
-                                <div class="slider-trail2" id="sliderTrail"></div>
-                                <div class="slider-thumb" id="sliderThumb" tabindex="0"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Description -->
-                    <p class="mt-2 mr-6 mb-6 ml-6 text-sm text-white">
-                        Нестандартное, не отображается на графике. Уведомление на инкремент цены на этот %.
-                        Начало отсчета - дно или пик. Незаменимо,
-                        когда вплотную следите за акцией. Выберите несколько акций и индекс.
-                    </p>
-
-
-                </div>
-
-                <div id="selections" class="text-white">Пока нет уведомлений
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="m-5 text-gray-400">
-        © 2026<br> <b>Предупреждение о риске:</b> Торговля финансовыми инструментами сопряжена с высокими рисками,
-        включая риск потери части или всей суммы инвестиций, поэтому подходит не всем инвесторам. Маржинальная торговля
-        приводит к повышению финансовых рисков.
-        Прежде чем принимать решение о совершении сделки с финансовым инструментом, вы должны получить полную информацию
-        о рисках и затратах, связанных с торговлей на финансовых рынках, правильно оценить цели инвестирования, свой
-        опыт и допустимый уровень риска, а при необходимости обратиться за профессиональной консультацией.
-        Информация на сайте носит ориентировочный характер и не подходят для использования в целях торговли. Владелец
-        сервиса makebillions отказываются от ответственности за любые потери или убытки, понесенные в результате
-        осуществления торговых сделок, совершенных с оглядкой на указанную информацию.
-    </div>
+    <!-- Help popup -->
     <div class="help-popup hidden" id="helpPopup" onclick="closeHelpPopup()">
-        <div class="help-content bg-gray-900 text-white" onclick="event.stopPropagation();">
-            <div class="help-sidebar bg-gray-800">
-                <h2 class="text-xl font-bold mb-4">Contents</h2>
-                <ul class="space-y-2">
-                    <li><a href="#conditions" class="text-blue-400 hover:text-blue-300">Условия использования</a>
+        <div class="help-content bg-zinc-900 text-white" onclick="event.stopPropagation();">
+            <div class="help-sidebar bg-zinc-800">
+                <h2 class="text-lg font-semibold mb-4">Contents</h2>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#conditions" class="text-indigo-400 hover:text-indigo-300">Условия использования</a>
                     </li>
-                    <li><a href="#chart-info" class="text-blue-400 hover:text-blue-300">График</a></li>
-                    <li><a href="#trend-following" class="text-blue-400 hover:text-blue-300">Алерты на тренд</a></li>
-                    <li><a href="#trend-step" class="text-blue-400 hover:text-blue-300">Движение цены</a></li>
-                    <li><a href="#range-breakout" class="text-blue-400 hover:text-blue-300">Выход из боковика</a></li>
-                    <li><a href="#price-spike" class="text-blue-400 hover:text-blue-300">Скачок цены</a></li>
+                    <li><a href="#chart-info" class="text-indigo-400 hover:text-indigo-300">График</a></li>
+                    <li><a href="#trend-following" class="text-indigo-400 hover:text-indigo-300">Алерты на тренд</a>
+                    </li>
+                    <li><a href="#trend-step" class="text-indigo-400 hover:text-indigo-300">Движение цены</a></li>
+                    <li><a href="#range-breakout" class="text-indigo-400 hover:text-indigo-300">Выход из боковика</a>
+                    </li>
+                    <li><a href="#price-spike" class="text-indigo-400 hover:text-indigo-300">Скачок цены</a></li>
                 </ul>
             </div>
             <div class="help-main">
                 <div class="help-section" id="conditions">
-                    <h3 class="text-lg font-bold mb-2">Условия использования</h3>
-                    <p>Все уведомления - алерты имеют разный тип, в справке описано их примерное применение.
-                        Важно, все оповещения, создаваемые системой, носят информационный характер, они не содержат
-                        рекомендаций,
-                        они могут быть ошибочными или ложными. Вы используете систему на свой страх и риск.</p>
-                    <p>Помимо этого, создание действительно полезных алгоритмов для нотификаций
-                        - это огромные затраты времени и сил, поэтому даже текущие алгоритмы не совершенны,
-                        но я проделал большую работу, чтобы пользователям они нравились.</p>
+                    <h3>Условия использования</h3>
+                    <p>Все уведомления имеют разный тип, в справке описано их примерное применение.
+                        Оповещения носят информационный характер, они не содержат рекомендаций,
+                        могут быть ошибочными или ложными. Вы используете систему на свой страх и риск.</p>
                 </div>
                 <div class="help-section" id="chart-info">
-                    <h3 class="text-lg font-bold mb-2">График</h3>
-                    <p>Отображаются все события, сгенерированные в прошлом для данных настроек. Одна свеча - 2 часа.
-                        Предел истории загружается сразу, не постепенно, как на TradingView. График только отображает
-                        алерты и все.
-                        Он сделан для Вашего удобства изучать функциональность сервиса.
-                    </p>
+                    <h3>График</h3>
+                    <p>Отображаются все события, сгенерированные в прошлом для данных настроек. Одна свеча — 2 часа.
+                        График только отображает алерты для удобства изучения функциональности сервиса.</p>
                 </div>
                 <div class="help-section" id="trend-following">
-                    <h3 class="text-lg font-bold mb-2">
-                        Алерты на тренд</h3>
-                    <p>уведомления на смену тренда и на его усиление. Опция Больше событий создает уведомления по
-                        тренду.
-                        Чувствительность по умолчанию оптимальная, подходящая для всех типов акций, 8 - самая высокая.
-                        Настраивайте Чувствительность как Вам подходит и наблюдайте результат уведомлений на графике.
-                        Можете оставить Чувствительность по умолчанию,
-                        если просто следите за акцией.
-                    </p>
+                    <h3>Алерты на тренд</h3>
+                    <p>Уведомления на смену тренда и на его усиление. Чувствительность по умолчанию оптимальная,
+                        подходящая для всех типов акций.</p>
                 </div>
                 <div class="help-section" id="trend-step">
-                    <h3 class="text-lg font-bold mb-2">Движение цены</h3>
-                    <p>Нестандартное оповещение, не путайте с типовым функционалом. Здесь Вы следите вплотную за
-                        колебанием цены,
-                        с начала торгового дня фиксированный интервал цены в % наблюдается системой и высылает алерт.
-                        Это не единоразовый пуш на случай преодоления заданного порога цены.</p>
-                    <p>Применений много: при 0.5% Вы вплотную смотрите за акцией на случай поиска дна/пика цены.
-                        2-4% для поиска места формирования тренда, выхода из боковика.
-                        5% и больше важны для преодоления показательного уровня,
-                        а также формирования тренда у волатильных акций.
-                        Алерт не отображается на графике.</p>
+                    <h3>Движение цены</h3>
+                    <p>Нестандартное оповещение. Вы следите вплотную за колебанием цены,
+                        с начала торгового дня фиксированный интервал цены в % наблюдается системой.</p>
                 </div>
                 <div class="help-section" id="range-breakout">
-                    <h3 class="text-lg font-bold mb-2">
-                        Выход из боковика</h3>
-                    <p>Боковик - интервал цены, установленный в течение нескольких дней. Оповещение также может говорить
-                        о потенциальной смене тренда или старте нового, сочетается вкупе со значительными движениями
-                        рынка.
-                        Таким образом, полезно учитывать его с другими типами алертов на индекс.
-                    </p>
+                    <h3>Выход из боковика</h3>
+                    <p>Боковик — интервал цены, установленный в течение нескольких дней. Оповещение может говорить
+                        о потенциальной смене тренда или старте нового.</p>
                 </div>
                 <div class="help-section" id="price-spike">
-                    <h3 class="text-lg font-bold mb-2">Скачок цены</h3>
-                    <p>Для более подходящей настройки чувствительности смотрите график.
-                        Скачок цены свидетельствует о событиях масштаба рынка (индекс) или локальные,
-                        необычные активности, которые могут быть важны. При обычной или повышенной волатильности
-                        могут служить подтверждением или смены тренда. Стоит отмеить,
-                        скачок цены может состоять из двух свечей.
-                    </p>
+                    <h3>Скачок цены</h3>
+                    <p>Скачок цены свидетельствует о событиях масштаба рынка или локальных необычных активностях.
+                        При обычной или повышенной волатильности может служить подтверждением смены тренда.</p>
                 </div>
-                <div class="help-section" id="trend-reversals">
-                    <h3>Trend Reversals / Dip</h3>
-                    <p>This feature helps you identify potential trend reversals or dips in the market. It's
-                        particularly useful for spotting buying opportunities during downtrends or for recognizing when
-                        a bullish trend might be coming to an end.</p>
-                </div>
-                <div class="feedback-form mt-8 p-4 bg-gray-800 rounded-lg" id="testimonials">
-                    <h3 class="text-lg font-bold mb-4">Feedback</h3>
+                <div class="feedback-form mt-8 p-4 bg-zinc-800 rounded-lg" id="testimonials">
+                    <h3 class="text-base font-semibold mb-3">Feedback</h3>
                     <form id="feedbackForm" onsubmit="submitFeedback(event)">
-                        <div class="mb-4">
-                            <label for="feedbackText" class="block mb-2">Your feedback:</label>
-                            <textarea id="feedbackText" name="feedbackText" rows="4" class="w-full p-2 bg-gray-700 text-black rounded" required></textarea>
-                        </div>
-                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                            Submit Feedback
+                        <textarea id="feedbackText" name="feedbackText" rows="3"
+                            class="w-full p-2 bg-zinc-700 text-white text-sm rounded-lg border border-white/10 focus:border-indigo-500 focus:outline-none"
+                            required placeholder="Your feedback..."></textarea>
+                        <button type="submit"
+                            class="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors">
+                            Submit
                         </button>
                     </form>
                 </div>
@@ -480,8 +262,8 @@
             <span class="help-close" onclick="closeHelpPopup()">&times;</span>
         </div>
     </div>
-    <script src="./lightweight-charts.standalone.production.js"></script>
 
+    <script src="https://unpkg.com/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
     <script src="js.js?v=6"></script>
 
 </body>

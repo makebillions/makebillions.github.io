@@ -17,24 +17,14 @@ function debounce(func, delay) {
         timeoutId = setTimeout(() => func.apply(this, args), delay);
     };
 }
-function onTimeRangeChange(fromTime, toTime) {
-    filteredfakes = filterByTimeRange(fromTime, toTime);
-}
-// Callback function to filter items by visible time range
-function filterByTimeRange(fromTime, toTime) {
-    return mfakes.filter(
-        (item) => item.time >= fromTime && item.time <= toTime
-    );
-}
 
 function post(url, data = {}) {
     return fetch(url, {
         method: "post",
         headers: {
-            "Content-Type": "application/json", // Set the content type to JSON
-            // Add any other headers if needed
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(data), // Convert the data to JSON string
+        body: JSON.stringify(data),
         credentials: "include",
     })
         .then((r) => {
@@ -51,228 +41,186 @@ function post(url, data = {}) {
             if (res && (res.result || res.data)) {
                 return res;
             } else {
-                // console.log("throw");
                 throw res;
             }
         });
 }
 
-function collectInputs() {
-    const stocks = selectedItems;
+// --- Signal mode ---
+let currentMode = "meaningful";
+const MODE_SENS = {
+    strategic: [1, 2, 3, 4],
+    meaningful: [1, 2, 3, 4, 5, 6],
+    frequent: [1, 2, 3, 4, 5, 6, 7],
+};
+const MODE_DESC = {
+    strategic: "Major trend signals only. Least noise.",
+    meaningful: "Trend signals with local moves. Balanced view.",
+    frequent: "All signals including minor fluctuations.",
+};
 
-    // if (!stock || jumpValue <= 0) return;
-    return {
-        stocks,
-        jumpValue,
-        boSensValue: boSens ? parseFloat(boSens.value) : undefined,
-        psSensValue: psSens ? parseFloat(psSens.value) : undefined,
-        trendSensValue: trendSens ? parseFloat(trendSens.value) : undefined,
-        more_eventsValue: more_events ? more_events.checked : undefined,
-    };
-}
+// --- State ---
+var mEvents = [];
+var allAlerts = [];
+let allStocks;
+let selectedItems = [],
+    isLoggedIn = false;
 
-// Higher-order function to create a debounced change handler
-function createDebouncedChangeHandler(debounceDelay) {
-    let timeoutRef;
-
-    return function (event) {
-        clearTimeout(timeoutRef);
-
-        timeoutRef = setTimeout(() => {
-            // Determine `jump` based on event detail or a directly passed value
-            // const jumpValue =
-            //     sliderContainer.value ||
-            //     parseFloat(event.detail || event.target.value);
-            // Determine the last selected item's ticker
-            const {
-                stocks,
-                jumpValue,
-                boSensValue,
-                psSensValue,
-                trendSensValue,
-                more_eventsValue,
-            } = collectInputs();
-            const stock = stocks[stocks.length - 1]?.ticker;
-            if (!stock || jumpValue <= 0) return;
-            showLoader();
-            showListLoader();
-            countAlerts(stock, {
-                jumpValue,
-                boSensValue,
-                psSensValue,
-                trendSensValue,
-                more_eventsValue,
-            }).then((data) => {
-                hideLoader();
-                setChart(data);
-                setFakes(data);
-
-                renderEvents(filteredfakes);
-                hideListLoader();
-            });
-        }, debounceDelay);
-    };
-}
-var mfakes = [];
-var filteredfakes = [];
-const fakes = [
-    "momentum down faded near consolidation support",
-    "move up inside consolidation",
-    "momentum up develops 1.5%",
-    "momentum up near resistance level",
-    "consolidation move down near resistance level",
-    "consolidation move down",
-    "consolidation move up",
-    "momentum up near resistance level",
-    "momentum up resistance breakout",
-    "move down false resistance breakout",
-    "move up resistance breakout",
-    "momentum up develops",
-    "move up by trend moderate",
-    "strong move up trend moderate",
-    "mode down trend moderate",
-    "strong move down 2%",
-    "direction change up 1%",
-    "price hike 3.5% in 2hrs",
-    "price hike 5% in 3.5 hrs",
-    "..shadow signals..",
-    "pullback after hike",
-    "dip 3.5% in 3hrs",
-    "move up by trend",
-    "direction change down 2%",
-    "move down against trend",
-    "dip 3% in 3.5 hrs",
-];
-
-function setFakes(data) {
-    // from alerts.length-fakes.length to alerts.length
-    mfakes = data.alerts
-        .slice(data.alerts.length - fakes.length)
-        .map((a, i) => ({
-            time: a.time,
-            text: fakes[i],
-        }));
-}
-function renderEvents(events) {
-    const eventsList = document.getElementById("eventsList");
-
-    eventsList.innerHTML = events
-        .reverse()
-        .slice(0, 7)
-        .map((event) => {
-            const date = new Date(event.time * 1000);
-            const dateStr =
-                String(date.getDate()).padStart(2, "0") +
-                "." +
-                String(date.getMonth() + 1).padStart(2, "0");
-            const timeStr =
-                String(date.getHours()).padStart(2, "0") +
-                ":" +
-                String(date.getMinutes()).padStart(2, "0");
-
-            return `
-           <div class="event-item flex items-start px-6 py-1 border-b border-white/5 hover:bg-white/5 transition-all duration-300 -translate-y-4 opacity-0">
-               <div class="flex-shrink-0 w-16 mr-4">
-                   <div class="text-xs text-white/50 leading-tight">${dateStr}<br>${timeStr}</div>
-               </div>
-               <div class="flex-1 text-sm text-white leading-5 line-clamp-2 overflow-hidden">
-                   ${event.text}
-               </div>
-           </div>
-       `;
-        })
-        .join("");
-    const items = document.querySelectorAll(".event-item");
-    // Reset items
-    items.forEach((item) => {
-        item.classList.add("-translate-y-4", "opacity-0");
-    });
-}
-
-function hideListLoader() {
-    // Hide shimmer, show events
-    eventsList.classList.remove("hidden");
-    shimmer.classList.add("hidden");
-    const items = document.querySelectorAll(".event-item");
-
-    // Enable interactions
-    // setTimeout(() => {
-    eventsList.classList.remove("opacity-50", "pointer-events-none");
-
-    // Animate items in sequence
-    items.forEach((item, index) => {
-        setTimeout(() => {
-            item.classList.remove("-translate-y-4", "opacity-0");
-        }, index * 100);
-    });
-    // }, 100);
-}
-function showListLoader() {
-    shimmer.classList.remove("hidden");
-    eventsList.classList.add("hidden", "opacity-50", "pointer-events-none");
-    const items = document.querySelectorAll(".event-item");
-    // Reset items
-    items.forEach((item) => {
-        item.classList.add("-translate-y-4", "opacity-0");
-    });
-}
-function toggleSwitch(toggleId) {
-    const toggle = document.getElementById(toggleId);
-    toggle.click();
-}
-// const host = process.env.REACT_APP_API;
-// const host = "http://localhost:4000";
-// const host = "https://modern-vocal-reptile.ngrok-free.app";
-const host = "https://1e05-185-245-34-165.ngrok-free.app";
-function url(url) {
-    return `${host}${url}`;
-}
-
-//
+// --- DOM refs ---
 const searchInput = document.getElementById("autocomplete");
-const sensetivitySlider = document.getElementById("three-state-slider");
 const resultsDiv = document.getElementById("autocomplete-results");
 const selectedItemsContainer = document.getElementById("selected-items");
 const confirmForm = document.getElementById("code-confirmation-form");
 const initText = document.getElementById("initial-text");
 const afterLogin = document.getElementById("final-result");
 const autocompleteContainer = document.getElementById("autocompleteContainer");
-const trendSens = document.getElementById("trendSens");
-const boSens = document.getElementById("boSens");
-const psSens = document.getElementById("psSens");
-const more_events = document.getElementById("toggle_more");
 const submitAlertsButton = document.getElementById("submit_alerts");
 const shimmer = document.getElementById("shimmerLoader");
 const eventsList = document.getElementById("eventsList");
+const selectionsContainer = document.getElementById("selections");
+const modeSwitch = document.getElementById("modeSwitch");
+const modeDescription = document.getElementById("modeDescription");
 
-// Add event listeners for sliders to trigger chart updates
-if (trendSens) {
-    trendSens.addEventListener("change", createDebouncedChangeHandler(1000));
+// --- Mode switch handler ---
+if (modeSwitch) {
+    modeSwitch.addEventListener("click", (e) => {
+        const btn = e.target.closest(".mode-btn");
+        if (!btn) return;
+        const mode = btn.dataset.mode;
+        if (mode === currentMode) return;
+        currentMode = mode;
+        // Update active state
+        modeSwitch.querySelectorAll(".mode-btn").forEach((b) => {
+            b.classList.toggle("mode-active", b.dataset.mode === mode);
+            b.classList.toggle("text-white", b.dataset.mode === mode);
+            b.classList.toggle("font-medium", b.dataset.mode === mode);
+            b.classList.toggle("text-white/60", b.dataset.mode !== mode);
+        });
+        if (modeDescription) {
+            modeDescription.textContent = MODE_DESC[mode];
+        }
+        filterAndRenderEvents();
+        renderMarkers();
+    });
 }
-if (boSens) {
-    boSens.addEventListener("change", createDebouncedChangeHandler(1000));
+
+// --- Events ---
+let currentCandleRange = null; // Track candle date range
+
+function setEvents(data) {
+    const rawEvents = data.events || [];
+    // Filter events to candle date range if available
+    if (currentCandleRange) {
+        mEvents = rawEvents.filter(
+            (event) =>
+                event.time >= currentCandleRange.from &&
+                event.time <= currentCandleRange.to
+        );
+    } else {
+        mEvents = rawEvents;
+    }
+    filterAndRenderEvents();
 }
-if (psSens) {
-    psSens.addEventListener("change", createDebouncedChangeHandler(1000));
+
+function filterAndRenderEvents() {
+    const allowedSens = MODE_SENS[currentMode];
+    const filtered = mEvents.filter((e) =>
+        e.sens.some((s) => allowedSens.includes(s))
+    );
+    // Render events and scroll to first visible in chart range
+    const timeRange = chart.timeScale().getVisibleRange();
+    renderEvents(filtered, timeRange);
 }
-if (more_events) {
-    more_events.addEventListener("change", createDebouncedChangeHandler(1000));
+
+// Signal icon SVGs — small inline icons for rally, dip, momentum, attention
+const SIGNAL_ICONS = {
+    rally: `<svg class="inline-block w-4 h-4 mr-1 align-text-bottom" viewBox="0 0 16 16" fill="none"><path d="M8 2l5 6H9v6H7V8H3l5-6z" fill="#22c55e"/></svg>`,
+    dip: `<svg class="inline-block w-4 h-4 mr-1 align-text-bottom" viewBox="0 0 16 16" fill="none"><path d="M8 14l-5-6h4V2h2v6h4l-5 6z" fill="#ef4444"/></svg>`,
+    momentum: `<svg class="inline-block w-4 h-4 mr-1 align-text-bottom" viewBox="0 0 16 16" fill="none"><path d="M2 12l4-4 2 2 6-7v3h2V1h-5v2h3L9 9 7 7l-5 5z" fill="#f59e0b"/></svg>`,
+    attention: `<svg class="inline-block w-4 h-4 mr-1 align-text-bottom" viewBox="0 0 16 16" fill="none"><path d="M8 1l7 13H1L8 1z" fill="#f97316"/><rect x="7.2" y="5.5" width="1.6" height="5" rx=".5" fill="#fff"/><circle cx="8" cy="12" r=".9" fill="#fff"/></svg>`,
+};
+
+function renderEvents(events, timeRange = null) {
+    const sorted = [...events].sort((a, b) => b.time - a.time);
+    eventsList.innerHTML = sorted
+        .map((event) => {
+            const date = new Date(event.time * 1000);
+            const dateStr =
+                String(date.getUTCDate()).padStart(2, "0") +
+                "." +
+                String(date.getUTCMonth() + 1).padStart(2, "0");
+            const timeStr =
+                String(date.getUTCHours()).padStart(2, "0") +
+                ":" +
+                String(date.getUTCMinutes()).padStart(2, "0");
+            const dirClass =
+                event.dir === "buy" ? "text-green-400" : "text-red-400";
+            const dirArrow = event.dir === "buy" ? "\u25B2" : "\u25BC";
+            const iconHtml =
+                event.icon && SIGNAL_ICONS[event.icon]
+                    ? SIGNAL_ICONS[event.icon]
+                    : "";
+
+
+            return `
+           <div class="event-item flex items-start px-4 py-2 border-b border-white/5 hover:bg-white/5 transition-all duration-300" data-time="${event.time}">
+               <div class="flex-shrink-0 w-14 mr-3">
+                   <div class="text-xs text-white/50 leading-tight">${dateStr}<br>${timeStr}</div>
+               </div>
+               <div class="flex-1 text-sm text-white leading-relaxed">
+                   ${iconHtml}<span class="${dirClass} mr-1">${dirArrow}</span>${event.text}
+               </div>
+           </div>
+       `;
+        })
+        .join("");
+
+    // Scroll to first visible event when chart moves
+    if (timeRange) {
+        const items = document.querySelectorAll(".event-item");
+        const firstVisibleItem = Array.from(items).find(
+            (item) =>
+                timeRange &&
+                Number(item.dataset.time) >= timeRange.from &&
+                Number(item.dataset.time) <= timeRange.to
+        );
+        if (firstVisibleItem) {
+            eventsList.scrollTop =
+                firstVisibleItem.offsetTop - eventsList.offsetTop;
+        }
+    }
+}
+
+function hideListLoader() {
+    eventsList.classList.remove("hidden");
+    shimmer.classList.add("hidden");
+    eventsList.scrollTop = 0; // Scroll to top on initial load
+    const items = document.querySelectorAll(".event-item");
+    eventsList.classList.remove("opacity-50", "pointer-events-none");
+    items.forEach((item, index) => {
+        setTimeout(() => {
+            item.classList.remove("-translate-y-4", "opacity-0");
+        }, index * 100);
+    });
+}
+function showListLoader() {
+    shimmer.classList.remove("hidden");
+    eventsList.classList.add("hidden", "opacity-50", "pointer-events-none");
+    const items = document.querySelectorAll(".event-item");
+    items.forEach((item) => {
+        item.classList.add("-translate-y-4", "opacity-0");
+    });
 }
 
 function showLoader() {
     const chart = document.getElementById("chart");
     const loader = document.getElementById("chartLoader");
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    // Set loader size to match chart
     loader.style.width = chart.offsetWidth + "px";
     loader.style.height = chart.offsetHeight + "px";
-
-    // Position loader
     const rect = chart.getBoundingClientRect();
     loader.style.top = rect.top + scrollTop + "px";
     loader.style.left = rect.left + "px";
-
-    // Show loader
     loader.classList.remove("hidden");
 }
 
@@ -280,18 +228,35 @@ function hideLoader() {
     document.getElementById("chartLoader").classList.add("hidden");
 }
 
-const sliderThumb = document.getElementById("sliderThumb");
-const sliderTrail = document.getElementById("sliderTrail");
-const sliderTrack = document.getElementById("sliderTrack");
-const selectedValueDisplay = document.getElementById("selectedValue");
-const sliderContainer = document.getElementById("customSliderContainer");
-const selectionsContainer = document.getElementById("selections");
+// const host = process.env.REACT_APP_API;
+// const host = "http://localhost:4000";
+const host = "https://5b5f-95-81-120-248.ngrok-free.app";
+function url(url) {
+    return `${host}${url}`;
+}
 
-let allStocks;
-let selectedItems = [],
-    jumpValue = 1,
-    sliderValue = 0.5,
-    isLoggedIn = false;
+// --- API ---
+function loadChart(stock) {
+    return post(`${url("/api/alerts/chart")}`, { stock }).then((res) => {
+        if (res.result) {
+            return res.data;
+        }
+    });
+}
+
+function onStockChange() {
+    const stock = selectedItems[selectedItems.length - 1]?.ticker;
+    if (!stock) return;
+    showLoader();
+    showListLoader();
+    loadChart(stock).then((data) => {
+        hideLoader();
+        setChart(data);
+        // setEvents is called inside setChart after filtering
+        hideListLoader();
+    });
+}
+
 //page.js
 function submitFeedback(event) {
     event.preventDefault();
@@ -311,47 +276,13 @@ function submitFeedback(event) {
         });
 }
 
-function countAlerts(
-    stock,
-    {
-        jumpValue: jump,
-        boSensValue,
-        psSensValue,
-        trendSensValue,
-        more_eventsValue: more_events,
-    }
-) {
-    const client_tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const queryString = new URLSearchParams({
-        stock,
-        jump,
-        client_tz,
-    }).toString();
-
-    // Make the fetch call with the query string
-    return post(`${url("/api/alerts/chart")}`, {
-        stock,
-        jump,
-        client_tz,
-        boSensValue,
-        psSensValue,
-        trendSensValue,
-        more_events,
-    }).then((res) => {
-        if (res.result) {
-            return res.data;
-        } else {
-            // throw res;
-        }
-    });
-}
 const AlertMes = {
     0: (alert) =>
         `${alert.stock.map((s) => s.ticker).join(" ")} ${alert.percentage}%`,
 };
 (async () => {
     function setSelections(selections) {
-        selectionsContainer.innerHTML = ""; // Clear existing content
+        selectionsContainer.innerHTML = "";
 
         selections.forEach((selection) => {
             const selectionDiv = document.createElement("div");
@@ -371,38 +302,19 @@ const AlertMes = {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // under ? because refetch better?
-        const {
-            stocks,
-            jumpValue,
-            boSensValue,
-            psSensValue,
-            trendSensValue,
-            more_eventsValue,
-        } = collectInputs();
+        const stocks = selectedItems;
         if (!stocks.length) {
-            // setSelections((prev) => [...prev, { stock, percentage }]);
             alert("set something");
             return;
         }
         const data = {
-            percentage: jumpValue,
-            // sliderValue,
-            // checkboxValue,
             alertType: 0,
-            stock: stocks, //.map(item=>item.ticker),
-        };
-        const otherData = {
-            boSensValue,
-            psSensValue,
-            trendSensValue,
-            more_eventsValue,
+            stock: stocks,
         };
 
         if (isLoggedIn)
-            post(url("/api/algos/new"), { algo: data, otherData })
+            post(url("/api/algos/new"), { algo: data, otherData: {} })
                 .then((r) => {
-                    // resetForm();
                     setSelections(r.payload);
                     alert(
                         "Подписка выполнена! Отписаться можно внизу страницы или в БОТе."
@@ -414,12 +326,6 @@ const AlertMes = {
         else alert("Please login");
     };
 
-    const resetForm = async () => {
-        setStock([]);
-        setPercentage(0);
-    };
-
-    // A handler function to delete a selection
     const handleDelete = (id) => {
         post(url("/api/algos/del"), { id })
             .then((r) => {
@@ -443,11 +349,9 @@ const AlertMes = {
     confirmForm.addEventListener("submit", function (e) {
         e.preventDefault();
         const code = e.target[0].value;
-        // Show processing indicator
         document.getElementById("process-indicator").style.display = "block";
         confirmClick(code)
             .then(() => {
-                // Hide processing indicator
                 document.getElementById("process-indicator").style.display =
                     "none";
             })
@@ -459,13 +363,6 @@ const AlertMes = {
     });
     submitAlertsButton.addEventListener("click", handleSubmit);
 
-    // post(url("/api/getuser"))
-    //     .then((res) => {
-    //         setIsLoggedIn(true);
-    //     })
-    //     .catch((e) => {
-    //         console.log(e.error);
-    //     });
     post(url("/api/algos"))
         .then((res) => {
             setIsLoggedIn(true);
@@ -474,15 +371,20 @@ const AlertMes = {
         .catch((e) => {});
     post(url("/api/stocks")).then((r) => {
         setStocks(r.payload);
-        setStock([r.payload[84], r.payload[43]]);
+        // Pick sber and mtss as default stocks
+        const sber = r.payload.find((s) => s.ticker.toLowerCase() === "sber");
+        const mtss = r.payload.find((s) => s.ticker.toLowerCase() === "mtss");
+        if (sber && mtss) {
+            setStock([sber, mtss]);
+        } else if (r.payload.length > 1) {
+            setStock([r.payload[0], r.payload[1]]);
+        }
     });
 })();
 function setStock(arr) {
     selectedItems = arr;
     renderSelectedItems();
-    autocompleteContainer.dispatchEvent(
-        new CustomEvent("change", { detail: selectedItems })
-    );
+    onStockChange();
 }
 function setStocks(arr) {
     allStocks = arr;
@@ -494,22 +396,17 @@ function setIsLoggedIn(v) {
         confirmForm.style.display = "none";
         afterLogin.style.display = "block";
     }
-    // Show final result
 }
 
 // autocomplete.js
-autocompleteContainer.addEventListener(
-    "change",
-    createDebouncedChangeHandler(500)
-);
+autocompleteContainer.addEventListener("change", debounce(onStockChange, 500));
 function createSelectedItem(item) {
     const span = document.createElement("span");
-    span.className = "selected-item"; // Apply the new class
-    span.textContent = item.ticker.slice(0, 8); // Ensure it's uppercase and limited to 5 letters
+    span.className = "selected-item" + (item.hasLlm ? " has-llm" : "");
+    span.textContent = item.ticker.slice(0, 8);
     span.onclick = function () {
         selectedItems = selectedItems.filter((i) => i.ticker !== item.ticker);
         renderSelectedItems();
-        //onchange
         autocompleteContainer.dispatchEvent(
             new CustomEvent("change", { detail: selectedItems })
         );
@@ -534,20 +431,21 @@ const autocompleteHandler = function () {
               item.ticker.toLowerCase().includes(inputVal.toLowerCase())
           )
         : allStocks;
-    // filteredData = filteredData.slice(0, 20);
+    // Sort: stocks with hasLlm appear first
+    filteredData.sort((a, b) => (b.hasLlm ? 1 : 0) - (a.hasLlm ? 1 : 0));
     filteredData.forEach((item) => {
         const div = document.createElement("div");
         div.className = "p-4 hover:bg-white/20 cursor-pointer";
-        const ticker = item.ticker;
-        div.textContent = item.ticker;
+        div.innerHTML =
+            item.ticker +
+            (item.hasLlm ? '<span class="stock-llm-badge"></span>' : "");
         div.addEventListener("click", function () {
-            if (!selectedItems.includes(item)) {
+            if (!selectedItems.find((s) => s.ticker === item.ticker)) {
                 selectedItems.push(item);
                 renderSelectedItems();
             }
-            searchInput.value = ""; // Clear input after selection
-            resultsDiv.style.display = "none"; // Hide results after selection
-            //onchange
+            searchInput.value = "";
+            resultsDiv.style.display = "none";
             autocompleteContainer.dispatchEvent(
                 new CustomEvent("change", { detail: selectedItems })
             );
@@ -562,21 +460,11 @@ document.addEventListener("click", function (e) {
         resultsDiv.style.display = "none";
     }
 });
+
 //charts.js
-if (window.innerWidth <= 768) {
-    // You can adjust this breakpoint
-    // On mobile, use the maximum available width
-    width = window.innerWidth - 40;
-    // Set height equal to width for a square chart
-    height = width;
-} else {
-    // On desktop, use the original dimensions
-    width = 600;
-    height = 400;
-}
-var chart = LightweightCharts.createChart(document.getElementById("chart"), {
-    width,
-    height,
+const chartContainer = document.getElementById("chart");
+var chart = LightweightCharts.createChart(chartContainer, {
+    autoSize: true,
     handleScroll: {
         mouseWheel: false,
         pressedMouseMove: true,
@@ -585,8 +473,8 @@ var chart = LightweightCharts.createChart(document.getElementById("chart"), {
     timeScale: {
         timeVisible: true,
         borderColor: "rgba(0,0,0, 0)",
-        barSpacing: 12, // Increase spacing between candles (default is 6)
-        minBarSpacing: 8, // Minimum spacing when zoomed in
+        barSpacing: 3,
+        minBarSpacing: 2,
     },
     rightPriceScale: {
         borderColor: "rgba(0,0,0, 0)",
@@ -606,10 +494,10 @@ var chart = LightweightCharts.createChart(document.getElementById("chart"), {
     },
     grid: {
         horzLines: {
-            color: "rgba(255,255,255, 0.08)", // Subtle light grid lines
+            color: "rgba(255,255,255, 0.08)",
         },
         vertLines: {
-            color: "rgba(255,255,255, 0.08)", // Subtle light grid lines
+            color: "rgba(255,255,255, 0.08)",
         },
     },
     crosshair: {
@@ -635,13 +523,13 @@ chart.applyOptions({
 });
 
 var series = chart.addCandlestickSeries({
-    upColor: "rgba(255,255,255,0.15)", // Slightly more visible fill
-    downColor: "rgba(255,0,0,0.15)", // Slightly more visible fill
-    wickUpColor: "rgba(255,255,255,0.8)", // Clean, visible wicks
-    wickDownColor: "rgba(255,0,0,0.8)", // Clean, visible wicks
-    borderUpColor: "rgba(255,255,255,0.6)", // More transparent borders
-    borderDownColor: "rgba(255,0,0,0.6)", // More transparent borders
-    borderVisible: true, // Thin borders for definition
+    upColor: "rgba(255,255,255,0.15)",
+    downColor: "rgba(255,0,0,0.15)",
+    wickUpColor: "rgba(255,255,255,0.8)",
+    wickDownColor: "rgba(255,0,0,0.8)",
+    borderUpColor: "rgba(255,255,255,0.6)",
+    borderDownColor: "rgba(255,0,0,0.6)",
+    borderVisible: true,
     priceFormat: {
         type: "price",
         precision: 2,
@@ -649,191 +537,125 @@ var series = chart.addCandlestickSeries({
     },
 });
 
-// Optional: Add some padding around the chart data
 chart.timeScale().fitContent();
-// Subscribe to visible time range changes
+// Subscribe to visible time range changes — sync events list
 const debouncedTimeRangeCallback = debounce(() => {
-    const timeRange = chart.timeScale().getVisibleRange();
-    if (timeRange) {
-        onTimeRangeChange(timeRange.from, timeRange.to);
-        renderEvents(filteredfakes);
-        hideListLoader();
-    }
+    filterAndRenderEvents();
 }, 300);
 chart.timeScale().subscribeVisibleTimeRangeChange(debouncedTimeRangeCallback);
 
-// series.setMarkers(markers);
+// Click on chart — scroll event list to closest signal at or before clicked candle
+chart.subscribeClick((param) => {
+    if (!param.time) return;
+    const clickedTime = param.time;
+    const items = eventsList.querySelectorAll(".event-item");
+    let closest = null;
+    for (const item of items) {
+        const t = Number(item.dataset.time);
+        if (t <= clickedTime) {
+            closest = item;
+            break; // items are sorted newest-first, so first match <= clickedTime is closest from left
+        }
+    }
+    if (closest) {
+        eventsList.scrollTop =
+            closest.offsetTop - eventsList.offsetTop;
+    }
+});
+
+// Marker colors — improved for dark theme
+const markerColorS = {
+    t1: "rgba(255, 215, 0, 1)", // Gold — global trend
+    t2: "rgba(192, 192, 192, 1)", // Silver
+    t3: "rgba(200, 200, 200, 1)", // Light gray
+    t4: "rgba(0, 255, 0, 1)", // Green — correction
+    t5: "rgba(123, 126, 34, 1)", // Olive — bridge
+    t6: "rgba(238, 130, 238, 1)", // Magenta — local
+    t7: "rgba(255, 192, 203, 1)", // Pink — local minor
+};
+
 function setChart(data) {
     const lastIndex = data.candles.length - 1;
-    const firstIndexToDisplay = lastIndex - 30;
-    // chart.timeScale().setVisibleRange({
-    //     from: data.candles[firstIndexToDisplay].time,
-    //     to: data.candles[lastIndex].time,
-    // });
     series.setData(data.candles);
-    const markerColorF = (a) => ({
-        su: `rgba(0, 102, 204, ${a})`,
-        si: `rgba(255, 128, 0, ${a})`,
-        1: `rgba(0, 0, 0, ${a})`, // Dim Gray
-        2: `rgba(105, 105, 105, ${a})`, // Gray
-        3: `rgba(169, 169, 169, ${a})`, // Dark Gray
-        4: `rgba(0,255, 0, ${a})`, // Silv
-        5: `rgba(123, 126, 34, ${a})`,
-        6: `rgba(238, 130, 238, ${a})`,
-        7: `rgba(255, 192, 203, ${a})`,
-    });
-    const markerColorS = markerColorF("1");
-    const markers = [];
 
-    // chart.timeScale().fitContent();
+    // Get candle date range for filtering alerts/events
+    currentCandleRange = {
+        from: data.candles[0].time,
+        to: data.candles[lastIndex].time,
+    };
+
     chart.timeScale().setVisibleRange({
-        from: data.candles[lastIndex].time - 3600 * 24 * 4,
+        from: data.candles[lastIndex].time - 3600 * 24 * 14,
         to: data.candles[lastIndex].time,
     });
-    data.alerts.forEach((alert) => {
-        const signalType = alert.value;
 
-        if (signalType === "buy") {
-            markers.push({
-                time: alert.time,
-                position: "belowBar",
-                color: markerColorS[alert.type],
-                // color: 'black',
-                shape: "arrowUp",
-                size: 1,
-                // text: alert.text, // Display the timeframe as text on the marker
-            });
-        } else if (signalType === "sell") {
-            markers.push({
-                time: alert.time,
-                position: "aboveBar",
-                // color: 'black',
-                color: markerColorS[alert.type],
-                shape: "arrowDown",
-                size: 1,
-                // text: alert.text, // Display the timeframe as text on the marker
-            });
-        }
-    });
+    // Filter alerts to candle date range
+    allAlerts = (data.alerts || []).filter(
+        (alert) =>
+            alert.time >= currentCandleRange.from &&
+            alert.time <= currentCandleRange.to
+    );
+
+    // Filter and set events to candle date range
+    setEvents(data);
+
+    renderMarkers();
+
     chart.priceScale("right").applyOptions({
         scaleMargins: {
             top: 0,
             bottom: 0,
         },
     });
+}
 
+function renderMarkers() {
+    const allowedSens = MODE_SENS[currentMode];
+
+    // Filter alerts by current mode sensitivity
+    const filtered = allAlerts.filter((alert) => {
+        const sens = parseInt(alert.type.replace("t", ""));
+        return allowedSens.includes(sens);
+    });
+
+    // Merge alerts on same candle time + same direction (e.g. t6 + t7 buy → one marker)
+    const merged = {};
+    filtered.forEach((alert) => {
+        const key = `${alert.time}_${alert.value}`;
+        if (!merged[key]) {
+            merged[key] = { ...alert, types: [alert.type] };
+        } else {
+            merged[key].types.push(alert.type);
+        }
+    });
+
+    const markers = [];
+    Object.values(merged).forEach((alert) => {
+        // Use highest priority (lowest number) type for color
+        const bestType = alert.types.sort()[0];
+        const color = markerColorS[bestType] || "rgba(255,255,255,0.5)";
+
+        if (alert.value === "buy") {
+            markers.push({
+                time: alert.time,
+                position: "belowBar",
+                color,
+                shape: "arrowUp",
+                size: 1,
+                text: "",
+            });
+        } else if (alert.value === "sell") {
+            markers.push({
+                time: alert.time,
+                position: "aboveBar",
+                color,
+                shape: "arrowDown",
+                size: 1,
+                text: "",
+            });
+        }
+    });
+
+    markers.sort((a, b) => a.time - b.time);
     series.setMarkers(markers);
 }
-
-// non-linear slider.js
-
-(async () => {
-    sliderContainer.addEventListener(
-        "change",
-        createDebouncedChangeHandler(1000)
-    );
-
-    let isDragging = false;
-    let sliderBounds;
-
-    const stickyValues = [0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10];
-    let percentRanges = [];
-
-    // Precompute percent ranges for each sticky value
-    const precomputePercentRanges = () => {
-        sliderBounds = sliderContainer.getBoundingClientRect();
-        const totalWidth = sliderBounds.width;
-
-        // Define key points and their corresponding positions in percentage
-        const keyPoints = {
-            0.5: 5, // Starting point
-            1: 15, // 20% for 0.5 to 1
-            1.5: 30, // Additional 20% for 1 to 1.5
-            3: 50, // Up to 60% for 1.5 to 3
-            10: 100, // Remaining 40% for 3 to 10
-        };
-
-        // Compute the exact percentage position for each sticky value based on the key points
-        percentRanges = stickyValues.map((value) => {
-            if (value <= 1.5) {
-                // Direct mapping for values between 0.5 and 1.5
-                return keyPoints[value];
-            } else if (value <= 3) {
-                // Linear interpolation for values between 1.5 and 3
-                return (
-                    keyPoints[1.5] +
-                    (keyPoints[3] - keyPoints[1.5]) *
-                        ((value - 1.5) / (3 - 1.5))
-                );
-            } else {
-                // Linear interpolation for values between 3 and 10
-                return (
-                    keyPoints[3] +
-                    (keyPoints[10] - keyPoints[3]) * ((value - 3) / (10 - 3))
-                );
-            }
-        });
-    };
-
-    const updateSliderPosition = (clientX) => {
-        const percent =
-            ((clientX - sliderBounds.left) / sliderBounds.width) * 100;
-        // Find the closest range and update thumb position
-        let closest = percentRanges.reduce((prev, curr) =>
-            Math.abs(curr - percent) < Math.abs(prev - percent) ? curr : prev
-        );
-        sliderThumb.style.left = `${closest}%`;
-        sliderTrail.style.width = `${closest}%`;
-        // Update displayed value to the closest sticky value
-        const valueIndex = percentRanges.indexOf(closest);
-        selectedValueDisplay.textContent = stickyValues[valueIndex].toString();
-        sliderContainer.value = stickyValues[valueIndex];
-        jumpValue = stickyValues[valueIndex];
-        sliderContainer.dispatchEvent(
-            new CustomEvent("change", { detail: stickyValues[valueIndex] })
-        );
-    };
-
-    sliderThumb.addEventListener("mousedown", (e) => {
-        e.preventDefault(); // Prevent default drag behavior
-        precomputePercentRanges(); // Prepare ranges on mousedown
-        isDragging = true;
-        // sliderThumb.style.cursor = "grabbing";
-        updateSliderPosition(e.clientX);
-    });
-    sliderTrack.addEventListener("mousedown", (e) => {
-        e.preventDefault(); // Prevent default drag behavior
-        precomputePercentRanges(); // Prepare ranges on mousedown
-        updateSliderPosition(e.clientX);
-    });
-
-    document.addEventListener("mousemove", (e) => {
-        if (isDragging) {
-            updateSliderPosition(e.clientX);
-        }
-    });
-
-    document.addEventListener("mouseup", () => {
-        if (isDragging) {
-            isDragging = false;
-            // sliderThumb.style.cursor = "grab";
-        }
-    });
-})();
-function updateTrail() {
-    const slider = document.getElementById("trendSens");
-    const trail = document.getElementById("trailSens");
-    const value = parseFloat(slider.value);
-    const min = parseFloat(slider.min);
-    const max = parseFloat(slider.max);
-
-    // Calculate percentage based on the actual position, not including the thumb width
-    const percentage = ((value - min) / (max - min)) * 100;
-
-    trail.style.width = percentage + "%";
-}
-
-// Initialize trail on page load
-document.addEventListener("DOMContentLoaded", function () {
-    updateTrail();
-});
