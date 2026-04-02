@@ -230,7 +230,7 @@ function hideLoader() {
 
 // const host = process.env.REACT_APP_API;
 // const host = "http://localhost:4000";
-const host = "https://5b5f-95-81-120-248.ngrok-free.app";
+const host = "https://b40f-45-148-125-176.ngrok-free.app";
 function url(url) {
     return `${host}${url}`;
 }
