@@ -27,8 +27,7 @@ function post(url, data = {}) {
 }
 
 // --- API config ---
-// const host = "http://localhost:4000";
-const host = "https://ebfe-185-245-34-165.ngrok-free.app";
+const host = "http://localhost:4000";
 window.__agentHost = host;
 function url(path) { return `${host}${path}`; }
 
@@ -86,7 +85,7 @@ if (INVESTOR_MODE) {
 }
 
 // --- Signal mode (strategic / meaningful / frequent) ---
-let currentMode = "meaningful";
+let currentMode = "frequent";
 const MODE_SENS = {
     strategic: [1, 2, 3, 4],
     meaningful: [1, 2, 3, 4, 5, 6],

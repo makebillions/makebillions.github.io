@@ -88,6 +88,15 @@ var series = chart.addCandlestickSeries({
     priceFormat: { type: "price", precision: 2, minMove: 0.01 },
 });
 
+var volumeSeries = chart.addHistogramSeries({
+    priceFormat: { type: "volume" },
+    priceScaleId: "vol",
+    color: "rgba(255,255,255,0.12)",
+});
+volumeSeries.priceScale().applyOptions({
+    scaleMargins: { top: 0.8, bottom: 0 },
+});
+
 chart.timeScale().fitContent();
 
 // ============================================================
@@ -110,6 +119,12 @@ function setChart(data) {
     allAlerts = (data.alerts || []).filter(
         (alert) => alert.time >= currentCandleRange.from && alert.time <= currentCandleRange.to
     );
+
+    if (data.volume && data.volume.length) {
+        volumeSeries.setData(data.volume);
+    } else {
+        volumeSeries.setData([]);
+    }
 
     setEvents(data);
     renderMarkers();
@@ -175,7 +190,7 @@ function filterAndRenderEvents() {
 }
 
 function renderEvents(events, timeRange) {
-    const sorted = [...events].sort((a, b) => b.time - a.time);
+    const sorted = [...events].sort((a, b) => a.time - b.time);
     eventsList.innerHTML = sorted
         .map((event) => {
             const date = new Date(event.time * 1000);
@@ -184,9 +199,10 @@ function renderEvents(events, timeRange) {
             const dirClass = event.dir === "buy" ? "text-green-400" : "text-red-400";
             const dirArrow = event.dir === "buy" ? "\u25B2" : "\u25BC";
             const iconHtml = event.icon && SIGNAL_ICONS[event.icon] ? SIGNAL_ICONS[event.icon] : "";
+            const priceHtml = event.price != null ? `<span class="text-white/50 ml-1">@${event.price}</span>` : "";
             return `
             <div class="event-card" data-time="${event.time}">
-                <div class="text-xs text-white/40 mb-1">${dateStr} ${timeStr}</div>
+                <div class="text-xs text-white/40 mb-1">${dateStr} ${timeStr}${priceHtml}</div>
                 <div class="text-sm text-white leading-snug">
                     ${iconHtml}<span class="${dirClass} mr-1">${dirArrow}</span>${event.text}
                 </div>
@@ -194,16 +210,25 @@ function renderEvents(events, timeRange) {
         })
         .join("");
 
-    if (timeRange) {
-        const items = eventsList.querySelectorAll(".event-card");
-        const firstVisibleItem = Array.from(items).find(
-            (item) => Number(item.dataset.time) >= timeRange.from && Number(item.dataset.time) <= timeRange.to
-        );
-        if (firstVisibleItem) {
-            firstVisibleItem.parentElement.scrollTo({ left: firstVisibleItem.offsetLeft - firstVisibleItem.parentElement.offsetLeft, behavior: "smooth" });
-        }
-    }
+    eventsList.scrollLeft = eventsList.scrollWidth;
 }
+
+// Drag-to-scroll on events list
+let _dragStart = null;
+eventsList.addEventListener("mousedown", (e) => {
+    _dragStart = { x: e.pageX, left: eventsList.scrollLeft };
+    eventsList.style.cursor = "grabbing";
+    eventsList.style.userSelect = "none";
+});
+document.addEventListener("mousemove", (e) => {
+    if (!_dragStart) return;
+    eventsList.scrollLeft = _dragStart.left - (e.pageX - _dragStart.x);
+});
+document.addEventListener("mouseup", () => {
+    _dragStart = null;
+    eventsList.style.cursor = "";
+    eventsList.style.userSelect = "";
+});
 
 // Sync events list on chart scroll
 const debouncedTimeRangeCallback = debounce(() => { filterAndRenderEvents(); }, 300);
@@ -212,12 +237,11 @@ chart.timeScale().subscribeVisibleTimeRangeChange(debouncedTimeRangeCallback);
 // Click chart candle → scroll events list to closest signal
 chart.subscribeClick((param) => {
     if (!param.time) return;
-    const items = eventsList.querySelectorAll(".event-card");
-    let closest = null;
-    for (const item of items) {
-        if (Number(item.dataset.time) <= param.time) { closest = item; break; }
-    }
-    if (closest) closest.parentElement.scrollTo({ left: closest.offsetLeft - closest.parentElement.offsetLeft, behavior: "smooth" });
+    const items = [...eventsList.querySelectorAll(".event-card")];
+    const closest = items.reduce((prev, cur) =>
+        Math.abs(Number(cur.dataset.time) - param.time) < Math.abs(Number(prev.dataset.time) - param.time) ? cur : prev
+    , items[0]);
+    if (closest) eventsList.scrollTo({ left: closest.offsetLeft - eventsList.offsetLeft - eventsList.offsetWidth / 2, behavior: "smooth" });
 });
 
 // Click event card → scroll chart to that time
