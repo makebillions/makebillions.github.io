@@ -5,20 +5,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="output.css" crossorigin="" />
+        <!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+    // (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    // m[i].l=1*new Date();
+    // for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+    // k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    // (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+ 
+    // ym(97901249, "init", {
+    //      clickmap:true,
+    //      trackLinks:true,
+    //      accurateTrackBounce:true
+    // });
+ </script>
+ <noscript><div><img src="https://mc.yandex.ru/watch/97901249" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+ <!-- /Yandex.Metrika counter -->
 </head>
 
 <body class="flex flex-col min-h-screen background">
 
     <!-- Header -->
-    <header class="w-full px-6 py-4">
+    <header class="w-full px-6 py-3 border-b border-white/5">
         <nav class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="./icon.svg" alt="BuyTheDip" class="h-8">
+                <img src="./icon.svg" alt="BuyTheDip" class="h-7">
             </div>
             <div class="flex gap-1">
-                <a class="px-3 py-1.5 text-sm text-white/50 hover:text-white/90 hover:bg-white/5 rounded-lg transition-colors"
+                <a class="px-3 py-1.5 text-sm text-white/40 hover:text-white/80 hover:bg-white/5 rounded-lg transition-colors"
                     onclick="openHelpPopup('#conditions')" href="#">Справка</a>
-                <a class="px-3 py-1.5 text-sm text-white/50 hover:text-white/90 hover:bg-white/5 rounded-lg transition-colors"
+                <a class="px-3 py-1.5 text-sm text-white/40 hover:text-white/80 hover:bg-white/5 rounded-lg transition-colors"
                     onclick="openHelpPopup('#testimonials')" href="#">Отзыв</a>
             </div>
         </nav>
@@ -28,22 +44,36 @@
     <main class="flex-1 w-full max-w-7xl mx-auto px-6">
 
         <!-- Hero -->
-        <section class="mb-5 text-center pt-2">
-            <h1 class="hero-title text-3xl md:text-4xl font-bold tracking-tight text-white mb-3 leading-tight">
-                See market moves —<br><span class="gradient-text">before you miss it</span>
+        <section class="hero-section">
+            <a href="#agentSection" class="hero-agent-badge">
+                <span class="hero-agent-spark">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                    </svg>
+                </span>
+                <span class="hero-agent-label">Dedicated AI Agent</span>
+                <span class="hero-agent-dot"></span>
+                <span class="hero-agent-status">Live</span>
+            </a>
+            <h1 class="hero-title">
+                Watch market moves — <span class="gradient-text">before you miss it</span>
             </h1>
-            <p class="text-sm text-white/40 max-w-sm mx-auto leading-relaxed">Know the moment a trend shifts and what it means. Your <span class="text-white/70">Dedicated Agent</span> watches the market, reads every signal with AI, and tells you whether it's real.</p>
+            <p class="hero-subtitle">Know the moment a trend shifts and what it means. Your <span
+                    class="hero-subtitle-accent">Dedicated Agent</span> watches the market, reads every signal with AI,
+                and tells you whether it's real.</p>
         </section>
 
         <!-- Benefits -->
-        <section class="mb-6 flex justify-center">
-            <div class="grid grid-cols-2 gap-x-10 gap-y-2">
-                <div class="flex items-center gap-2 text-xs text-white/40"><span class="w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0"></span>Stop watching charts all day</div>
-                <div class="flex items-center gap-2 text-xs text-white/40"><span class="w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0"></span>Never miss a reversal again</div>
-                <div class="flex items-center gap-2 text-xs text-white/40"><span class="w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0"></span>Get alerted the moment it happens</div>
-                <div class="flex items-center gap-2 text-xs text-white/40"><span class="w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0"></span>Know if it's a trap or a real move</div>
-                <div class="flex items-center gap-2 text-xs text-white/40"><span class="w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0"></span>Stay ahead without noise or guesswork</div>
-                <div class="flex items-center gap-2 text-xs text-white/40"><span class="w-1 h-1 rounded-full bg-indigo-400 flex-shrink-0"></span>Covers MOEX and US stocks</div>
+        <section class="benefits-section">
+            <div class="benefits-row">
+                <span class="benefit-chip">Stop watching charts all day</span>
+                <span class="benefit-chip">Never miss a reversal again</span>
+                <span class="benefit-chip">Get alerted the moment it happens</span>
+                <span class="benefit-chip">Know if it's a trap or a real move</span>
+                <span class="benefit-chip">Stay ahead without noise or guesswork</span>
+                <span class="benefit-chip">Covers MOEX and US stocks</span>
             </div>
         </section>
 
@@ -71,8 +101,7 @@
                         id="modeSwitch">
                         <button class="mode-btn py-1.5 px-3 text-xs text-white/50 transition-all"
                             data-mode="strategic">Strategic</button>
-                        <button
-                            class="mode-btn py-1.5 px-3 text-xs text-white/50 transition-all"
+                        <button class="mode-btn py-1.5 px-3 text-xs text-white/50 transition-all"
                             data-mode="meaningful">Meaningful</button>
                         <button class="mode-btn py-1.5 px-3 text-xs text-white font-medium transition-all mode-active"
                             data-mode="frequent">Frequent</button>
@@ -133,7 +162,8 @@
             </div>
 
             <!-- Events horizontal list -->
-            <div id="eventsList" class="hidden opacity-50 pointer-events-none events-hscroll flex gap-3 overflow-x-auto pb-2"></div>
+            <div id="eventsList"
+                class="hidden opacity-50 pointer-events-none events-hscroll flex gap-3 overflow-x-auto pb-2"></div>
         </section>
 
         <!-- Dedicated Agent — landing section -->
@@ -143,7 +173,8 @@
                     <span class="gradient-text">Dedicated</span> Agent
                 </h2>
                 <p class="text-base text-white/45 max-w-lg mx-auto">
-                    Describe any market pattern — double bottom, V-reversal, momentum acceleration — and our AI agent will scan all stocks to find matches.
+                    Describe any market pattern — double bottom, V-reversal, momentum acceleration — and our AI agent
+                    will scan all stocks to find matches.
                 </p>
             </div>
 

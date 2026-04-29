@@ -15,16 +15,8 @@ const SIGNAL_ICONS = {
     attention: `<svg class="inline-block w-4 h-4 mr-1 align-text-bottom" viewBox="0 0 16 16" fill="none"><path d="M8 1l7 13H1L8 1z" fill="#f97316"/><rect x="7.2" y="5.5" width="1.6" height="5" rx=".5" fill="#fff"/><circle cx="8" cy="12" r=".9" fill="#fff"/></svg>`,
 };
 
-// --- Marker colors per signal sensitivity ---
-const markerColorS = {
-    t1: "rgba(255, 215, 0, 1)",     // Gold — global trend
-    t2: "rgba(192, 192, 192, 1)",   // Silver
-    t3: "rgba(200, 200, 200, 1)",   // Light gray
-    t4: "rgba(0, 255, 0, 1)",       // Green — correction
-    t5: "rgba(123, 126, 34, 1)",    // Olive — bridge
-    t6: "rgba(238, 130, 238, 1)",   // Magenta — local
-    t7: "rgba(255, 192, 203, 1)",   // Pink — local minor
-};
+const MARKER_BUY_COLOR  = "#22c55e";  // --green from design system
+const MARKER_SELL_COLOR = "#ef4444";  // --red from design system
 
 // --- Chart state ---
 var mEvents = [];
@@ -154,12 +146,10 @@ function renderMarkers() {
 
     const markers = [];
     Object.values(merged).forEach((alert) => {
-        const bestType = alert.types.sort()[0];
-        const color = markerColorS[bestType] || "rgba(255,255,255,0.5)";
         if (alert.value === "buy") {
-            markers.push({ time: alert.time, position: "belowBar", color, shape: "arrowUp", size: 1, text: "" });
+            markers.push({ time: alert.time, position: "belowBar", color: MARKER_BUY_COLOR, shape: "arrowUp", size: 1, text: "" });
         } else if (alert.value === "sell") {
-            markers.push({ time: alert.time, position: "aboveBar", color, shape: "arrowDown", size: 1, text: "" });
+            markers.push({ time: alert.time, position: "aboveBar", color: MARKER_SELL_COLOR, shape: "arrowDown", size: 1, text: "" });
         }
     });
 
