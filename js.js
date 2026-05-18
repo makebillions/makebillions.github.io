@@ -27,7 +27,7 @@ function post(url, data = {}) {
 }
 
 // --- API config ---
-const host = "https://b2ca-95-81-119-214.ngrok-free.app";
+const host = "https://8ce7-95-81-119-214.ngrok-free.app";
 window.__agentHost = host;
 function url(path) { return `${host}${path}`; }
 
