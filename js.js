@@ -21,18 +21,31 @@ function post(url, data = {}) {
         body: JSON.stringify(data),
         credentials: "include",
     })
-        .then((r) => { if (!r.ok) throw new Error("server unavailble"); return r.json(); })
-        .catch((e) => { throw new Error("server unavailble"); })
-        .then((res) => { if (res && (res.result || res.data)) return res; else throw res; });
+        .then((r) => {
+            if (!r.ok) throw new Error("server unavailble");
+            return r.json();
+        })
+        .catch((e) => {
+            throw new Error("server unavailble");
+        })
+        .then((res) => {
+            if (res && (res.result || res.data)) return res;
+            else throw res;
+        });
 }
 
 // --- API config ---
 const host = "https://e82a-159-255-38-244.ngrok-free.app";
+// const host = "http://localhost:4000";
 window.__agentHost = host;
-function url(path) { return `${host}${path}`; }
+function url(path) {
+    return `${host}${path}`;
+}
 
 // --- Investor mode (URL param ?investors) ---
-const INVESTOR_MODE = new URLSearchParams(window.location.search).has("investors");
+const INVESTOR_MODE = new URLSearchParams(window.location.search).has(
+    "investors"
+);
 window.__investorMode = INVESTOR_MODE;
 
 if (INVESTOR_MODE) {
@@ -69,8 +82,11 @@ if (INVESTOR_MODE) {
         '<h2 class="text-base font-semibold text-white mb-2">Logged in</h2>' +
         "<p>1. Select one or more stocks. The chart displays for the last selected stock.</p>" +
         "<p>2. You can configure settings or leave defaults. The chart updates. The BOT will send alerts during the trading day.</p>";
-    document.querySelector('#code-confirmation-form input[name="code"]').placeholder = "Code from BOT";
-    document.querySelector("#code-confirmation-form button").textContent = "Login";
+    document.querySelector(
+        '#code-confirmation-form input[name="code"]'
+    ).placeholder = "Code from BOT";
+    document.querySelector("#code-confirmation-form button").textContent =
+        "Login";
 
     // Subscribe button & text
     document.getElementById("submit_alerts").innerHTML =
@@ -81,7 +97,7 @@ if (INVESTOR_MODE) {
 
     // Footer
     document.querySelector("footer p").innerHTML =
-        '&copy; 2026 &mdash; <b>Risk Warning:</b> Trading financial instruments involves high risks, including the risk of losing part or all of your investment. Information on this site is indicative. The service owner disclaims responsibility for any losses incurred as a result of trades made based on this information.';
+        "&copy; 2026 &mdash; <b>Risk Warning:</b> Trading financial instruments involves high risks, including the risk of losing part or all of your investment. Information on this site is indicative. The service owner disclaims responsibility for any losses incurred as a result of trades made based on this information.";
 }
 
 // --- Signal mode (strategic / meaningful / frequent) ---
@@ -149,9 +165,15 @@ function loadChart(stock) {
 }
 
 function onStockChange() {
-    const stock = selectedItems[selectedItems.length - 1]?.ticker;
+    const sel = selectedItems[selectedItems.length - 1];
+    const stock = sel?.ticker;
     if (!stock) return;
-    if (chartStockTitle) chartStockTitle.textContent = stock;
+    if (chartStockTitle) {
+        const name = sel?.name && sel.name !== stock ? sel.name : "";
+        chartStockTitle.innerHTML = name
+            ? `${stock} <span class="text-white/40 text-base font-normal ml-1">${name}</span>`
+            : stock;
+    }
     clearAgentState();
     showLoader();
     showListLoader();
@@ -166,7 +188,10 @@ function clearAgentState() {
     const actionBar = document.getElementById("agentActionBar");
     const comments = document.getElementById("agentComments");
     if (actionBar) actionBar.classList.add("hidden");
-    if (comments) { comments.classList.add("hidden"); comments.innerHTML = ""; }
+    if (comments) {
+        comments.classList.add("hidden");
+        comments.innerHTML = "";
+    }
 }
 
 function setStock(arr) {
@@ -204,7 +229,9 @@ window.__setStockFromAgent = function (stockArr) {
 
 // Agent highlights a specific stock as active (moves it to last position)
 window.__highlightSelectedStock = function (ticker) {
-    const idx = selectedItems.findIndex((s) => s.ticker.toUpperCase() === ticker.toUpperCase());
+    const idx = selectedItems.findIndex(
+        (s) => s.ticker.toUpperCase() === ticker.toUpperCase()
+    );
     if (idx >= 0 && idx !== selectedItems.length - 1) {
         const item = selectedItems.splice(idx, 1)[0];
         selectedItems.push(item);
@@ -225,7 +252,9 @@ function createSelectedItem(item) {
     span.onclick = function () {
         selectedItems = selectedItems.filter((i) => i.ticker !== item.ticker);
         renderSelectedItems();
-        autocompleteContainer.dispatchEvent(new CustomEvent("change", { detail: selectedItems }));
+        autocompleteContainer.dispatchEvent(
+            new CustomEvent("change", { detail: selectedItems })
+        );
     };
     return span;
 }
@@ -251,21 +280,35 @@ const autocompleteHandler = function () {
     const inputVal = this.value.trim();
     resultsDiv.innerHTML = "";
     resultsDiv.style.display = "block";
+    const q = inputVal.toLowerCase();
     let filteredData = inputVal
-        ? allStocks.filter((item) => item.ticker.toLowerCase().includes(inputVal.toLowerCase()))
+        ? allStocks.filter(
+              (item) =>
+                  item.ticker.toLowerCase().includes(q) ||
+                  (item.name && item.name.toLowerCase().includes(q))
+          )
         : allStocks;
     filteredData.sort((a, b) => (b.hasLlm ? 1 : 0) - (a.hasLlm ? 1 : 0));
     filteredData.forEach((item) => {
         const div = document.createElement("div");
-        div.className = "p-4 hover:bg-white/20 cursor-pointer";
-        div.innerHTML = item.ticker + (item.hasLlm ? '<span class="stock-llm-badge"></span>' : "");
+        div.className =
+            "p-4 hover:bg-white/20 cursor-pointer flex items-baseline gap-2";
+        const nameHtml =
+            item.name && item.name !== item.ticker
+                ? `<span class="text-white/50 text-sm truncate">${item.name}</span>`
+                : "";
+        div.innerHTML = `<span>${item.ticker}</span>${nameHtml}${
+            item.hasLlm ? '<span class="stock-llm-badge"></span>' : ""
+        }`;
         div.addEventListener("click", function () {
             selectedItems = [item];
             renderSelectedItems();
             updatePresetPillStates();
             searchInput.value = "";
             resultsDiv.style.display = "none";
-            autocompleteContainer.dispatchEvent(new CustomEvent("change", { detail: selectedItems }));
+            autocompleteContainer.dispatchEvent(
+                new CustomEvent("change", { detail: selectedItems })
+            );
         });
         resultsDiv.appendChild(div);
     });
@@ -285,7 +328,9 @@ function initPresetPills(stocks) {
     const pills = document.querySelectorAll(".preset-pill");
     pills.forEach((pill) => {
         const ticker = pill.dataset.ticker;
-        const stockObj = stocks.find((s) => s.ticker.toUpperCase() === ticker.toUpperCase());
+        const stockObj = stocks.find(
+            (s) => s.ticker.toUpperCase() === ticker.toUpperCase()
+        );
         updatePresetPillStates();
         pill.addEventListener("click", () => {
             if (!stockObj) return;
@@ -301,7 +346,9 @@ function updatePresetPillStates() {
     const pills = document.querySelectorAll(".preset-pill");
     pills.forEach((pill) => {
         const ticker = pill.dataset.ticker.toUpperCase();
-        const isSelected = selectedItems.some((s) => s.ticker.toUpperCase() === ticker);
+        const isSelected = selectedItems.some(
+            (s) => s.ticker.toUpperCase() === ticker
+        );
         pill.classList.toggle("active", isSelected);
     });
 }
@@ -311,7 +358,8 @@ function updatePresetPillStates() {
 // ============================================================
 function openHelpPopup(section) {
     document.getElementById("helpPopup").style.display = "block";
-    if (section) document.querySelector(section).scrollIntoView({ behavior: "smooth" });
+    if (section)
+        document.querySelector(section).scrollIntoView({ behavior: "smooth" });
 }
 function closeHelpPopup() {
     document.getElementById("helpPopup").style.display = "none";
@@ -325,14 +373,19 @@ function submitFeedback(event) {
     const feedbackText = document.getElementById("feedbackText").value;
     post(url("/api/feedback"), { feedback: feedbackText })
         .then(() => alert("Thank you for your feedback!"))
-        .catch(() => alert("An error occurred while submitting your feedback. Please try again."));
+        .catch(() =>
+            alert(
+                "An error occurred while submitting your feedback. Please try again."
+            )
+        );
 }
 
 // ============================================================
 // Auth, subscriptions, init
 // ============================================================
 const AlertMes = {
-    0: (alert) => `${alert.stock.map((s) => s.ticker).join(" ")} ${alert.percentage}%`,
+    0: (alert) =>
+        `${alert.stock.map((s) => s.ticker).join(" ")} ${alert.percentage}%`,
 };
 
 (async () => {
@@ -344,7 +397,8 @@ const AlertMes = {
             const deleteButton = document.createElement("button");
             deleteButton.type = "button";
             deleteButton.textContent = INVESTOR_MODE ? "Delete" : "Удалить";
-            deleteButton.className = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg ml-5";
+            deleteButton.className =
+                "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg ml-5";
             deleteButton.onclick = () => handleDelete(selection.id);
             selectionDiv.appendChild(deleteButton);
             selectionsContainer.appendChild(selectionDiv);
@@ -353,16 +407,35 @@ const AlertMes = {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!selectedItems.length) { alert("set something"); return; }
-        if (!isLoggedIn) { alert("Please login"); return; }
-        post(url("/api/algos/new"), { algo: { alertType: 0, stock: selectedItems }, otherData: {} })
-            .then((r) => { setSelections(r.payload); alert(INVESTOR_MODE ? "Subscribed! You can unsubscribe at the bottom of the page or via the BOT." : "Подписка выполнена! Отписаться можно внизу страницы или в БОТе."); })
+        if (!selectedItems.length) {
+            alert("set something");
+            return;
+        }
+        if (!isLoggedIn) {
+            alert("Please login");
+            return;
+        }
+        post(url("/api/algos/new"), {
+            algo: { alertType: 0, stock: selectedItems },
+            otherData: {},
+        })
+            .then((r) => {
+                setSelections(r.payload);
+                alert(
+                    INVESTOR_MODE
+                        ? "Subscribed! You can unsubscribe at the bottom of the page or via the BOT."
+                        : "Подписка выполнена! Отписаться можно внизу страницы или в БОТе."
+                );
+            })
             .catch((e) => alert(e));
     };
 
     const handleDelete = (id) => {
         post(url("/api/algos/del"), { id })
-            .then((r) => { setSelections(r.payload); alert(INVESTOR_MODE ? "Deleted!" : "Удалено!"); })
+            .then((r) => {
+                setSelections(r.payload);
+                alert(INVESTOR_MODE ? "Deleted!" : "Удалено!");
+            })
             .catch((e) => alert(e));
     };
 
@@ -377,28 +450,42 @@ const AlertMes = {
         const code = e.target[0].value;
         document.getElementById("process-indicator").style.display = "block";
         confirmClick(code)
-            .then(() => { document.getElementById("process-indicator").style.display = "none"; })
-            .catch((e) => { document.getElementById("process-indicator").style.display = "none"; alert(e.error); });
+            .then(() => {
+                document.getElementById("process-indicator").style.display =
+                    "none";
+            })
+            .catch((e) => {
+                document.getElementById("process-indicator").style.display =
+                    "none";
+                alert(e.error);
+            });
     });
 
     submitAlertsButton.addEventListener("click", handleSubmit);
 
     // Load session & stocks
     post(url("/api/algos"))
-        .then((res) => { setIsLoggedIn(true); setSelections(res.payload); })
+        .then((res) => {
+            setIsLoggedIn(true);
+            setSelections(res.payload);
+        })
         .catch(() => {});
 
-    post(url("/api/stocks"), INVESTOR_MODE ? { market: "us" } : {}).then((r) => {
-        setStocks(r.payload);
-        if (INVESTOR_MODE) {
-            const nvda = r.payload.find((s) => s.ticker === "NVDA");
-            if (nvda) setStock([nvda]);
-            else if (r.payload.length) setStock([r.payload[0]]);
-        } else {
-            const mtss = r.payload.find((s) => s.ticker.toLowerCase() === "mtss");
-            if (mtss) setStock([mtss]);
-            else if (r.payload.length) setStock([r.payload[0]]);
+    post(url("/api/stocks"), INVESTOR_MODE ? { market: "us" } : {}).then(
+        (r) => {
+            setStocks(r.payload);
+            if (INVESTOR_MODE) {
+                const nvda = r.payload.find((s) => s.ticker === "NVDA");
+                if (nvda) setStock([nvda]);
+                else if (r.payload.length) setStock([r.payload[0]]);
+            } else {
+                const phor = r.payload.find(
+                    (s) => s.ticker.toLowerCase() === "phor"
+                );
+                if (phor) setStock([phor]);
+                else if (r.payload.length) setStock([r.payload[0]]);
+            }
+            initPresetPills(r.payload);
         }
-        initPresetPills(r.payload);
-    });
+    );
 })();

@@ -103,9 +103,26 @@ function setChart(data) {
         to: data.candles[lastIndex].time,
     };
 
+    // Default window: ~28 days ending shortly after the most recent signal.
+    // Signals can lag the latest candle by days when calc hasn't been rerun —
+    // anchoring to the last candle would push them off-screen. But if signals
+    // are *older* than the candle window (stale data), fall back to the last
+    // candle so the chart isn't anchored to an empty range.
+    const firstCandleT = data.candles[0].time;
+    const lastCandleT = data.candles[lastIndex].time;
+    const signalTimes = [
+        ...(data.alerts || []).map((a) => a.time),
+        ...(data.events || []).map((e) => e.time),
+    ];
+    const lastSignalT = signalTimes.length ? Math.max(...signalTimes) : null;
+    const rightPad = 3600 * 24 * 2;
+    const anchor =
+        lastSignalT && lastSignalT >= firstCandleT
+            ? Math.min(lastSignalT + rightPad, lastCandleT)
+            : lastCandleT;
     chart.timeScale().setVisibleRange({
-        from: data.candles[lastIndex].time - 3600 * 24 * 14,
-        to: data.candles[lastIndex].time,
+        from: anchor - 3600 * 24 * 28,
+        to: anchor,
     });
 
     allAlerts = (data.alerts || []).filter(
@@ -173,46 +190,76 @@ function setEvents(data) {
 }
 
 function filterAndRenderEvents() {
+    // Full DOM rebuild. Called on stock change + mode/sens change. Resets
+    // scroll to the top so the latest signal is visible by default.
     const allowedSens = MODE_SENS[currentMode];
     const filtered = mEvents.filter((e) => e.sens.some((s) => allowedSens.includes(s)));
-    const timeRange = chart.timeScale().getVisibleRange();
-    renderEvents(filtered, timeRange);
+    renderEvents(filtered);
+    eventsList.scrollTop = 0;
 }
 
-function renderEvents(events, timeRange) {
-    const sorted = [...events].sort((a, b) => a.time - b.time);
+function renderEvents(events) {
+    // Newest-first so the latest signal sits at the top of the overlay.
+    const sorted = [...events].sort((a, b) => b.time - a.time);
     eventsList.innerHTML = sorted
         .map((event) => {
             const date = new Date(event.time * 1000);
             const dateStr = String(date.getUTCDate()).padStart(2, "0") + "." + String(date.getUTCMonth() + 1).padStart(2, "0");
             const timeStr = String(date.getUTCHours()).padStart(2, "0") + ":" + String(date.getUTCMinutes()).padStart(2, "0");
-            const dirClass = event.dir === "buy" ? "text-green-400" : "text-red-400";
+            const dirClass = event.dir === "buy" ? "text-green-400/70" : "text-red-400/70";
             const dirArrow = event.dir === "buy" ? "\u25B2" : "\u25BC";
             const iconHtml = event.icon && SIGNAL_ICONS[event.icon] ? SIGNAL_ICONS[event.icon] : "";
-            const priceHtml = event.price != null ? `<span class="text-white/50 ml-1">@${event.price}</span>` : "";
+            const priceHtml = event.price != null ? `<span class="text-white/40 ml-1">@${event.price}</span>` : "";
             return `
             <div class="event-card" data-time="${event.time}">
-                <div class="text-xs text-white/40 mb-1">${dateStr} ${timeStr}${priceHtml}</div>
-                <div class="text-sm text-white leading-snug">
+                <div class="text-[11px] text-white/35 mb-1">${dateStr} ${timeStr}${priceHtml}</div>
+                <div class="text-[13px] text-white/70 leading-snug">
                     ${iconHtml}<span class="${dirClass} mr-1">${dirArrow}</span>${event.text}
                 </div>
             </div>`;
         })
         .join("");
-
-    eventsList.scrollLeft = eventsList.scrollWidth;
 }
 
-// Drag-to-scroll on events list
+// Track when the user last scrolled the overlay themselves \u2014 chart-pan
+// auto-sync defers to manual scroll for ~2s so we don't yank position.
+let _userScrollAt = 0;
+const _markUserScroll = () => { _userScrollAt = Date.now(); };
+// Manually drive scroll on wheel: the chart canvas sits underneath and
+// LightweightCharts attaches its own wheel listeners on the surrounding
+// element with preventDefault, which can block native scrolling on
+// overlapping siblings. Doing scrollTop += deltaY ourselves bypasses
+// that entirely and gives the user a reliable scroll feel.
+eventsList.addEventListener("wheel", (e) => {
+    eventsList.scrollTop += e.deltaY;
+    e.preventDefault();
+    _markUserScroll();
+}, { passive: false });
+eventsList.addEventListener("touchstart", _markUserScroll, { passive: true });
+
+function syncScrollToTimeRange(timeRange) {
+    if (!timeRange) return;
+    if (Date.now() - _userScrollAt < 2000) return;
+    const cards = [...eventsList.querySelectorAll(".event-card")];
+    if (!cards.length) return;
+    // Cards sorted newest-first; first one whose time \u2264 visible-range end
+    // is the latest event currently on-chart \u2014 scroll it into view.
+    const target = cards.find((c) => Number(c.dataset.time) <= timeRange.to);
+    if (target) {
+        eventsList.scrollTop = Math.max(0, target.offsetTop - 8);
+    }
+}
+
+// Drag-to-scroll on events list (now vertical inside the overlay)
 let _dragStart = null;
 eventsList.addEventListener("mousedown", (e) => {
-    _dragStart = { x: e.pageX, left: eventsList.scrollLeft };
+    _dragStart = { y: e.pageY, top: eventsList.scrollTop };
     eventsList.style.cursor = "grabbing";
     eventsList.style.userSelect = "none";
 });
 document.addEventListener("mousemove", (e) => {
     if (!_dragStart) return;
-    eventsList.scrollLeft = _dragStart.left - (e.pageX - _dragStart.x);
+    eventsList.scrollTop = _dragStart.top - (e.pageY - _dragStart.y);
 });
 document.addEventListener("mouseup", () => {
     _dragStart = null;
@@ -220,8 +267,10 @@ document.addEventListener("mouseup", () => {
     eventsList.style.userSelect = "";
 });
 
-// Sync events list on chart scroll
-const debouncedTimeRangeCallback = debounce(() => { filterAndRenderEvents(); }, 300);
+// Sync events overlay scroll to chart pan — no DOM rebuild, just scrollTop.
+const debouncedTimeRangeCallback = debounce(() => {
+    syncScrollToTimeRange(chart.timeScale().getVisibleRange());
+}, 150);
 chart.timeScale().subscribeVisibleTimeRangeChange(debouncedTimeRangeCallback);
 
 // Click chart candle → scroll events list to closest signal
@@ -231,7 +280,7 @@ chart.subscribeClick((param) => {
     const closest = items.reduce((prev, cur) =>
         Math.abs(Number(cur.dataset.time) - param.time) < Math.abs(Number(prev.dataset.time) - param.time) ? cur : prev
     , items[0]);
-    if (closest) eventsList.scrollTo({ left: closest.offsetLeft - eventsList.offsetLeft - eventsList.offsetWidth / 2, behavior: "smooth" });
+    if (closest) eventsList.scrollTo({ top: closest.offsetTop - eventsList.offsetTop - eventsList.offsetHeight / 2, behavior: "smooth" });
 });
 
 // Click event card → scroll chart to that time

@@ -7,17 +7,17 @@
     <link rel="stylesheet" href="output.css" crossorigin="" />
         <!-- Yandex.Metrika counter -->
 <script type="text/javascript" >
-    // (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-    // m[i].l=1*new Date();
-    // for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-    // k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-    // (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
  
-    // ym(97901249, "init", {
-    //      clickmap:true,
-    //      trackLinks:true,
-    //      accurateTrackBounce:true
-    // });
+    ym(97901249, "init", {
+         clickmap:true,
+         trackLinks:true,
+         accurateTrackBounce:true
+    });
  </script>
  <noscript><div><img src="https://mc.yandex.ru/watch/97901249" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
  <!-- /Yandex.Metrika counter -->
@@ -29,7 +29,7 @@
     <header class="w-full px-6 py-3 border-b border-white/5">
         <nav class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="./icon.svg" alt="BuyTheDip" class="h-7">
+                <span class="brand-wordmark">Deep<span class="brand-wordmark-accent">DIP</span></span>
             </div>
             <div class="flex gap-1">
                 <a class="px-3 py-1.5 text-sm text-white/40 hover:text-white/80 hover:bg-white/5 rounded-lg transition-colors"
@@ -58,6 +58,8 @@
                 <span class="hero-agent-status">Live</span>
             </a>
             <h1 class="hero-title">
+                <span class="brand-wordmark brand-wordmark-hero">Deep<span class="brand-wordmark-accent">DIP</span></span>
+                <span class="brand-sep">·</span>
                 Watch market moves — <span class="gradient-text">before you miss it</span>
             </h1>
             <p class="hero-subtitle">Know the moment a trend shifts and what it means. Your <span
@@ -89,10 +91,10 @@
 
                 <!-- Preset stock pills -->
                 <div class="flex gap-1.5 flex-shrink-0" id="presetPills">
+                    <button class="preset-pill" data-ticker="PHOR">PHOR</button>
+                    <button class="preset-pill" data-ticker="OZON">OZON</button>
                     <button class="preset-pill" data-ticker="SBER">SBER</button>
                     <button class="preset-pill" data-ticker="LKOH">LKOH</button>
-                    <button class="preset-pill" data-ticker="SGZH">SGZH</button>
-                    <button class="preset-pill" data-ticker="MTSS">MTSS</button>
                 </div>
 
                 <!-- Mode switch compact -->
@@ -113,57 +115,55 @@
             <p class="mt-1.5 text-xs text-white/25" id="modeDescription">All signals including minor fluctuations.</p>
         </section>
 
-        <!-- Main Chart — full width -->
+        <!-- Main Chart + separate Latest-signals panel -->
         <section class="mb-4" id="chartSection">
-            <div class="card card-glow p-4 relative">
-                <!-- Stock title overlay -->
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-lg font-semibold text-white/90" id="chartStockTitle">—</h2>
-                    <!-- Signal shortcut buttons (from agent response) -->
-                    <div id="signalShortcuts" class="flex flex-wrap gap-1.5"></div>
+            <div class="chart-events-row flex flex-col lg:flex-row gap-4">
+                <!-- Chart card -->
+                <div class="card card-glow p-4 relative flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="text-lg font-semibold text-white/90" id="chartStockTitle">—</h2>
+                        <div id="signalShortcuts" class="flex flex-wrap gap-1.5"></div>
+                    </div>
+                    <div id="chartLoader"
+                        class="hidden absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl z-10">
+                        <div class="loader"></div>
+                    </div>
+                    <div id="chart" class="flex justify-center items-center"></div>
+
+                    <div id="agentActionBar" class="hidden mt-3 flex items-center justify-center gap-3">
+                        <button id="agentProceed"
+                            class="px-5 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors">
+                            Proceed
+                        </button>
+                        <span class="text-xs text-white/40">or</span>
+                        <button id="agentRetry"
+                            class="px-4 py-2 text-sm text-white/50 hover:text-white/80 bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
+                            try again
+                        </button>
+                    </div>
+
+                    <div id="agentComments" class="hidden mt-3 space-y-2"></div>
                 </div>
-                <div id="chartLoader"
-                    class="hidden absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl z-10">
-                    <div class="loader"></div>
+
+                <!-- Latest signals — separate sibling panel -->
+                <div class="card events-panel events-panel-attention p-3 relative">
+                    <div class="events-panel-header mb-2 px-1">
+                        <div class="flex items-center gap-2">
+                            <span class="live-dot"></span>
+                            <h3 class="events-panel-title">Latest signals</h3>
+                        </div>
+                        <p class="events-panel-sub">Our reads of recent price action — what to watch, what's shifting.</p>
+                    </div>
+                    <div id="eventsList"
+                        class="hidden opacity-50 pointer-events-none events-list events-hscroll"></div>
+                    <div id="shimmerLoader"
+                        class="hidden events-list flex-col gap-2 pointer-events-none">
+                        <div class="signal-card-shimmer animate-pulse h-16 rounded-lg bg-white/5"></div>
+                        <div class="signal-card-shimmer animate-pulse h-16 rounded-lg bg-white/5"></div>
+                        <div class="signal-card-shimmer animate-pulse h-16 rounded-lg bg-white/5"></div>
+                    </div>
                 </div>
-                <div id="chart" class="flex justify-center items-center"></div>
-
-                <!-- Agent action bar (hidden until agent response) -->
-                <div id="agentActionBar" class="hidden mt-3 flex items-center justify-center gap-3">
-                    <button id="agentProceed"
-                        class="px-5 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors">
-                        Proceed
-                    </button>
-                    <span class="text-xs text-white/40">or</span>
-                    <button id="agentRetry"
-                        class="px-4 py-2 text-sm text-white/50 hover:text-white/80 bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
-                        try again
-                    </button>
-                </div>
-
-                <!-- Agent signal comments below chart -->
-                <div id="agentComments" class="hidden mt-3 space-y-2"></div>
             </div>
-        </section>
-
-        <!-- Latest Signals — horizontal scroll -->
-        <section class="mb-8">
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-sm font-semibold text-white/60 uppercase tracking-wider">Latest signals</h3>
-            </div>
-
-            <!-- Shimmer Loading -->
-            <div id="shimmerLoader" class="flex gap-3 overflow-hidden">
-                <div class="signal-card-shimmer animate-pulse flex-shrink-0 w-56 h-20 rounded-lg bg-white/5"></div>
-                <div class="signal-card-shimmer animate-pulse flex-shrink-0 w-56 h-20 rounded-lg bg-white/5"></div>
-                <div class="signal-card-shimmer animate-pulse flex-shrink-0 w-56 h-20 rounded-lg bg-white/5"></div>
-                <div class="signal-card-shimmer animate-pulse flex-shrink-0 w-56 h-20 rounded-lg bg-white/5"></div>
-                <div class="signal-card-shimmer animate-pulse flex-shrink-0 w-56 h-20 rounded-lg bg-white/5"></div>
-            </div>
-
-            <!-- Events horizontal list -->
-            <div id="eventsList"
-                class="hidden opacity-50 pointer-events-none events-hscroll flex gap-3 overflow-x-auto pb-2"></div>
         </section>
 
         <!-- Dedicated Agent — landing section -->
