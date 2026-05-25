@@ -35,7 +35,7 @@ function post(url, data = {}) {
 }
 
 // --- API config ---
-const host = "https://e82a-159-255-38-244.ngrok-free.app";
+const host = "https://f12b-159-255-38-244.ngrok-free.app";
 // const host = "http://localhost:4000";
 window.__agentHost = host;
 function url(path) {
