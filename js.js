@@ -17,7 +17,10 @@ function debounce(func, delay) {
 function post(url, data = {}) {
     return fetch(url, {
         method: "post",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "serveo-skip-browser-warning": "true",
+        },
         body: JSON.stringify(data),
         credentials: "include",
     })
@@ -35,7 +38,7 @@ function post(url, data = {}) {
 }
 
 // --- API config ---
-const host = "https://5f68-159-255-38-244.ngrok-free.app";
+const host = "https://api.deepdip.tech";
 // const host = "http://localhost:4000";
 window.__agentHost = host;
 function url(path) {

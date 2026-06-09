@@ -99,7 +99,10 @@
     function postJson(url, data) {
         return fetch(url, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "serveo-skip-browser-warning": "true",
+            },
             body: JSON.stringify(data),
             credentials: "include",
         }).then((r) => {
