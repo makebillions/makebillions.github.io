@@ -387,18 +387,27 @@ function submitFeedback(event) {
 // ============================================================
 // RU visitor notice — connection here is throttled without a VPN
 // ============================================================
+let __vpnNoticeDismissed = false;
 function maybeShowVpnNotice() {
-    if (document.getElementById("vpnNotice")) return;
+    if (__vpnNoticeDismissed || document.getElementById("vpnNotice")) return;
     const bar = document.createElement("div");
     bar.id = "vpnNotice";
     bar.style.cssText =
         "position:fixed;top:0;left:0;right:0;z-index:1000;padding:10px 16px;" +
         "background:#7c3aed;color:#fff;font-size:14px;text-align:center;";
     bar.innerHTML =
-        "Соединение из России может быть нестабильным — для корректной работы графиков рекомендуем включить VPN." +
-        ' <span style="cursor:pointer;margin-left:12px;text-decoration:underline;" onclick="document.getElementById(\'vpnNotice\').remove()">Скрыть</span>';
+        "Соединение медленное — возможно, провайдер ограничивает доступ. Для корректной работы графиков рекомендуем включить VPN." +
+        ' <span style="cursor:pointer;margin-left:12px;text-decoration:underline;" onclick="window.__dismissVpnNotice()">Скрыть</span>';
     document.body.prepend(bar);
 }
+function hideVpnNotice() {
+    const el = document.getElementById("vpnNotice");
+    if (el) el.remove();
+}
+window.__dismissVpnNotice = function () {
+    __vpnNoticeDismissed = true;
+    hideVpnNotice();
+};
 
 // ============================================================
 // Auth, subscriptions, init
@@ -491,9 +500,15 @@ const AlertMes = {
         })
         .catch(() => {});
 
+    // If the stocks call is slow, the provider is likely throttling — show the
+    // VPN notice optimistically, then reconcile once geo is known: keep it for
+    // RU, drop it for anyone else (e.g. slow but not throttled).
+    const slowTimer = setTimeout(maybeShowVpnNotice, 2500);
     post(url("/api/stocks"), INVESTOR_MODE ? { market: "us" } : {}).then(
         (r) => {
+            clearTimeout(slowTimer);
             if (r.geo === "RU") maybeShowVpnNotice();
+            else hideVpnNotice();
             setStocks(r.payload);
             if (INVESTOR_MODE) {
                 const nvda = r.payload.find((s) => s.ticker === "NVDA");
