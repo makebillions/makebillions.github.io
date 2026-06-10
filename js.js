@@ -38,8 +38,8 @@ function post(url, data = {}) {
 }
 
 // --- API config ---
-// const host = "https://api.deepdip.tech";
-const host = "https://e69c70f277502ac4-159-255-38-244.serveousercontent.com";
+const host = "https://api.deepdip.tech";
+// const host = "https://e69c70f277502ac4-159-255-38-244.serveousercontent.com";
 // const host = "http://localhost:4000";
 window.__agentHost = host;
 function url(path) {
