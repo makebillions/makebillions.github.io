@@ -38,8 +38,8 @@ function post(url, data = {}) {
 }
 
 // --- API config ---
+// const host = "https://e82a-159-255-38-244.ngrok-free.app";
 const host = "https://api.deepdip.tech";
-// const host = "https://e69c70f277502ac4-159-255-38-244.serveousercontent.com";
 // const host = "http://localhost:4000";
 window.__agentHost = host;
 function url(path) {
@@ -385,6 +385,22 @@ function submitFeedback(event) {
 }
 
 // ============================================================
+// RU visitor notice — connection here is throttled without a VPN
+// ============================================================
+function maybeShowVpnNotice() {
+    if (document.getElementById("vpnNotice")) return;
+    const bar = document.createElement("div");
+    bar.id = "vpnNotice";
+    bar.style.cssText =
+        "position:fixed;top:0;left:0;right:0;z-index:1000;padding:10px 16px;" +
+        "background:#7c3aed;color:#fff;font-size:14px;text-align:center;";
+    bar.innerHTML =
+        "Соединение из России может быть нестабильным — для корректной работы графиков рекомендуем включить VPN." +
+        ' <span style="cursor:pointer;margin-left:12px;text-decoration:underline;" onclick="document.getElementById(\'vpnNotice\').remove()">Скрыть</span>';
+    document.body.prepend(bar);
+}
+
+// ============================================================
 // Auth, subscriptions, init
 // ============================================================
 const AlertMes = {
@@ -477,6 +493,7 @@ const AlertMes = {
 
     post(url("/api/stocks"), INVESTOR_MODE ? { market: "us" } : {}).then(
         (r) => {
+            if (r.geo === "RU") maybeShowVpnNotice();
             setStocks(r.payload);
             if (INVESTOR_MODE) {
                 const nvda = r.payload.find((s) => s.ticker === "NVDA");
