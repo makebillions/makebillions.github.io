@@ -15,8 +15,12 @@ const SIGNAL_ICONS = {
     attention: `<svg class="inline-block w-4 h-4 mr-1 align-text-bottom" viewBox="0 0 16 16" fill="none"><path d="M8 1l7 13H1L8 1z" fill="#f97316"/><rect x="7.2" y="5.5" width="1.6" height="5" rx=".5" fill="#fff"/><circle cx="8" cy="12" r=".9" fill="#fff"/></svg>`,
 };
 
-const MARKER_BUY_COLOR  = "#22c55e";  // --green from design system
-const MARKER_SELL_COLOR = "#ef4444";  // --red from design system
+// New design palette (scetch-tmp/DeepDIP Final.html): ink on paper,
+// direction shown by marker position (buy below / sell above bar).
+const INK = "#15171c";
+const PAPER = "#f6f5f1";
+const MARKER_BUY_COLOR  = INK;
+const MARKER_SELL_COLOR = INK;
 
 // --- Chart state ---
 var mEvents = [];
@@ -54,40 +58,51 @@ var chart = LightweightCharts.createChart(chartContainer, {
         scaleMargins: { top: 0.1, bottom: 0.1 },
     },
     layout: {
-        background: { type: "gradient", topColor: "rgba(0,0,0, 0)", bottomColor: "rgba(0,0,0, 0)" },
-        textColor: "rgba(255,255,255, 1)",
+        background: { type: "solid", color: "transparent" },
+        textColor: "rgba(21,23,28, 0.45)",
         fontSize: 12,
     },
     grid: {
-        horzLines: { color: "rgba(255,255,255, 0.08)" },
-        vertLines: { color: "rgba(255,255,255, 0.08)" },
+        horzLines: { visible: false },
+        vertLines: { visible: false },
     },
     crosshair: {
         mode: LightweightCharts.CrosshairMode.Normal,
-        vertLine: { color: "rgba(255, 255, 255, 0.5)", width: 1, style: LightweightCharts.LineStyle.Dashed },
-        horzLine: { color: "rgba(255, 255, 255, 0.5)", width: 1, style: LightweightCharts.LineStyle.Dashed },
+        vertLine: { color: "rgba(21,23,28, 0.35)", width: 1, style: LightweightCharts.LineStyle.Dashed },
+        horzLine: { color: "rgba(21,23,28, 0.35)", width: 1, style: LightweightCharts.LineStyle.Dashed },
     },
 });
 
-var series = chart.addCandlestickSeries({
-    upColor: "rgba(255,255,255,0.15)",
-    downColor: "rgba(255,0,0,0.15)",
-    wickUpColor: "rgba(255,255,255,0.8)",
-    wickDownColor: "rgba(255,0,0,0.8)",
-    borderUpColor: "rgba(255,255,255,0.6)",
-    borderDownColor: "rgba(255,0,0,0.6)",
-    borderVisible: true,
+// Soft area line (design chart-svg): curved ink line, gradient fading to 0
+var series = chart.addSeries(LightweightCharts.AreaSeries, {
+    lineColor: "rgba(21,23,28, 0.55)",
+    lineWidth: 2,
+    lineType: LightweightCharts.LineType.Curved,
+    topColor: "rgba(21,23,28, 0.10)",
+    bottomColor: "rgba(21,23,28, 0)",
+    priceLineVisible: false,
+    lastValueVisible: false,
+    crosshairMarkerBorderColor: PAPER,
+    crosshairMarkerBackgroundColor: INK,
     priceFormat: { type: "price", precision: 2, minMove: 0.01 },
 });
 
-var volumeSeries = chart.addHistogramSeries({
+var volumeSeries = chart.addSeries(LightweightCharts.HistogramSeries, {
     priceFormat: { type: "volume" },
     priceScaleId: "vol",
-    color: "rgba(255,255,255,0.12)",
+    color: "rgba(21,23,28, 0.07)",
+    priceLineVisible: false,
+    lastValueVisible: false,
 });
 volumeSeries.priceScale().applyOptions({
     scaleMargins: { top: 0.8, bottom: 0 },
 });
+
+// v5: markers live in a plugin instance instead of series.setMarkers()
+var seriesMarkers = LightweightCharts.createSeriesMarkers(series, []);
+function setSeriesMarkers(markers) {
+    seriesMarkers.setMarkers(markers);
+}
 
 chart.timeScale().fitContent();
 
@@ -96,7 +111,8 @@ chart.timeScale().fitContent();
 // ============================================================
 function setChart(data) {
     const lastIndex = data.candles.length - 1;
-    series.setData(data.candles);
+    // Area series plots closes; full OHLC stays available in data.candles
+    series.setData(data.candles.map((c) => ({ time: c.time, value: c.close })));
 
     currentCandleRange = {
         from: data.candles[0].time,
@@ -164,20 +180,21 @@ function renderMarkers() {
     const markers = [];
     Object.values(merged).forEach((alert) => {
         if (alert.value === "buy") {
-            markers.push({ time: alert.time, position: "belowBar", color: MARKER_BUY_COLOR, shape: "arrowUp", size: 1, text: "" });
+            markers.push({ time: alert.time, position: "belowBar", color: MARKER_BUY_COLOR, shape: "circle", size: 1, text: "" });
         } else if (alert.value === "sell") {
-            markers.push({ time: alert.time, position: "aboveBar", color: MARKER_SELL_COLOR, shape: "arrowDown", size: 1, text: "" });
+            markers.push({ time: alert.time, position: "aboveBar", color: MARKER_SELL_COLOR, shape: "circle", size: 1, text: "" });
         }
     });
 
     markers.sort((a, b) => a.time - b.time);
-    series.setMarkers(markers);
+    setSeriesMarkers(markers);
 }
 
 // ============================================================
 // Events list (horizontal scroll below chart)
 // ============================================================
 function setEvents(data) {
+    closeAlertChat(); // stock changed — drop any open alert chat
     const rawEvents = data.events || [];
     if (currentCandleRange) {
         mEvents = rawEvents.filter(
@@ -206,20 +223,57 @@ function renderEvents(events) {
             const date = new Date(event.time * 1000);
             const dateStr = String(date.getUTCDate()).padStart(2, "0") + "." + String(date.getUTCMonth() + 1).padStart(2, "0");
             const timeStr = String(date.getUTCHours()).padStart(2, "0") + ":" + String(date.getUTCMinutes()).padStart(2, "0");
-            const dirClass = event.dir === "buy" ? "text-green-400/70" : "text-red-400/70";
+            const dirClass = event.dir === "buy" ? "text-green-600/80" : "text-red-600/80";
             const dirArrow = event.dir === "buy" ? "\u25B2" : "\u25BC";
             const iconHtml = event.icon && SIGNAL_ICONS[event.icon] ? SIGNAL_ICONS[event.icon] : "";
-            const priceHtml = event.price != null ? `<span class="text-white/40 ml-1">@${event.price}</span>` : "";
+            const priceHtml = event.price != null ? `<span class="text-ink/40 ml-1">@${event.price}</span>` : "";
             return `
-            <div class="event-card" data-time="${event.time}">
-                <div class="text-[11px] text-white/35 mb-1">${dateStr} ${timeStr}${priceHtml}</div>
-                <div class="text-[13px] text-white/70 leading-snug">
+            <div class="event-card group flex-shrink-0 w-full bg-white border border-ink/10 rounded-xl p-3 cursor-pointer hover:border-ink/25 hover:shadow-card transition-all" data-time="${event.time}">
+                <div class="event-when text-[11px] text-ink/40 font-medium mb-1">${dateStr} ${timeStr}${priceHtml}</div>
+                <div class="read text-[15px] text-ink leading-snug">
                     ${iconHtml}<span class="${dirClass} mr-1">${dirArrow}</span>${event.text}
                 </div>
+                <button class="event-chat-btn inline-flex items-center gap-1.5 mt-2.5 text-xs font-bold text-ink bg-gold-bg border border-gold-edge rounded-full px-3 py-1 group-hover:bg-gold group-hover:text-white group-hover:border-gold transition-colors">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>Open chat
+                </button>
             </div>`;
         })
         .join("");
 }
+
+// ============================================================
+// Alert chat (new design): fake chat pinned to one alert.
+// First message = the alert itself; input stays disabled.
+// ============================================================
+const feedPanel = document.getElementById("feedPanel");
+const chatPanel = document.getElementById("chatPanel");
+
+function openAlertChat(card) {
+    if (!chatPanel || !feedPanel || !card) return;
+    const ticker = (document.getElementById("chartStockTitle")?.textContent || "")
+        .trim()
+        .split(/\s+/)[0] || "\u2014";
+    const when = card.querySelector(".event-when")?.textContent.trim() || "";
+    document.getElementById("chatTitle").textContent = `${ticker} \u00B7 this alert`;
+    document.getElementById("chatSub").textContent = when
+        ? `conversation stays pinned to the ${when} signal`
+        : "conversation stays pinned to this signal";
+    const msg = card.querySelector(".read");
+    document.getElementById("chatFirstMsg").innerHTML = msg ? msg.innerHTML : "";
+    feedPanel.classList.add("hidden");
+    chatPanel.classList.remove("hidden");
+    chatPanel.classList.add("flex");
+}
+
+function closeAlertChat() {
+    if (!chatPanel || !feedPanel) return;
+    chatPanel.classList.add("hidden");
+    chatPanel.classList.remove("flex");
+    feedPanel.classList.remove("hidden");
+}
+
+const chatBackBtn = document.getElementById("chatBack");
+if (chatBackBtn) chatBackBtn.addEventListener("click", closeAlertChat);
 
 // Track when the user last scrolled the overlay themselves \u2014 chart-pan
 // auto-sync defers to manual scroll for ~2s so we don't yank position.
@@ -260,6 +314,7 @@ eventsList.addEventListener("mousedown", (e) => {
 document.addEventListener("mousemove", (e) => {
     if (!_dragStart) return;
     eventsList.scrollTop = _dragStart.top - (e.pageY - _dragStart.y);
+    _markUserScroll();
 });
 document.addEventListener("mouseup", () => {
     _dragStart = null;
@@ -273,6 +328,20 @@ const debouncedTimeRangeCallback = debounce(() => {
 }, 150);
 chart.timeScale().subscribeVisibleTimeRangeChange(debouncedTimeRangeCallback);
 
+// Reverse sync: user scrolls the signals list → chart follows the topmost
+// visible card. Gated on recent manual scroll so programmatic scrollTop
+// changes (stock change reset, chart→list sync) don't bounce back.
+const _syncChartToListScroll = debounce(() => {
+    if (Date.now() - _userScrollAt > 2000) return;
+    const cards = [...eventsList.querySelectorAll(".event-card")];
+    if (!cards.length) return;
+    const viewTop = eventsList.scrollTop + eventsList.offsetTop;
+    const target = cards.find((c) => c.offsetTop + c.offsetHeight > viewTop) || cards[cards.length - 1];
+    const t = Number(target.dataset.time);
+    if (t) scrollChartToTimeLocal(t);
+}, 150);
+eventsList.addEventListener("scroll", _syncChartToListScroll);
+
 // Click chart candle → scroll events list to closest signal
 chart.subscribeClick((param) => {
     if (!param.time) return;
@@ -283,10 +352,14 @@ chart.subscribeClick((param) => {
     if (closest) eventsList.scrollTo({ top: closest.offsetTop - eventsList.offsetTop - eventsList.offsetHeight / 2, behavior: "smooth" });
 });
 
-// Click event card → scroll chart to that time
+// Click event card → scroll chart to that time; "Open chat" → chat panel
 eventsList.addEventListener("click", (e) => {
     const card = e.target.closest(".event-card");
     if (!card) return;
+    if (e.target.closest(".event-chat-btn")) {
+        openAlertChat(card);
+        return;
+    }
     const t = Number(card.dataset.time);
     if (t) scrollChartToTimeLocal(t);
 });
@@ -325,18 +398,16 @@ function renderSignalShortcutsFromEvents() {
 // ============================================================
 // Scroll helpers
 // ============================================================
-// Scroll chart preserving current zoom level
+// Scroll chart preserving current zoom level. Works in time units so it
+// also reaches times far outside the visible window (coordinate-based
+// conversion returns null there).
 function scrollChartToTimeLocal(time) {
-    const logicalRange = chart.timeScale().getVisibleLogicalRange();
-    if (!logicalRange) return;
-    const barsVisible = logicalRange.to - logicalRange.from;
-    const coord = chart.timeScale().timeToCoordinate(time);
-    if (coord === null) return;
-    const logicalIdx = chart.timeScale().coordinateToLogical(coord);
-    if (logicalIdx === null) return;
-    chart.timeScale().setVisibleLogicalRange({
-        from: logicalIdx - barsVisible / 2,
-        to: logicalIdx + barsVisible / 2,
+    const range = chart.timeScale().getVisibleRange();
+    if (!range) return;
+    const half = (range.to - range.from) / 2;
+    chart.timeScale().setVisibleRange({
+        from: time - half,
+        to: time + half,
     });
 }
 
@@ -381,6 +452,7 @@ window.__chartState = {
     get currentCandleRange() { return currentCandleRange; },
     setChart,
     renderMarkers,
+    setSeriesMarkers,
     loadChart,
     showLoader,
     hideLoader,

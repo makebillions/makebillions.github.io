@@ -247,7 +247,7 @@
             if (agentMarkers.length) {
                 const existingMarkers = buildCurrentMarkers(cs);
                 const merged = [...existingMarkers, ...agentMarkers].sort((a, b) => a.time - b.time);
-                cs.series.setMarkers(merged);
+                cs.setSeriesMarkers(merged);
 
                 // Scroll to first agent marker — keep current scale
                 scrollChartToTime(cs, firstTickerSignals[0].time);
@@ -323,7 +323,7 @@
             if (agentMarkers.length) {
                 const existingMarkers = buildCurrentMarkers(cs);
                 const merged = [...existingMarkers, ...agentMarkers].sort((a, b) => a.time - b.time);
-                cs.series.setMarkers(merged);
+                cs.setSeriesMarkers(merged);
 
                 scrollChartToTime(cs, resolvedTimes[0].time);
             }
@@ -383,7 +383,7 @@
             const div = document.createElement("div");
             div.className = "agent-comment agent-comment-clickable";
             if (match.t === currentAgentTicker) div.classList.add("agent-comment-active");
-            const qualityBadge = match.q ? `<span class="text-xs text-white/30 ml-2">${match.q}/5</span>` : "";
+            const qualityBadge = match.q ? `<span class="text-xs text-ink/40 ml-2">${match.q}/5</span>` : "";
             div.innerHTML = `<span class="ticker">${match.t}</span>${qualityBadge} &mdash; ${match.e || ""}`;
             div.addEventListener("click", () => {
                 loadStockOnChart(match);

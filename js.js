@@ -80,10 +80,10 @@ if (INVESTOR_MODE) {
         '<p>1. Find the bot <a href="https://t.me/buydipru_bot" class="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">buydipru_bot</a> on Telegram and press /start. Enter the code below.</p>' +
         "<p>2. Select one or more stocks.</p>" +
         "<p>3. Configure parameters or leave defaults. The BOT will send alerts during the trading day.</p>" +
-        '<p class="text-white/35">You can unsubscribe via the bot interface. The service does not store your personal data.</p>';
+        '<p class="text-ink/40">You can unsubscribe via the bot interface. The service does not store your personal data.</p>';
     const afterLoginEl = document.getElementById("final-result");
     afterLoginEl.innerHTML =
-        '<h2 class="text-base font-semibold text-white mb-2">Logged in</h2>' +
+        '<h2 class="text-base font-semibold text-ink mb-2">Logged in</h2>' +
         "<p>1. Select one or more stocks. The chart displays for the last selected stock.</p>" +
         "<p>2. You can configure settings or leave defaults. The chart updates. The BOT will send alerts during the trading day.</p>";
     document.querySelector(
@@ -150,7 +150,7 @@ if (modeSwitch) {
             b.classList.toggle("mode-active", b.dataset.mode === mode);
             b.classList.toggle("text-white", b.dataset.mode === mode);
             b.classList.toggle("font-medium", b.dataset.mode === mode);
-            b.classList.toggle("text-white/60", b.dataset.mode !== mode);
+            b.classList.toggle("text-ink/60", b.dataset.mode !== mode);
         });
         if (modeDescription) modeDescription.textContent = MODE_DESC[mode];
         filterAndRenderEvents();
@@ -175,7 +175,7 @@ function onStockChange() {
     if (chartStockTitle) {
         const name = sel?.name && sel.name !== stock ? sel.name : "";
         chartStockTitle.innerHTML = name
-            ? `${stock} <span class="text-white/40 text-base font-normal ml-1">${name}</span>`
+            ? `${stock} <span class="text-ink/40 text-base font-normal ml-1">${name}</span>`
             : stock;
     }
     clearAgentState();
@@ -296,10 +296,10 @@ const autocompleteHandler = function () {
     filteredData.forEach((item) => {
         const div = document.createElement("div");
         div.className =
-            "p-4 hover:bg-white/20 cursor-pointer flex items-baseline gap-2";
+            "p-4 hover:bg-ink/5 cursor-pointer flex items-baseline gap-2";
         const nameHtml =
             item.name && item.name !== item.ticker
-                ? `<span class="text-white/50 text-sm truncate">${item.name}</span>`
+                ? `<span class="text-ink/50 text-sm truncate">${item.name}</span>`
                 : "";
         div.innerHTML = `<span>${item.ticker}</span>${nameHtml}${
             item.hasLlm ? '<span class="stock-llm-badge"></span>' : ""
@@ -370,6 +370,16 @@ function closeHelpPopup() {
 }
 
 // ============================================================
+// Greeting popup (Get started)
+// ============================================================
+function openGreetingPopup() {
+    document.getElementById("greetingPopup").classList.remove("hidden");
+}
+function closeGreetingPopup() {
+    document.getElementById("greetingPopup").classList.add("hidden");
+}
+
+// ============================================================
 // Feedback
 // ============================================================
 function submitFeedback(event) {
@@ -427,7 +437,7 @@ const AlertMes = {
             deleteButton.type = "button";
             deleteButton.textContent = INVESTOR_MODE ? "Delete" : "Удалить";
             deleteButton.className =
-                "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg ml-5";
+                "bg-violet hover:bg-violet-dark text-white font-bold py-2 px-4 rounded-lg ml-5";
             deleteButton.onclick = () => handleDelete(selection.id);
             selectionDiv.appendChild(deleteButton);
             selectionsContainer.appendChild(selectionDiv);

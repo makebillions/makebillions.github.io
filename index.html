@@ -4,236 +4,389 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="output.css" crossorigin="" />
-        <!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-    m[i].l=1*new Date();
-    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
- 
-    ym(97901249, "init", {
-         clickmap:true,
-         trackLinks:true,
-         accurateTrackBounce:true
-    });
- </script>
- <noscript><div><img src="https://mc.yandex.ru/watch/97901249" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
- <!-- /Yandex.Metrika counter -->
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(97901249, "init", {
+             clickmap:true,
+             trackLinks:true,
+             accurateTrackBounce:true
+        });
+    </script>
+    <noscript>
+        <div><img src="https://mc.yandex.ru/watch/97901249" style="position:absolute; left:-9999px;" alt="" /></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
 </head>
 
-<body class="flex flex-col min-h-screen background">
+<body class="flex flex-col min-h-screen background font-sans text-ink">
 
-    <!-- Header -->
-    <header class="w-full px-6 py-3 border-b border-white/5">
-        <nav class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="brand-wordmark">Deep<span class="brand-wordmark-accent">DIP</span></span>
+    <!-- Header (design top nav) -->
+    <header class="sticky top-0 z-40 w-full px-6 border-b border-ink/10 bg-paper/90 backdrop-blur">
+        <nav class="max-w-7xl mx-auto h-16 flex items-center gap-6">
+            <div class="flex items-center gap-2.5 font-extrabold text-lg tracking-tight">
+                <span class="w-7 h-7 rounded-lg bg-violet grid place-items-center text-white text-sm -rotate-6">D</span>
+                <span class="brand-wordmark">Deep<span class="brand-wordmark-accent text-violet">DIP</span></span>
             </div>
-            <div class="flex gap-1">
-                <a class="px-3 py-1.5 text-sm text-white/40 hover:text-white/80 hover:bg-white/5 rounded-lg transition-colors"
-                    onclick="openHelpPopup('#conditions')" href="#">Справка</a>
-                <a class="px-3 py-1.5 text-sm text-white/40 hover:text-white/80 hover:bg-white/5 rounded-lg transition-colors"
-                    onclick="openHelpPopup('#testimonials')" href="#">Отзыв</a>
+            <div class="hidden lg:flex items-center gap-7 text-[14px] font-semibold text-ink/60 ml-3">
+                <a class="text-ink" href="#chartSection">Signals</a>
+                <a class="hover:text-ink transition-colors" href="#agentSection">AI agent</a>
+                <a class="hover:text-ink transition-colors" onclick="openHelpPopup('#conditions')" href="#">How it
+                    works</a>
+                <a class="hover:text-ink transition-colors" href="#signupSection">Pricing</a>
+                <a class="hover:text-ink transition-colors" onclick="openHelpPopup('#testimonials')"
+                    href="#">Feedback</a>
             </div>
+            <div class="flex-1"></div>
+            <button class="px-2 py-1.5 text-sm font-semibold text-ink/70 hover:text-ink transition-colors"
+                onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Log in</button>
+            <button
+                class="px-5 py-2.5 text-sm font-bold text-white bg-ink hover:bg-ink/85 rounded-full transition-colors"
+                onclick="openGreetingPopup()">Get started</button>
         </nav>
     </header>
 
     <!-- Main content -->
     <main class="flex-1 w-full max-w-7xl mx-auto px-6">
 
-        <!-- Hero -->
-        <section class="hero-section">
-            <a href="#agentSection" class="hero-agent-badge">
-                <span class="hero-agent-spark">
+        <!-- Hero (left-aligned, design style) -->
+        <section class="hero-section pt-8 px-1 mb-5">
+            <a href="#agentSection"
+                class="hero-agent-badge inline-flex items-center gap-2 pl-2 pr-3.5 py-1.5 rounded-full bg-violet-bg border border-violet-edge hover:border-violet hover:-translate-y-px transition-all mb-4 no-underline">
+                <span
+                    class="hero-agent-spark inline-flex items-center justify-center w-[18px] h-[18px] rounded-full bg-violet text-white">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                         stroke-linecap="round" stroke-linejoin="round">
                         <path
                             d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
                     </svg>
                 </span>
-                <span class="hero-agent-label">Dedicated AI Agent</span>
-                <span class="hero-agent-dot"></span>
-                <span class="hero-agent-status">Live</span>
+                <span class="text-[0.72rem] font-bold tracking-wider text-violet">Dedicated AI Agent</span>
+                <span class="w-[3px] h-[3px] rounded-full bg-ink/25"></span>
+                <span class="text-[0.65rem] font-bold tracking-widest uppercase text-green-600">Live</span>
             </a>
-            <h1 class="hero-title">
-                <span class="brand-wordmark brand-wordmark-hero">Deep<span class="brand-wordmark-accent">DIP</span></span>
-                <span class="brand-sep">·</span>
-                Watch market moves — <span class="gradient-text">before you miss it</span>
+            <h1
+                class="hero-title read text-[clamp(2.1rem,4.2vw,3.1rem)] font-semibold tracking-[-0.01em] leading-[1.12] max-w-[22ch] mb-4 text-balance">
+                The market is <span class="text-violet">no longer a mystery</span>
             </h1>
-            <p class="hero-subtitle">Know the moment a trend shifts and what it means. Your <span
-                    class="hero-subtitle-accent">Dedicated Agent</span> watches the market, reads every signal with AI,
-                and tells you whether it's real.</p>
+            <p class="hero-subtitle max-w-[60ch]">
+                <span class="block text-[1.1rem] text-ink/75 leading-relaxed">DeepDIP watches market real time and
+                    explains every move —
+                    what happened, which level matters, where it's heading — with AI's hint on whether the move is
+                    real or fake.</span>
+                <span class="block mt-4 text-[0.98rem] text-ink/75 leading-relaxed"><span
+                        class="text-violet font-bold mr-1.5">·</span><b class="text-ink">Two reads in every alert</b> —
+                    one for <span class="text-short font-semibold">traders</span>, one for <span
+                        class="text-long font-semibold">long-term holders</span>.</span>
+                <span class="block mt-1.5 text-[0.98rem] text-ink/75 leading-relaxed"><span
+                        class="text-violet font-bold mr-1.5">·</span><b class="text-ink">Chat with any alert</b> — ask
+                    if it's real and what it means for your position.</span>
+                <span class="block mt-1.5 text-[0.98rem] text-ink/75 leading-relaxed"><span
+                        class="text-violet font-bold mr-1.5">·</span><b class="text-ink">Dedicated AI agent</b> <span
+                        class="inline-flex items-center text-[10px] font-bold text-gold bg-gold-bg border border-gold-edge rounded-full px-1.5 py-0.5 align-middle">PRO</span>
+                    — tell it what you want from the market, and your alerts are written around you.</span>
+            </p>
         </section>
 
-        <!-- Benefits -->
-        <section class="benefits-section">
-            <div class="benefits-row">
-                <span class="benefit-chip">Stop watching charts all day</span>
-                <span class="benefit-chip">Never miss a reversal again</span>
-                <span class="benefit-chip">Get alerted the moment it happens</span>
-                <span class="benefit-chip">Know if it's a trap or a real move</span>
-                <span class="benefit-chip">Stay ahead without noise or guesswork</span>
-                <span class="benefit-chip">Covers MOEX and US stocks</span>
+        <!-- Benefits / feature chips -->
+        <section class="benefits-section flex mb-6 px-1">
+            <div class="benefits-row flex flex-wrap gap-2.5">
+                <span
+                    class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white border border-ink/10 text-[13px] font-semibold text-ink/70">
+                    <svg class="text-ink/45" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+                    </svg>
+                    Plain-English alerts
+                </span>
+                <span
+                    class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white border border-ink/10 text-[13px] font-semibold text-ink/70">
+                    <svg class="text-ink/45" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 4 3 8l4 4" />
+                        <path d="M3 8h14" />
+                        <path d="M17 20l4-4-4-4" />
+                        <path d="M21 16H7" />
+                    </svg>
+                    A read for traders &amp; investors
+                </span>
+                <span
+                    class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-gold-bg border border-gold-edge text-[13px] font-bold text-gold">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" />
+                    </svg>
+                    Chat with any alert
+                </span>
+                <span
+                    class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white border border-ink/10 text-[13px] font-semibold text-ink/70">
+                    <svg class="text-ink/45" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 2 11 13" />
+                        <path d="M22 2 15 22l-4-9-9-4z" />
+                    </svg>
+                    Delivered on Telegram
+                </span>
+                <span
+                    class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white border border-ink/10 text-[13px] font-semibold text-ink/70">
+                    <svg class="text-ink/45" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+                    </svg>
+                    MOEX · US stocks · futures · crypto
+                </span>
             </div>
         </section>
 
-        <!-- Stock picker -->
-        <section class="mb-4">
-            <div class="flex flex-wrap items-center gap-3">
-                <!-- Autocomplete -->
-                <div class="autocomplete-container relative flex-1 min-w-[180px] max-w-xs" id="autocompleteContainer">
-                    <input id="autocomplete" type="text" placeholder="Акция..." autocomplete="off"
-                        class="!py-2 !px-3 !text-sm">
-                    <div id="autocomplete-results"></div>
-                </div>
-
-                <!-- Preset stock pills -->
-                <div class="flex gap-1.5 flex-shrink-0" id="presetPills">
-                    <button class="preset-pill" data-ticker="PHOR">PHOR</button>
-                    <button class="preset-pill" data-ticker="OZON">OZON</button>
-                    <button class="preset-pill" data-ticker="SBER">SBER</button>
-                    <button class="preset-pill" data-ticker="LKOH">LKOH</button>
-                </div>
-
-                <!-- Mode switch compact -->
-                <div class="flex items-center gap-2 flex-shrink-0">
-                    <div class="card mode-switch flex rounded-lg overflow-hidden border border-white/10 p-0.5"
-                        id="modeSwitch">
-                        <button class="mode-btn py-1.5 px-3 text-xs text-white/50 transition-all"
-                            data-mode="strategic">Strategic</button>
-                        <button class="mode-btn py-1.5 px-3 text-xs text-white/50 transition-all"
-                            data-mode="meaningful">Meaningful</button>
-                        <button class="mode-btn py-1.5 px-3 text-xs text-white font-medium transition-all mode-active"
-                            data-mode="frequent">Frequent</button>
-                    </div>
-                </div>
-            </div>
-            <!-- Selected items below input -->
-            <div id="selected-items" class="flex flex-wrap gap-1.5 mt-2"></div>
-            <p class="mt-1.5 text-xs text-white/25" id="modeDescription">All signals including minor fluctuations.</p>
-        </section>
-
-        <!-- Main Chart + separate Latest-signals panel -->
+        <!-- Main working area: chart card + feed/chat panel -->
         <section class="mb-4" id="chartSection">
-            <div class="chart-events-row flex flex-col lg:flex-row gap-4">
-                <!-- Chart card -->
-                <div class="card card-glow p-4 relative flex-1 min-w-0">
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="text-lg font-semibold text-white/90" id="chartStockTitle">—</h2>
-                        <div id="signalShortcuts" class="flex flex-wrap gap-1.5"></div>
-                    </div>
-                    <div id="chartLoader"
-                        class="hidden absolute inset-0 bg-black/50 flex justify-center items-center rounded-xl z-10">
-                        <div class="loader"></div>
-                    </div>
-                    <div id="chart" class="flex justify-center items-center"></div>
+            <div class="chart-events-row flex flex-col lg:flex-row gap-4 items-start">
 
-                    <div id="agentActionBar" class="hidden mt-3 flex items-center justify-center gap-3">
-                        <button id="agentProceed"
-                            class="px-5 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors">
-                            Proceed
-                        </button>
-                        <span class="text-xs text-white/40">or</span>
-                        <button id="agentRetry"
-                            class="px-4 py-2 text-sm text-white/50 hover:text-white/80 bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
-                            try again
-                        </button>
-                    </div>
+                <!-- LEFT: stock picker + reference chart + agent launcher -->
+                <div class="flex-1 min-w-0 flex flex-col gap-2 w-full">
+                    <div class="bg-white border border-ink/10 rounded-[1.1rem] shadow-card p-4 relative">
 
-                    <div id="agentComments" class="hidden mt-3 space-y-2"></div>
-                </div>
+                        <!-- Stock picker row -->
+                        <div class="flex flex-wrap items-center gap-3 mb-1">
+                            <div class="autocomplete-container relative flex-1 min-w-[180px] max-w-xs"
+                                id="autocompleteContainer">
+                                <input id="autocomplete" type="text" placeholder="Акция..." autocomplete="off"
+                                    class="w-full py-2 px-3 text-sm font-medium rounded-lg bg-white border border-ink/15 text-ink placeholder-ink/40 outline-none hover:border-ink/30 focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all">
+                                <div id="autocomplete-results"
+                                    class="text-sm [&>div]:px-4 [&>div]:py-2.5 [&>div]:cursor-pointer [&>div:hover]:bg-ink/5">
+                                </div>
+                            </div>
 
-                <!-- Latest signals — separate sibling panel -->
-                <div class="card events-panel events-panel-attention p-3 relative">
-                    <div class="events-panel-header mb-2 px-1">
-                        <div class="flex items-center gap-2">
-                            <span class="live-dot"></span>
-                            <h3 class="events-panel-title">Latest signals</h3>
+                            <div class="flex gap-1.5 flex-shrink-0 flex-wrap" id="presetPills">
+                                <button class="preset-pill" data-ticker="PHOR">PHOR</button>
+                                <button class="preset-pill" data-ticker="OZON">OZON</button>
+                                <button class="preset-pill" data-ticker="SBER">SBER</button>
+                                <button class="preset-pill" data-ticker="LKOH">LKOH</button>
+                            </div>
+
+                            <div class="flex items-center gap-2 flex-shrink-0 ml-auto">
+                                <div class="mode-switch flex rounded-full bg-ink/5 p-0.5" id="modeSwitch">
+                                    <button
+                                        class="mode-btn py-1.5 px-3 text-xs rounded-full text-ink/60 transition-all cursor-pointer"
+                                        data-mode="strategic">Strategic</button>
+                                    <button
+                                        class="mode-btn py-1.5 px-3 text-xs rounded-full text-ink/60 transition-all cursor-pointer"
+                                        data-mode="meaningful">Meaningful</button>
+                                    <button
+                                        class="mode-btn py-1.5 px-3 text-xs rounded-full text-white font-medium transition-all cursor-pointer mode-active"
+                                        data-mode="frequent">Frequent</button>
+                                </div>
+                            </div>
                         </div>
-                        <p class="events-panel-sub">Our reads of recent price action — what to watch, what's shifting.</p>
+                        <div id="selected-items" class="flex flex-wrap gap-1.5"></div>
+                        <p class="mt-1 mb-3 text-xs text-ink/40" id="modeDescription">All signals including minor
+                            fluctuations.</p>
+
+                        <!-- Chart title row -->
+                        <div class="flex items-baseline justify-between gap-3 mb-2 flex-wrap">
+                            <h2 class="text-lg font-bold tracking-tight text-ink" id="chartStockTitle">—</h2>
+                            <span class="text-xs text-ink/40 font-medium hidden sm:inline">Price history · for visual
+                                reference</span>
+                            <div id="signalShortcuts" class="flex flex-wrap gap-1.5"></div>
+                        </div>
+
+                        <!-- Reference chart -->
+                        <div class="relative">
+                            <div id="chartLoader"
+                                class="hidden absolute inset-0 bg-white/60 flex justify-center items-center rounded-xl z-10">
+                                <div class="loader"></div>
+                            </div>
+                            <div id="chart"
+                                class="w-full min-h-[300px] md:min-h-[420px] bg-gradient-to-b from-paper/50 to-white border border-ink/10 rounded-xl overflow-hidden">
+                            </div>
+                            <div
+                                class="chart-ref-note absolute left-3 bottom-2.5 flex items-center gap-1.5 text-[11.5px] text-ink/40 font-medium pointer-events-none z-[5]">
+                                dots mark where recent signals fired</div>
+                        </div>
+
+                        <div id="agentActionBar" class="hidden mt-3 flex items-center justify-center gap-3">
+                            <button id="agentProceed"
+                                class="px-5 py-2 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-lg transition-colors">
+                                Proceed
+                            </button>
+                            <span class="text-xs text-ink/40">or</span>
+                            <button id="agentRetry"
+                                class="px-4 py-2 text-sm text-ink/50 hover:text-ink/80 bg-ink/5 hover:bg-ink/10 rounded-lg transition-colors">
+                                try again
+                            </button>
+                        </div>
+
+                        <div id="agentComments" class="hidden mt-3 space-y-2"></div>
+
+                        <!-- Dedicated agent launcher -->
+                        <div class="mt-4 rounded-xl border border-violet-edge bg-violet-bg/60 p-4" id="agentSection">
+                            <div class="flex items-center gap-2 text-sm font-bold text-violet">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15.5 10.1 10.9 5.5 9l4.6-1.4z" />
+                                    <path d="M19 14l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" />
+                                </svg>
+                                Dedicated AI agent
+                            </div>
+                            <form id="agentForm" class="mt-3 flex gap-2 items-stretch">
+                                <textarea id="agentQuery" rows="1"
+                                    class="flex-1 rounded-lg bg-white border border-violet-edge text-ink text-sm placeholder-ink/40 px-3.5 py-2.5 outline-none focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all resize-none"
+                                    placeholder="Describe a pattern — “double bottom forming”, “momentum picking up”…"></textarea>
+                                <button type="submit" id="agentSubmit"
+                                    class="px-4 text-[13px] font-bold text-white bg-violet hover:bg-violet-dark rounded-lg transition-colors">
+                                    Scan all
+                                </button>
+                            </form>
+                            <p id="agentStatus" class="text-xs text-ink/40 mt-2"></p>
+                        </div>
                     </div>
-                    <div id="eventsList"
-                        class="hidden opacity-50 pointer-events-none events-list events-hscroll"></div>
-                    <div id="shimmerLoader"
-                        class="hidden events-list flex-col gap-2 pointer-events-none">
-                        <div class="signal-card-shimmer animate-pulse h-16 rounded-lg bg-white/5"></div>
-                        <div class="signal-card-shimmer animate-pulse h-16 rounded-lg bg-white/5"></div>
-                        <div class="signal-card-shimmer animate-pulse h-16 rounded-lg bg-white/5"></div>
+
+                    <p class="text-[13px] text-ink/45 px-1 leading-relaxed">The chart is for reference — DeepDIP is an
+                        alerts product, not a trading terminal.</p>
+                </div>
+
+                <!-- RIGHT: latest signals feed / alert chat -->
+                <div class="events-panel w-full lg:w-[380px] flex-shrink-0 flex flex-col">
+
+                    <!-- FEED -->
+                    <div class="bg-white border border-ink/10 rounded-[1.1rem] shadow-card p-3 relative flex flex-col min-h-0"
+                        id="feedPanel">
+                        <div class="events-panel-header border-b border-ink/10 px-1 pb-2.5 mb-1">
+                            <div class="flex items-center gap-2">
+                                <span class="live-dot"></span>
+                                <h3 class="text-base font-bold tracking-tight text-ink">Latest signals</h3>
+                            </div>
+                            <p class="text-xs text-ink/40 mt-1 leading-snug">plain-language reads · newest first</p>
+                        </div>
+                        <div id="eventsList"
+                            class="hidden opacity-50 pointer-events-none events-list nicescroll gap-2.5 overflow-y-auto overflow-x-hidden flex-1 min-h-[240px] max-h-[560px] pt-2 pr-1">
+                        </div>
+                        <div id="shimmerLoader" class="hidden events-list flex-col gap-2 pointer-events-none pt-2">
+                            <div class="signal-card-shimmer animate-pulse h-16 rounded-xl bg-ink/5"></div>
+                            <div class="signal-card-shimmer animate-pulse h-16 rounded-xl bg-ink/5"></div>
+                            <div class="signal-card-shimmer animate-pulse h-16 rounded-xl bg-ink/5"></div>
+                        </div>
+                    </div>
+
+                    <!-- CHAT (opens from an alert card; input disabled for now) -->
+                    <div class="bg-white border border-ink/10 rounded-[1.1rem] shadow-card overflow-hidden flex-col min-h-[480px] hidden"
+                        id="chatPanel">
+                        <div class="px-4 py-3 border-b border-ink/10 flex items-center gap-3 bg-gold-bg/60">
+                            <button
+                                class="w-8 h-8 grid place-items-center rounded-full border border-ink/15 bg-white text-ink/70 hover:text-ink transition-colors"
+                                id="chatBack">←</button>
+                            <div>
+                                <div class="text-sm font-bold tracking-tight leading-none" id="chatTitle">— · this alert
+                                </div>
+                                <div class="text-[11.5px] text-ink/45 mt-1" id="chatSub">conversation stays pinned to
+                                    this signal</div>
+                            </div>
+                        </div>
+                        <div class="flex-1 overflow-y-auto nicescroll p-4 flex flex-col gap-4 min-h-[240px]"
+                            id="chatThread">
+                            <div class="self-start max-w-[92%] flex gap-2.5">
+                                <span
+                                    class="shrink-0 w-7 h-7 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet mt-0.5">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15.5 10.1 10.9 5.5 9l4.6-1.4z" />
+                                    </svg>
+                                </span>
+                                <div class="bg-paper/70 border border-ink/10 rounded-2xl rounded-tl-md px-4 py-3 read text-[15px] leading-relaxed text-ink"
+                                    id="chatFirstMsg"></div>
+                            </div>
+                        </div>
+                        <div class="border-t border-ink/10 p-3">
+                            <div class="flex gap-1.5 flex-wrap mb-2.5">
+                                <span
+                                    class="text-xs font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-2.5 py-1 opacity-80">Is
+                                    this a trap or a real move?</span>
+                                <span
+                                    class="text-xs font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-2.5 py-1 opacity-80">What
+                                    does it mean long-term?</span>
+                                <span
+                                    class="text-xs font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-2.5 py-1 opacity-80">Notify
+                                    me if it breaks</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <div
+                                    class="flex-1 rounded-lg border border-dashed border-ink/20 bg-paper px-3.5 py-2.5 text-sm text-ink/40 cursor-not-allowed">
+                                    Ask anything about this alert…</div>
+                                <button
+                                    class="rounded-lg bg-ink/15 text-white px-4 grid place-items-center cursor-not-allowed"
+                                    aria-label="Send" disabled>
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 2 11 13" />
+                                        <path d="M22 2 15 22l-4-9-9-4z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="text-[11.5px] text-ink/40 mt-2 text-center">Chat is coming soon — connect the
+                                Telegram bot below to get these alerts live.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Dedicated Agent — landing section -->
-        <section class="mb-10" id="agentSection">
-            <div class="text-center mb-6">
-                <h2 class="agent-section-title text-3xl md:text-4xl font-bold text-white mb-2">
-                    <span class="gradient-text">Dedicated</span> Agent
-                </h2>
-                <p class="text-base text-white/45 max-w-lg mx-auto">
-                    Describe any market pattern — double bottom, V-reversal, momentum acceleration — and our AI agent
-                    will scan all stocks to find matches.
-                </p>
-            </div>
-
-            <form id="agentForm" class="max-w-xl mx-auto mb-3">
-                <textarea id="agentQuery" rows="3"
-                    class="w-full py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:border-indigo-500 focus:outline-none transition-colors resize-none mb-3"
-                    placeholder="e.g. double bottom with macro support, V-reversal, momentum acceleration..."></textarea>
-                <div class="flex justify-center">
-                    <button type="submit" id="agentSubmit"
-                        class="px-8 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition-colors shadow-lg shadow-indigo-500/20">
-                        Search patterns
-                    </button>
-                </div>
-            </form>
-            <p id="agentStatus" class="text-xs text-white/30 text-center"></p>
         </section>
 
         <!-- Login / Subscribe — bottom -->
-        <section class="flex flex-col lg:flex-row gap-4 mb-6" id="signupSection">
+        <section class="flex flex-col lg:flex-row gap-4 mb-6 mt-8" id="signupSection">
 
             <!-- Instructions / Login card -->
-            <div class="card p-5 lg:w-1/2">
-                <h2 class="text-base font-semibold text-white mb-3">Инструкция</h2>
+            <div class="bg-white border border-ink/10 rounded-[1.1rem] shadow-card p-5 lg:w-1/2">
+                <h2 class="text-base font-bold text-ink mb-3">Инструкция</h2>
 
-                <div class="text-sm text-white/55 login-text hidden" id="final-result">
-                    <h2 class="text-base font-semibold text-white mb-2">Вход выполнен</h2>
+                <div class="text-sm text-ink/60 login-text hidden" id="final-result">
+                    <h2 class="text-base font-bold text-ink mb-2">Вход выполнен</h2>
                     <p>1. Выберите одну или несколько нужных вам акций. Для последней в списке отображается график.</p>
                     <p>2. Можете настроить параметры в боксах или оставить по умолчанию. График обновляется. БОТ будет
                         слать алерты в течение торгового дня.</p>
                 </div>
 
-                <div class="text-sm text-white/55 login-text" id="initial-text">
+                <div class="text-sm text-ink/60 login-text" id="initial-text">
                     <p>1. В Telegram найдите бот <a href="https://t.me/buydipru_bot"
-                            class="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">buydipru_bot</a>
+                            class="font-semibold text-violet hover:text-violet-dark transition-colors">buydipru_bot</a>
                         и нажмите /start. Введите код в форму ниже.</p>
                     <p>2. Выберите одну или несколько нужных вам акций.</p>
                     <p>3. Настройте параметры или оставьте по умолчанию. БОТ будет слать алерты в течение торгового дня.
                     </p>
-                    <p class="text-white/35">Отписаться от алертов можно в его интерфейсе. Сервис не хранит Ваши данные.
+                    <p class="text-ink/40">Отписаться от алертов можно в его интерфейсе. Сервис не хранит Ваши данные.
                     </p>
                 </div>
 
                 <form id="code-confirmation-form" class="mt-3 flex gap-2">
                     <input name="code" type="text" placeholder="Код от БОТа"
-                        class="flex-1 py-2 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-white/30 focus:border-indigo-500 focus:outline-none transition-colors" />
+                        class="flex-1 py-2 px-3 rounded-lg bg-white border border-ink/15 text-ink text-sm placeholder-ink/40 outline-none focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all" />
                     <button type="submit"
-                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors">
+                        class="px-4 py-2 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-lg transition-colors">
                         Войти
                     </button>
                 </form>
                 <div id="process-indicator" class="mt-3 hidden">
-                    <p class="text-sm text-white/50">Processing...</p>
+                    <p class="text-sm text-ink/50">Processing...</p>
                 </div>
             </div>
 
             <!-- Subscribe + subscriptions -->
             <div class="lg:w-1/2 flex flex-col gap-3">
                 <div class="flex flex-col items-start gap-2">
-                    <button class="subscribe-button subscribe-button-sm" id="submit_alerts">
+                    <button
+                        class="subscribe-button subscribe-button-sm flex items-center justify-center px-8 py-2.5 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-full shadow-card hover:-translate-y-px transition-all"
+                        id="submit_alerts">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="mr-1.5">
@@ -242,10 +395,10 @@
                         </svg>
                         Подписаться
                     </button>
-                    <p class="text-xs text-white/25">Нажимая на Подписаться, вы принимаете условия использования.
+                    <p class="text-xs text-ink/40">Нажимая на Подписаться, вы принимаете условия использования.
                         Не является индивидуальной инвестиционной рекомендацией.</p>
                 </div>
-                <div id="selections" class="text-sm text-white/50">Пока нет уведомлений</div>
+                <div id="selections" class="text-sm text-ink/50">Пока нет уведомлений</div>
             </div>
         </section>
 
@@ -253,7 +406,7 @@
 
     <!-- Footer -->
     <footer class="w-full max-w-7xl mx-auto px-6 py-6 mt-auto">
-        <p class="text-xs text-white/20 leading-relaxed">
+        <p class="text-xs text-ink/35 leading-relaxed">
             &copy; 2026 &mdash; <b>Предупреждение о риске:</b> Торговля финансовыми инструментами сопряжена с высокими
             рисками,
             включая риск потери части или всей суммы инвестиций. Информация на сайте носит ориентировочный характер.
@@ -262,24 +415,116 @@
         </p>
     </footer>
 
+    <!-- Greeting popup (Get started) -->
+    <div class="hidden fixed inset-0 bg-ink/45 backdrop-blur-sm z-[1000]" id="greetingPopup"
+        onclick="closeGreetingPopup()">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-md bg-white rounded-[1.1rem] border border-ink/10 shadow-lift overflow-hidden"
+            onclick="event.stopPropagation()">
+            <div class="px-6 pt-6 pb-5 bg-gradient-to-b from-paper/60 to-white">
+                <div class="flex items-center gap-2.5 mb-4 flex-wrap">
+                    <span
+                        class="w-7 h-7 rounded-lg bg-violet grid place-items-center text-white text-sm font-extrabold -rotate-6">D</span>
+                    <span class="font-extrabold text-lg tracking-tight">Deep<span class="text-violet">DIP</span></span>
+                    <span
+                        class="ml-auto inline-flex items-center gap-1.5 text-[11px] font-bold text-gold bg-gold-bg border border-gold-edge rounded-full px-2.5 py-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>New · chat with any alert
+                    </span>
+                </div>
+                <h3 class="read text-2xl leading-snug font-semibold tracking-tight">Markets punish guessing.</h3>
+                <p class="text-sm text-ink/65 leading-relaxed mt-2">Most of us own stocks we can't read — so we sell
+                    good
+                    dips, sit through real breaks, or stop looking at all. DeepDIP is your eyes on the market: it
+                    watches
+                    every bar of your stocks, and when a move is meaningful — a breakout, a reversal, a test of a
+                    multi-month level — an AI analyst tells you in one honest sentence what happened, which level
+                    matters, and what it means for your horizon. So you never act blind, and never act alone.</p>
+            </div>
+            <div class="px-6 py-4 border-t border-ink/10 flex flex-col gap-3 text-sm text-ink/70">
+                <div class="flex gap-3 items-start">
+                    <span
+                        class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">1</span>
+                    <p class="leading-snug">Connect the Telegram bot <a href="https://t.me/buydipru_bot"
+                            class="font-semibold text-violet hover:text-violet-dark">buydipru_bot</a> — it sends your
+                        login code and, later, your alerts.</p>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <span
+                        class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">2</span>
+                    <p class="leading-snug">Pick what to watch — MOEX, US stocks, futures, crypto — and a signal mode,
+                        from major trend shifts only to every move.</p>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <span
+                        class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">3</span>
+                    <p class="leading-snug">Subscribe. Through the trading day you get plain-language reads — one line
+                        for traders, one for long-term holders.</p>
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t border-ink/10 flex flex-col gap-3 text-sm text-ink/70">
+                <div class="flex gap-3 items-start">
+                    <span
+                        class="shrink-0 w-6 h-6 rounded-full bg-gold-bg border border-gold-edge grid place-items-center text-gold">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" />
+                        </svg>
+                    </span>
+                    <p class="leading-snug"><b class="text-ink">Talk to any alert.</b> Every alert opens a conversation
+                        — ask if it's a trap or a real move, what it means for your position, what level to watch next.
+                    </p>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <span
+                        class="shrink-0 w-6 h-6 rounded-full bg-gold-bg border border-gold-edge grid place-items-center text-gold">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+                        </svg>
+                    </span>
+                    <p class="leading-snug"><b class="text-ink">Make the alerts yours</b> <span
+                            class="inline-flex items-center text-[10px] font-bold text-gold bg-gold-bg border border-gold-edge rounded-full px-1.5 py-0.5 align-middle">PRO</span>
+                        — tell DeepDIP what you want from the market, in your own words: <i class="text-ink/60">"I hold
+                            Lukoil long-term — only write to me when something threatens the trend"</i>, or <i
+                            class="text-ink/60">"flag sharp dips that look worth buying"</i>. Your alerts get written
+                        around that.</p>
+                </div>
+            </div>
+            <div class="px-6 pb-6 pt-2 flex gap-2">
+                <button
+                    class="flex-1 py-2.5 rounded-full bg-violet hover:bg-violet-dark text-white text-sm font-bold transition-colors"
+                    onclick="closeGreetingPopup();document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Connect
+                    Telegram</button>
+                <button
+                    class="flex-1 py-2.5 rounded-full border border-ink/15 text-ink/70 hover:text-ink hover:border-ink/30 text-sm font-semibold transition-colors"
+                    onclick="closeGreetingPopup();document.getElementById('chartSection').scrollIntoView({behavior:'smooth'})">Explore
+                    signals first</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Help popup -->
-    <div class="help-popup hidden" id="helpPopup" onclick="closeHelpPopup()">
-        <div class="help-content bg-zinc-900 text-white" onclick="event.stopPropagation();">
-            <div class="help-sidebar bg-zinc-800">
-                <h2 class="text-lg font-semibold mb-4">Contents</h2>
+    <div class="help-popup hidden fixed inset-0 w-full h-full bg-ink/45 backdrop-blur-sm z-[1000]" id="helpPopup"
+        onclick="closeHelpPopup()">
+        <div class="help-content absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[900px] h-[85%] max-h-[600px] rounded-xl flex overflow-hidden border border-ink/15 shadow-lift bg-white text-ink max-md:flex-col"
+            onclick="event.stopPropagation();">
+            <div
+                class="help-sidebar w-[30%] p-6 overflow-y-auto border-r border-ink/10 bg-paper max-md:w-full max-md:max-h-[30%] max-md:border-r-0 max-md:border-b">
+                <h2 class="text-lg font-bold mb-4">Contents</h2>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="#conditions" class="text-indigo-400 hover:text-indigo-300">Условия использования</a>
+                    <li><a href="#conditions" class="text-violet hover:text-violet-dark">Условия использования</a>
                     </li>
-                    <li><a href="#chart-info" class="text-indigo-400 hover:text-indigo-300">График</a></li>
-                    <li><a href="#trend-following" class="text-indigo-400 hover:text-indigo-300">Алерты на тренд</a>
+                    <li><a href="#chart-info" class="text-violet hover:text-violet-dark">График</a></li>
+                    <li><a href="#trend-following" class="text-violet hover:text-violet-dark">Алерты на тренд</a>
                     </li>
-                    <li><a href="#trend-step" class="text-indigo-400 hover:text-indigo-300">Движение цены</a></li>
-                    <li><a href="#range-breakout" class="text-indigo-400 hover:text-indigo-300">Выход из боковика</a>
+                    <li><a href="#trend-step" class="text-violet hover:text-violet-dark">Движение цены</a></li>
+                    <li><a href="#range-breakout" class="text-violet hover:text-violet-dark">Выход из боковика</a>
                     </li>
-                    <li><a href="#price-spike" class="text-indigo-400 hover:text-indigo-300">Скачок цены</a></li>
+                    <li><a href="#price-spike" class="text-violet hover:text-violet-dark">Скачок цены</a></li>
                 </ul>
             </div>
-            <div class="help-main">
+            <div
+                class="help-main w-[70%] p-6 overflow-y-auto max-md:w-full max-md:max-h-[70%] [&_h3]:font-semibold [&_h3]:text-base [&_h3]:mt-0 [&_p]:text-sm [&_p]:text-ink/60 [&_p]:leading-relaxed [&_.help-section]:mb-6">
                 <div class="help-section" id="conditions">
                     <h3>Условия использования</h3>
                     <p>Все уведомления имеют разный тип, в справке описано их примерное применение.
@@ -311,27 +556,29 @@
                     <p>Скачок цены свидетельствует о событиях масштаба рынка или локальных необычных активностях.
                         При обычной или повышенной волатильности может служить подтверждением смены тренда.</p>
                 </div>
-                <div class="feedback-form mt-8 p-4 bg-zinc-800 rounded-lg" id="testimonials">
+                <div class="feedback-form mt-8 p-4 bg-paper rounded-lg" id="testimonials">
                     <h3 class="text-base font-semibold mb-3">Feedback</h3>
                     <form id="feedbackForm" onsubmit="submitFeedback(event)">
                         <textarea id="feedbackText" name="feedbackText" rows="3"
-                            class="w-full p-2 bg-zinc-700 text-white text-sm rounded-lg border border-white/10 focus:border-indigo-500 focus:outline-none"
+                            class="w-full p-2 bg-white text-ink text-sm rounded-lg border border-ink/15 outline-none focus:border-violet"
                             required placeholder="Your feedback..."></textarea>
                         <button type="submit"
-                            class="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors">
+                            class="mt-2 px-4 py-2 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-lg transition-colors">
                             Submit
                         </button>
                     </form>
                 </div>
             </div>
-            <span class="help-close" onclick="closeHelpPopup()">&times;</span>
+            <span
+                class="help-close absolute top-3 right-4 text-2xl text-ink/50 hover:text-ink cursor-pointer transition-colors"
+                onclick="closeHelpPopup()">&times;</span>
         </div>
     </div>
 
-    <script src="lightweight-charts.standalone.production.js?v=4.2.2"></script>
-    <script src="js.js?v=8"></script>
-    <script src="chart.js?v=1"></script>
-    <script src="agent.js?v=2"></script>
+    <script src="lightweight-charts.standalone.production.js?v=5.2.0"></script>
+    <script src="js.js?v=9"></script>
+    <script src="chart.js?v=2"></script>
+    <script src="agent.js?v=3"></script>
 
 </body>
 
