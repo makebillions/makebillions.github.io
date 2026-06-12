@@ -241,39 +241,6 @@ function renderEvents(events) {
         .join("");
 }
 
-// ============================================================
-// Alert chat (new design): fake chat pinned to one alert.
-// First message = the alert itself; input stays disabled.
-// ============================================================
-const feedPanel = document.getElementById("feedPanel");
-const chatPanel = document.getElementById("chatPanel");
-
-function openAlertChat(card) {
-    if (!chatPanel || !feedPanel || !card) return;
-    const ticker = (document.getElementById("chartStockTitle")?.textContent || "")
-        .trim()
-        .split(/\s+/)[0] || "\u2014";
-    const when = card.querySelector(".event-when")?.textContent.trim() || "";
-    document.getElementById("chatTitle").textContent = `${ticker} \u00B7 this alert`;
-    document.getElementById("chatSub").textContent = when
-        ? `conversation stays pinned to the ${when} signal`
-        : "conversation stays pinned to this signal";
-    const msg = card.querySelector(".read");
-    document.getElementById("chatFirstMsg").innerHTML = msg ? msg.innerHTML : "";
-    feedPanel.classList.add("hidden");
-    chatPanel.classList.remove("hidden");
-    chatPanel.classList.add("flex");
-}
-
-function closeAlertChat() {
-    if (!chatPanel || !feedPanel) return;
-    chatPanel.classList.add("hidden");
-    chatPanel.classList.remove("flex");
-    feedPanel.classList.remove("hidden");
-}
-
-const chatBackBtn = document.getElementById("chatBack");
-if (chatBackBtn) chatBackBtn.addEventListener("click", closeAlertChat);
 
 // Track when the user last scrolled the overlay themselves \u2014 chart-pan
 // auto-sync defers to manual scroll for ~2s so we don't yank position.

@@ -14,13 +14,28 @@ function debounce(func, delay) {
     };
 }
 
+// Auth token (from /api/setUser) + anonymous id, both in localStorage.
+// Every API call carries them; the server resolves uid from the token.
+function getAnonId() {
+    let id = localStorage.getItem("anonId");
+    if (!id) {
+        id = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
+        localStorage.setItem("anonId", id);
+    }
+    return id;
+}
+
 function post(url, data = {}) {
+    const headers = {
+        "Content-Type": "application/json",
+        "serveo-skip-browser-warning": "true",
+        "x-anon-id": getAnonId(),
+    };
+    const token = localStorage.getItem("authToken");
+    if (token) headers["Authorization"] = `Bearer ${token}`;
     return fetch(url, {
         method: "post",
-        headers: {
-            "Content-Type": "application/json",
-            "serveo-skip-browser-warning": "true",
-        },
+        headers,
         body: JSON.stringify(data),
         credentials: "include",
     })
@@ -212,6 +227,7 @@ function setStocks(arr) {
 
 function setIsLoggedIn(v) {
     isLoggedIn = v;
+    window.__isLoggedIn = v; // read by chart.js (anon chat limit)
     if (v) {
         initText.style.display = "none";
         confirmForm.style.display = "none";
@@ -402,9 +418,11 @@ function maybeShowVpnNotice() {
     if (__vpnNoticeDismissed || document.getElementById("vpnNotice")) return;
     const bar = document.createElement("div");
     bar.id = "vpnNotice";
+    // Static (not fixed) so it pushes the sticky header down instead of
+    // covering it; new-design violet.
     bar.style.cssText =
-        "position:fixed;top:0;left:0;right:0;z-index:1000;padding:10px 16px;" +
-        "background:#7c3aed;color:#fff;font-size:14px;text-align:center;";
+        "padding:10px 16px;background:#6366f1;color:#fff;" +
+        "font-size:14px;font-weight:500;text-align:center;";
     bar.innerHTML =
         "Соединение медленное — возможно, провайдер ограничивает доступ. Для корректной работы графиков рекомендуем включить VPN." +
         ' <span style="cursor:pointer;margin-left:12px;text-decoration:underline;" onclick="window.__dismissVpnNotice()">Скрыть</span>';
@@ -480,7 +498,10 @@ const AlertMes = {
 
     const confirmClick = async (code) => {
         const res = await post(url("/api/setUser"), { code });
-        if (res.result) setIsLoggedIn(true);
+        if (res.result) {
+            if (res.token) localStorage.setItem("authToken", res.token);
+            setIsLoggedIn(true);
+        }
         return res;
     };
 
