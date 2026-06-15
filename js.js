@@ -61,62 +61,43 @@ function url(path) {
     return `${host}${path}`;
 }
 
-// --- Investor mode (URL param ?investors) ---
-const INVESTOR_MODE = new URLSearchParams(window.location.search).has(
-    "investors"
-);
-window.__investorMode = INVESTOR_MODE;
+// --- Language (English is the default; ?ru switches UI text to Russian) ---
+// The page markup is English; RU_MODE swaps the affected pieces to Russian.
+// The ticker universe is identical in both languages — only UI text differs.
+const RU_MODE = new URLSearchParams(window.location.search).has("ru");
+window.__ruMode = RU_MODE;
 
-if (INVESTOR_MODE) {
-    // English UI
-    document.querySelector(".hero-title").innerHTML =
-        'Real-time <span class="gradient-text">trend</span> signals';
-    document.querySelector(".hero-title + p").textContent =
-        "Trend analytics and Telegram alerts.";
-    document.getElementById("autocomplete").placeholder = "Stock...";
+if (RU_MODE) {
+    // Russian UI — hero text and preset pills are kept from index.html (do not overwrite)
+    document.getElementById("autocomplete").placeholder = "Акция...";
 
-    // Preset pills: NVDA, AAPL
-    const pillsContainer = document.getElementById("presetPills");
-    pillsContainer.innerHTML =
-        '<button class="preset-pill" data-ticker="NVDA">NVDA</button>' +
-        '<button class="preset-pill" data-ticker="AAPL">AAPL</button>';
-
-    // Hide help nav link, keep feedback
-    const navLinks = document.querySelectorAll("header nav .flex.gap-1 a");
-    navLinks.forEach((a) => {
-        if (a.textContent.trim() === "Справка") a.style.display = "none";
-        if (a.textContent.trim() === "Отзыв") a.style.display = "none";
-    });
-
-    // Signup section — English
-    document.querySelector("#signupSection h2").textContent = "Instructions";
+    document.querySelector("#signupSection h2").textContent = "Инструкция";
     const initialText = document.getElementById("initial-text");
     initialText.innerHTML =
-        '<p>1. Find the bot <a href="https://t.me/buydipru_bot" class="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">buydipru_bot</a> on Telegram and press /start. Enter the code below.</p>' +
-        "<p>2. Select one or more stocks.</p>" +
-        "<p>3. Configure parameters or leave defaults. The BOT will send alerts during the trading day.</p>" +
-        '<p class="text-ink/40">You can unsubscribe via the bot interface. The service does not store your personal data.</p>';
+        '<p>1. Откройте бот кнопкой ниже и нажмите Start — он пришлёт код. Введите код в форму.</p>' +
+        '<a href="https://t.me/buydipru_bot?start=web" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-1 mb-2 px-5 py-2.5 bg-[#229ED9] hover:bg-[#1d8dc2] text-white text-sm font-semibold rounded-full transition-colors no-underline"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>Открыть бот в Telegram</a>' +
+        "<p>2. Выберите одну или несколько нужных вам акций.</p>" +
+        "<p>3. Настройте параметры или оставьте по умолчанию. БОТ будет слать алерты в течение торгового дня.</p>" +
+        '<p class="text-ink/40">Отписаться от алертов можно в его интерфейсе. Сервис не хранит Ваши данные.</p>';
     const afterLoginEl = document.getElementById("final-result");
     afterLoginEl.innerHTML =
-        '<h2 class="text-base font-semibold text-ink mb-2">Logged in</h2>' +
-        "<p>1. Select one or more stocks. The chart displays for the last selected stock.</p>" +
-        "<p>2. You can configure settings or leave defaults. The chart updates. The BOT will send alerts during the trading day.</p>";
+        '<h2 class="text-base font-bold text-ink mb-2">Вход выполнен</h2>' +
+        "<p>1. Выберите одну или несколько нужных вам акций. Для последней в списке отображается график.</p>" +
+        "<p>2. Можете настроить параметры в боксах или оставить по умолчанию. График обновляется. БОТ будет слать алерты в течение торгового дня.</p>";
     document.querySelector(
         '#code-confirmation-form input[name="code"]'
-    ).placeholder = "Code from BOT";
+    ).placeholder = "Код от БОТа";
     document.querySelector("#code-confirmation-form button").textContent =
-        "Login";
+        "Войти";
 
-    // Subscribe button & text
     document.getElementById("submit_alerts").innerHTML =
-        '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor"></path><path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none"></path></svg>Subscribe';
+        '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor"></path><path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none"></path></svg>Подписаться';
     document.querySelector("#submit_alerts + p").textContent =
-        "By clicking Subscribe, you accept the terms of use. This is not individual investment advice.";
-    document.getElementById("selections").textContent = "No alerts yet";
+        "Нажимая на Подписаться, вы принимаете условия использования. Не является индивидуальной инвестиционной рекомендацией.";
+    document.getElementById("selections").textContent = "Пока нет уведомлений";
 
-    // Footer
     document.querySelector("footer p").innerHTML =
-        "&copy; 2026 &mdash; <b>Risk Warning:</b> Trading financial instruments involves high risks, including the risk of losing part or all of your investment. Information on this site is indicative. The service owner disclaims responsibility for any losses incurred as a result of trades made based on this information.";
+        "&copy; 2026 &mdash; <b>Предупреждение о риске:</b> Торговля финансовыми инструментами сопряжена с высокими рисками, включая риск потери части или всей суммы инвестиций. Информация на сайте носит ориентировочный характер. Владелец сервиса отказывается от ответственности за любые потери, понесенные в результате торговых сделок, совершенных с оглядкой на указанную информацию.";
 }
 
 // --- Signal mode (strategic / meaningful / frequent) ---
@@ -453,7 +434,7 @@ const AlertMes = {
             selectionDiv.textContent = AlertMes[selection.alertType](selection);
             const deleteButton = document.createElement("button");
             deleteButton.type = "button";
-            deleteButton.textContent = INVESTOR_MODE ? "Delete" : "Удалить";
+            deleteButton.textContent = RU_MODE ? "Удалить" : "Delete";
             deleteButton.className =
                 "bg-violet hover:bg-violet-dark text-white font-bold py-2 px-4 rounded-lg ml-5";
             deleteButton.onclick = () => handleDelete(selection.id);
@@ -479,9 +460,9 @@ const AlertMes = {
             .then((r) => {
                 setSelections(r.payload);
                 alert(
-                    INVESTOR_MODE
-                        ? "Subscribed! You can unsubscribe at the bottom of the page or via the BOT."
-                        : "Подписка выполнена! Отписаться можно внизу страницы или в БОТе."
+                    RU_MODE
+                        ? "Подписка выполнена! Отписаться можно внизу страницы или в БОТе."
+                        : "Subscribed! You can unsubscribe at the bottom of the page or via the BOT."
                 );
             })
             .catch((e) => alert(e));
@@ -491,7 +472,7 @@ const AlertMes = {
         post(url("/api/algos/del"), { id })
             .then((r) => {
                 setSelections(r.payload);
-                alert(INVESTOR_MODE ? "Deleted!" : "Удалено!");
+                alert(RU_MODE ? "Удалено!" : "Deleted!");
             })
             .catch((e) => alert(e));
     };
@@ -535,23 +516,16 @@ const AlertMes = {
     // VPN notice optimistically, then reconcile once geo is known: keep it for
     // RU, drop it for anyone else (e.g. slow but not throttled).
     const slowTimer = setTimeout(maybeShowVpnNotice, 2500);
-    post(url("/api/stocks"), INVESTOR_MODE ? { market: "us" } : {}).then(
+    // One unified universe regardless of UI language.
+    post(url("/api/stocks"), {}).then(
         (r) => {
             clearTimeout(slowTimer);
             if (r.geo === "RU") maybeShowVpnNotice();
             else hideVpnNotice();
             setStocks(r.payload);
-            if (INVESTOR_MODE) {
-                const nvda = r.payload.find((s) => s.ticker === "NVDA");
-                if (nvda) setStock([nvda]);
-                else if (r.payload.length) setStock([r.payload[0]]);
-            } else {
-                const phor = r.payload.find(
-                    (s) => s.ticker.toLowerCase() === "phor"
-                );
-                if (phor) setStock([phor]);
-                else if (r.payload.length) setStock([r.payload[0]]);
-            }
+            const def = r.payload.find((s) => s.ticker === "PLZL");
+            if (def) setStock([def]);
+            else if (r.payload.length) setStock([r.payload[0]]);
             initPresetPills(r.payload);
         }
     );
