@@ -107,6 +107,15 @@ const MODE_SENS = {
     meaningful: [1, 2, 3, 4, 5, 6],
     frequent: [1, 2, 3, 4, 5, 6, 7],
 };
+// Chart markers filter by importance TIER (tiering.py category), not sensitivity.
+// Nested: each mode is a superset of the stricter one. Alerts with no category
+// fall back to FREQUENT (shown only in the broadest mode). Comments are NOT
+// filtered by mode — the feed always shows every commentary line.
+const MODE_CATEGORIES = {
+    strategic: ["STRATEGIC"],
+    meaningful: ["STRATEGIC", "MEANINGFUL"],
+    frequent: ["STRATEGIC", "MEANINGFUL", "FREQUENT"],
+};
 const MODE_DESC = {
     strategic: "Major trend signals only. Least noise.",
     meaningful: "Trend signals with local moves. Balanced view.",
@@ -149,9 +158,9 @@ if (modeSwitch) {
             b.classList.toggle("text-ink/60", b.dataset.mode !== mode);
         });
         if (modeDescription) modeDescription.textContent = MODE_DESC[mode];
-        filterAndRenderEvents();
+        // Mode now only controls marker density (by tier). The feed and
+        // shortcuts are tier-independent, so don't rebuild them here.
         renderMarkers();
-        renderSignalShortcutsFromEvents();
     });
 }
 

@@ -131,17 +131,17 @@
         const hour = m[3] ? parseInt(m[3]) : 12;
         const min = m[4] ? parseInt(m[4]) : 0;
 
-        const refDate = new Date(candles[candles.length - 1].time * 1000);
+        const refDate = new Date(candles[candles.length - 1][0] * 1000);
         const target = new Date(Date.UTC(refDate.getUTCFullYear(), mon, day, hour, min));
         const targetUnix = Math.floor(target.getTime() / 1000);
 
         let best = null;
         let bestDist = Infinity;
         for (const c of candles) {
-            const dist = Math.abs(c.time - targetUnix);
+            const dist = Math.abs(c[0] - targetUnix);
             if (dist < bestDist) {
                 bestDist = dist;
-                best = c.time;
+                best = c[0];
             }
         }
         return best;
@@ -416,7 +416,7 @@
 
         try {
             const payload = { query };
-            if (window.__investorMode) payload.stocks = ["NVDA", "AAPL"];
+            if (!window.__ruMode) payload.stocks = ["NVDA", "AAPL"];
             const res = await postJson(apiUrl("/api/retrieval"), payload);
 
             if (res.error) {

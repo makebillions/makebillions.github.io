@@ -110,46 +110,74 @@ chart.timeScale().fitContent();
 // Chart data loading — setChart(), renderMarkers()
 // ============================================================
 function setChart(data) {
+    // Candle timestamps are delta-encoded ([gap, close, vol]; first bar is
+    // absolute). Rebuild absolute unix time in place with a running sum.
+    {
+        let t = 0;
+        for (const c of data.candles) c[0] = t += c[0];
+    }
+    // Alerts/events arrive as compact positional tuples; decode to objects
+    // once so the rest of the code (filters, markers, cards) is unchanged.
+    //   alert: [time, dir(1=buy/0=sell), sens]
+    //   event: [time, dir, sens[], text, icon(0=none), price(0=none), st, lt, chip]
+    data.alerts = (data.alerts || []).map((a) => ({
+        time: a[0],
+        value: a[1] === 1 ? "buy" : "sell",
+        type: "t" + a[2],
+        category: a[3] || "FREQUENT",
+    }));
+    data.events = (data.events || []).map((e) => ({
+        time: e[0],
+        dir: e[1] === 1 ? "buy" : "sell",
+        sens: e[2],
+        text: e[3],
+        icon: e[4] || undefined,
+        price: e[5] || null,
+        st: e[6] || null,
+        lt: e[7] || null,
+        chip: e[8] || null,
+    }));
+
     const lastIndex = data.candles.length - 1;
-    // Area series plots closes; full OHLC stays available in data.candles
-    series.setData(data.candles.map((c) => ({ time: c.time, value: c.close })));
+    // Candles arrive as compact [unix_time, close] pairs; area series plots close.
+    series.setData(data.candles.map((c) => ({ time: c[0], value: c[1] })));
 
     currentCandleRange = {
-        from: data.candles[0].time,
-        to: data.candles[lastIndex].time,
+        from: data.candles[0][0],
+        to: data.candles[lastIndex][0],
     };
 
-    // Default window: ~28 days ending shortly after the most recent signal.
-    // Signals can lag the latest candle by days when calc hasn't been rerun —
-    // anchoring to the last candle would push them off-screen. But if signals
-    // are *older* than the candle window (stale data), fall back to the last
-    // candle so the chart isn't anchored to an empty range.
-    const firstCandleT = data.candles[0].time;
-    const lastCandleT = data.candles[lastIndex].time;
-    const signalTimes = [
-        ...(data.alerts || []).map((a) => a.time),
-        ...(data.events || []).map((e) => e.time),
-    ];
-    const lastSignalT = signalTimes.length ? Math.max(...signalTimes) : null;
-    const rightPad = 3600 * 24 * 2;
-    const anchor =
-        lastSignalT && lastSignalT >= firstCandleT
-            ? Math.min(lastSignalT + rightPad, lastCandleT)
-            : lastCandleT;
-    chart.timeScale().setVisibleRange({
-        from: anchor - 3600 * 24 * 28,
-        to: anchor,
-    });
+    const firstCandleT = data.candles[0][0];
+    const lastCandleT = data.candles[lastIndex][0];
 
     allAlerts = (data.alerts || []).filter(
         (alert) => alert.time >= currentCandleRange.from && alert.time <= currentCandleRange.to
     );
 
-    if (data.volume && data.volume.length) {
-        volumeSeries.setData(data.volume);
-    } else {
-        volumeSeries.setData([]);
+    // Volume is folded into each candle as [time, close, volume]; pull it out
+    // (skip 0 = no volume for that bar).
+    const vol = [];
+    for (let i = 0; i < data.candles.length; i++) {
+        const v = data.candles[i][2];
+        if (v) vol.push({ time: data.candles[i][0], value: v });
     }
+    volumeSeries.setData(vol);
+
+    // Default window: last ~28 days with the most recent candle pinned to the
+    // right edge. Set this with a LOGICAL (bar-index) range, NOT a time range,
+    // and only after BOTH series have data. The chart instance is reused across
+    // stock switches: series.setData keeps the previous stock's scroll position,
+    // and a time-based setVisibleRange right after setData doesn't reliably
+    // override it (time→bar index isn't rebuilt yet) — which left the new last
+    // candle stranded on the far left with blank space to the right. Bar indices
+    // are exact and immediate, so the last candle always lands at the right edge.
+    const WINDOW = 3600 * 24 * 28;
+    const cutoff = lastCandleT - WINDOW;
+    let firstVisIdx = 0;
+    for (let i = lastIndex; i >= 0; i--) {
+        if (data.candles[i][0] < cutoff) { firstVisIdx = i + 1; break; }
+    }
+    chart.timeScale().setVisibleLogicalRange({ from: firstVisIdx - 0.5, to: lastIndex + 0.5 });
 
     setEvents(data);
     renderMarkers();
@@ -159,12 +187,12 @@ function setChart(data) {
 }
 
 function renderMarkers() {
-    const allowedSens = MODE_SENS[currentMode];
+    // Markers filter by importance TIER (category), not sensitivity.
+    const allowedCats = MODE_CATEGORIES[currentMode];
 
-    const filtered = allAlerts.filter((alert) => {
-        const sens = parseInt(alert.type.replace("t", ""));
-        return allowedSens.includes(sens);
-    });
+    const filtered = allAlerts.filter((alert) =>
+        allowedCats.includes(alert.category || "FREQUENT")
+    );
 
     // Merge alerts on same candle + direction
     const merged = {};
@@ -195,25 +223,27 @@ function renderMarkers() {
 // ============================================================
 function setEvents(data) {
     closeAlertChat(); // stock changed — drop any open alert chat
-    const rawEvents = data.events || [];
-    if (currentCandleRange) {
-        mEvents = rawEvents.filter(
-            (event) => event.time >= currentCandleRange.from && event.time <= currentCandleRange.to
-        );
-    } else {
-        mEvents = rawEvents;
-    }
+    // The feed is a list, not a chart overlay — show every comment regardless
+    // of whether a candle exists at that time. (Candles can cover a shorter
+    // span than the signal history; gating the feed by candle range silently
+    // hid older comments. Markers still get range-filtered in renderMarkers,
+    // since those genuinely need a candle to sit on.)
+    mEvents = data.events || [];
     filterAndRenderEvents();
 }
 
 function filterAndRenderEvents() {
-    // Full DOM rebuild. Called on stock change + mode/sens change. Resets
-    // scroll to the top so the latest signal is visible by default.
-    const allowedSens = MODE_SENS[currentMode];
-    const filtered = mEvents.filter((e) => e.sens.some((s) => allowedSens.includes(s)));
-    renderEvents(filtered);
+    // Full DOM rebuild. Resets scroll to the top so the latest signal is
+    // visible by default. The feed is NOT filtered by mode — every commentary
+    // line shows regardless of tier (only chart markers respect the mode).
+    renderEvents(mEvents);
     eventsList.scrollTop = 0;
 }
+
+// "Ask AI" pill \u2014 same in both card variants (opens the alert-pinned chat).
+const ASK_AI_BTN =
+    `<button class="event-chat-btn self-start inline-flex items-center gap-1.5 text-xs font-bold text-violet bg-violet-bg border border-violet-edge rounded-full px-3 py-1 group-hover:border-violet transition-colors">` +
+    `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>Ask AI</button>`;
 
 function renderEvents(events) {
     // Newest-first so the latest signal sits at the top of the overlay.
@@ -226,16 +256,44 @@ function renderEvents(events) {
             const dirClass = event.dir === "buy" ? "text-green-600/80" : "text-red-600/80";
             const dirArrow = event.dir === "buy" ? "\u25B2" : "\u25BC";
             const iconHtml = event.icon && SIGNAL_ICONS[event.icon] ? SIGNAL_ICONS[event.icon] : "";
-            const priceHtml = event.price != null ? `<span class="text-ink/40 ml-1">@${event.price}</span>` : "";
+
+            // New two-read card (mirrors the hero specimen; no ticker, no move).
+            if (event.st || event.lt) {
+                const chipTone = event.dir === "buy"
+                    ? "text-up bg-up-bg border-up-edge"
+                    : "text-down bg-down-bg border-down-edge";
+                const chipHtml = event.chip
+                    ? `<span class="inline-flex items-center mono text-[12px] font-bold px-2.5 py-1 rounded-full border ${chipTone} mt-3">${event.chip}</span>`
+                    : "";
+                const stRow = event.st
+                    ? `<div class="read-row"><span class="read-tag st"><span class="dot"></span>Trader</span><p class="text-[13.5px] leading-snug text-ink/75">${event.st}</p></div>`
+                    : "";
+                const ltRow = event.lt
+                    ? `<div class="read-row"><span class="read-tag lt"><span class="dot"></span>Holder</span><p class="text-[13.5px] leading-snug text-ink/75">${event.lt}</p></div>`
+                    : "";
+                return `
+            <div class="event-card group flex-shrink-0 rounded-xl2 bg-white border border-ink/12 shadow-lift overflow-hidden cursor-pointer hover:border-ink/25 transition-all" data-time="${event.time}">
+                <div class="px-5 pt-4 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="event-when text-[12px] text-ink/40 ml-auto">${dateStr} ${timeStr}</span>
+                    </div>
+                    <p class="read text-[17px] leading-[1.5] text-ink mt-3">${iconHtml}${event.text}</p>
+                    ${chipHtml}
+                </div>
+                <div class="px-5 py-4 bg-paper/40 border-t border-ink/10 flex flex-col gap-2.5">
+                    ${stRow}${ltRow}
+                </div>
+            </div>`;
+            }
+
+            // Old single-line card (events without the two-read split).
             return `
             <div class="event-card group flex-shrink-0 w-full bg-white border border-ink/10 rounded-xl p-3 cursor-pointer hover:border-ink/25 hover:shadow-card transition-all" data-time="${event.time}">
-                <div class="event-when text-[11px] text-ink/40 font-medium mb-1">${dateStr} ${timeStr}${priceHtml}</div>
+                <div class="event-when text-[11px] text-ink/40 font-medium mb-1">${dateStr} ${timeStr}</div>
                 <div class="read text-[15px] text-ink leading-snug">
                     ${iconHtml}<span class="${dirClass} mr-1">${dirArrow}</span>${event.text}
                 </div>
-                <button class="event-chat-btn inline-flex items-center gap-1.5 mt-2.5 text-xs font-bold text-ink bg-gold-bg border border-gold-edge rounded-full px-3 py-1 group-hover:bg-gold group-hover:text-white group-hover:border-gold transition-colors">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>Open chat
-                </button>
+                <div class="mt-2.5">${ASK_AI_BTN}</div>
             </div>`;
         })
         .join("");
@@ -338,10 +396,7 @@ eventsList.addEventListener("click", (e) => {
 function renderSignalShortcutsFromEvents() {
     if (!signalShortcuts) return;
     signalShortcuts.innerHTML = "";
-    const allowedSens = MODE_SENS[currentMode];
-    const withIcons = mEvents.filter(
-        (e) => e.icon && SIGNAL_ICONS[e.icon] && e.sens.some((s) => allowedSens.includes(s))
-    );
+    const withIcons = mEvents.filter((e) => e.icon && SIGNAL_ICONS[e.icon]);
     const recent = [...withIcons].sort((a, b) => b.time - a.time).slice(0, 6);
     recent.reverse();
     recent.forEach((ev) => {
@@ -371,11 +426,17 @@ function renderSignalShortcutsFromEvents() {
 function scrollChartToTimeLocal(time) {
     const range = chart.timeScale().getVisibleRange();
     if (!range) return;
-    const half = (range.to - range.from) / 2;
-    chart.timeScale().setVisibleRange({
-        from: time - half,
-        to: time + half,
-    });
+    const span = range.to - range.from;
+    let from = time - span / 2;
+    let to = time + span / 2;
+    // Never pan into empty space past the candle data — clamp the window to
+    // where candles exist (this is what made the chart "fly left" when a card
+    // or marker pointed at a time outside the loaded candle range).
+    if (currentCandleRange) {
+        if (from < currentCandleRange.from) { from = currentCandleRange.from; to = from + span; }
+        if (to > currentCandleRange.to)     { to = currentCandleRange.to;   from = to - span; }
+    }
+    chart.timeScale().setVisibleRange({ from, to });
 }
 
 // ============================================================
