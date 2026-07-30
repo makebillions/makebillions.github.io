@@ -1,7 +1,7 @@
 // ============================================================
 // js.js — App logic: stock selection, auth, subscriptions, API
 // Depends on: chart.js (loaded before), agent.js (loaded after)
-// Exposes: selectedItems, currentMode, MODE_SENS, debounce(), post(), url(),
+// Exposes: selectedItems, currentMode, MODE_TIERS, debounce(), post(), url(),
 //          window.__allStocks, window.__setStockFromAgent, window.__highlightSelectedStock
 // ============================================================
 
@@ -100,26 +100,17 @@ if (RU_MODE) {
         "&copy; 2026 &mdash; <b>Предупреждение о риске:</b> Торговля финансовыми инструментами сопряжена с высокими рисками, включая риск потери части или всей суммы инвестиций. Информация на сайте носит ориентировочный характер. Владелец сервиса отказывается от ответственности за любые потери, понесенные в результате торговых сделок, совершенных с оглядкой на указанную информацию.";
 }
 
-// --- Signal mode (strategic / meaningful / frequent) ---
-let currentMode = "frequent";
-const MODE_SENS = {
-    strategic: [1, 2, 3, 4],
-    meaningful: [1, 2, 3, 4, 5, 6],
-    frequent: [1, 2, 3, 4, 5, 6, 7],
-};
-// Chart markers filter by importance TIER (tiering.py category), not sensitivity.
-// Nested: each mode is a superset of the stricter one. Alerts with no category
-// fall back to FREQUENT (shown only in the broadest mode). Comments are NOT
-// filtered by mode — the feed always shows every commentary line.
-const MODE_CATEGORIES = {
-    strategic: ["STRATEGIC"],
-    meaningful: ["STRATEGIC", "MEANINGFUL"],
-    frequent: ["STRATEGIC", "MEANINGFUL", "FREQUENT"],
+// --- Signal mode (strategic / meaningful) ---
+// The service ships two tiers, so there are two modes. The old third mode
+// ("frequent") filtered for a tier that never leaves the engine.
+let currentMode = "meaningful";
+const MODE_TIERS = {
+    strategic: ["S"],
+    meaningful: ["S", "M"],
 };
 const MODE_DESC = {
-    strategic: "Major trend signals only. Least noise.",
-    meaningful: "Trend signals with local moves. Balanced view.",
-    frequent: "All signals including minor fluctuations.",
+    strategic: "Major turns only. Least noise.",
+    meaningful: "Every alert we'd send you. Balanced view.",
 };
 
 // --- App state ---
@@ -532,7 +523,7 @@ const AlertMes = {
             if (r.geo === "RU") maybeShowVpnNotice();
             else hideVpnNotice();
             setStocks(r.payload);
-            const def = r.payload.find((s) => s.ticker === "PLZL");
+            const def = r.payload.find((s) => s.ticker === "AAPL");
             if (def) setStock([def]);
             else if (r.payload.length) setStock([r.payload[0]]);
             initPresetPills(r.payload);

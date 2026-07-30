@@ -1,6 +1,6 @@
 // ============================================================
 // chart.js — Chart instance, markers, events list, shortcuts
-// Depends on: LightweightCharts (global), SIGNAL_ICONS, MODE_SENS, currentMode (from js.js)
+// Depends on: LightweightCharts (global), SIGNAL_ICONS, MODE_TIERS, currentMode (from js.js)
 // Exposes: chart, series, setChart(), renderMarkers(), scrollChartToTimeLocal(),
 //          renderSignalShortcutsFromEvents(), filterAndRenderEvents(),
 //          setEvents(), showLoader/hideLoader, showListLoader/hideListLoader,
@@ -116,26 +116,24 @@ function setChart(data) {
         let t = 0;
         for (const c of data.candles) c[0] = t += c[0];
     }
-    // Alerts/events arrive as compact positional tuples; decode to objects
-    // once so the rest of the code (filters, markers, cards) is unchanged.
-    //   alert: [time, dir(1=buy/0=sell), sens]
-    //   event: [time, dir, sens[], text, icon(0=none), price(0=none), st, lt, chip]
-    data.alerts = (data.alerts || []).map((a) => ({
-        time: a[0],
-        value: a[1] === 1 ? "buy" : "sell",
-        type: "t" + a[2],
-        category: a[3] || "FREQUENT",
-    }));
-    data.events = (data.events || []).map((e) => ({
-        time: e[0],
-        dir: e[1] === 1 ? "buy" : "sell",
-        sens: e[2],
-        text: e[3],
-        icon: e[4] || undefined,
-        price: e[5] || null,
-        st: e[6] || null,
-        lt: e[7] || null,
-        chip: e[8] || null,
+    // One list: every shipped alert carries its own line. Compact positional
+    // tuples decode to objects once, so filters, markers and cards all read
+    // the same object.
+    //   [tb, t, dir(1=buy/0=sell), tier("M"|"S"), icon, chip, was, now, st, lt]
+    // tb is the 2h-floored time the marker sits on; t is the exact fire
+    // minute the card shows. Fields after tier are 0 when the alert has no
+    // line yet — it still draws a marker, it just has no card.
+    data.signals = (data.signals || []).map((s) => ({
+        tb: s[0],
+        time: s[1],
+        dir: s[2] === 1 ? "buy" : "sell",
+        tier: s[3],
+        icon: s[4] || undefined,
+        chip: s[5] || null,
+        was: s[6] || null,
+        now: s[7] || null,
+        st: s[8] || null,
+        lt: s[9] || null,
     }));
 
     const lastIndex = data.candles.length - 1;
@@ -150,8 +148,10 @@ function setChart(data) {
     const firstCandleT = data.candles[0][0];
     const lastCandleT = data.candles[lastIndex][0];
 
-    allAlerts = (data.alerts || []).filter(
-        (alert) => alert.time >= currentCandleRange.from && alert.time <= currentCandleRange.to
+    // Markers need a candle to sit on, so they are range-filtered here. The
+    // feed is not — see setEvents.
+    allAlerts = data.signals.filter(
+        (s) => s.tb >= currentCandleRange.from && s.tb <= currentCandleRange.to
     );
 
     // Volume is folded into each candle as [time, close, volume]; pull it out
@@ -187,31 +187,25 @@ function setChart(data) {
 }
 
 function renderMarkers() {
-    // Markers filter by importance TIER (category), not sensitivity.
-    const allowedCats = MODE_CATEGORIES[currentMode];
+    const allowedTiers = MODE_TIERS[currentMode];
 
-    const filtered = allAlerts.filter((alert) =>
-        allowedCats.includes(alert.category || "FREQUENT")
-    );
-
-    // Merge alerts on same candle + direction
-    const merged = {};
-    filtered.forEach((alert) => {
-        const key = `${alert.time}_${alert.value}`;
-        if (!merged[key]) {
-            merged[key] = { ...alert, types: [alert.type] };
-        } else {
-            merged[key].types.push(alert.type);
-        }
-    });
-
+    // One dot per candle + direction: several alerts can land on the same 2h
+    // bar, and they are one moment to the reader.
+    const seen = new Set();
     const markers = [];
-    Object.values(merged).forEach((alert) => {
-        if (alert.value === "buy") {
-            markers.push({ time: alert.time, position: "belowBar", color: MARKER_BUY_COLOR, shape: "circle", size: 1, text: "" });
-        } else if (alert.value === "sell") {
-            markers.push({ time: alert.time, position: "aboveBar", color: MARKER_SELL_COLOR, shape: "circle", size: 1, text: "" });
-        }
+    allAlerts.forEach((s) => {
+        if (!allowedTiers.includes(s.tier)) return;
+        const key = `${s.tb}_${s.dir}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        markers.push({
+            time: s.tb,
+            position: s.dir === "buy" ? "belowBar" : "aboveBar",
+            color: s.dir === "buy" ? MARKER_BUY_COLOR : MARKER_SELL_COLOR,
+            shape: "circle",
+            size: 1,
+            text: "",
+        });
     });
 
     markers.sort((a, b) => a.time - b.time);
@@ -228,7 +222,8 @@ function setEvents(data) {
     // span than the signal history; gating the feed by candle range silently
     // hid older comments. Markers still get range-filtered in renderMarkers,
     // since those genuinely need a candle to sit on.)
-    mEvents = data.events || [];
+    // Only alerts that have a line earn a card; the rest are markers only.
+    mEvents = (data.signals || []).filter((s) => s.now);
     filterAndRenderEvents();
 }
 
@@ -248,6 +243,11 @@ const ASK_AI_BTN =
 function renderEvents(events) {
     // Newest-first so the latest signal sits at the top of the overlay.
     const sorted = [...events].sort((a, b) => b.time - a.time);
+    // Card header carries the instrument, same as the design's feed card — a
+    // row holding only a timestamp reads as a gap above the sentence.
+    const sel = selectedItems[selectedItems.length - 1] || {};
+    const ticker = sel.ticker || "";
+    const name = sel.name && sel.name !== ticker ? sel.name : "";
     eventsList.innerHTML = sorted
         .map((event) => {
             const date = new Date(event.time * 1000);
@@ -257,43 +257,50 @@ function renderEvents(events) {
             const dirArrow = event.dir === "buy" ? "\u25B2" : "\u25BC";
             const iconHtml = event.icon && SIGNAL_ICONS[event.icon] ? SIGNAL_ICONS[event.icon] : "";
 
-            // New two-read card (mirrors the hero specimen; no ticker, no move).
-            if (event.st || event.lt) {
-                const chipTone = event.dir === "buy"
-                    ? "text-up bg-up-bg border-up-edge"
-                    : "text-down bg-down-bg border-down-edge";
-                const chipHtml = event.chip
-                    ? `<span class="inline-flex items-center mono text-[12px] font-bold px-2.5 py-1 rounded-full border ${chipTone} mt-3">${event.chip}</span>`
-                    : "";
-                const stRow = event.st
-                    ? `<div class="read-row"><span class="read-tag st"><span class="dot"></span>Trader</span><p class="text-[13.5px] leading-snug text-ink/75">${event.st}</p></div>`
-                    : "";
-                const ltRow = event.lt
-                    ? `<div class="read-row"><span class="read-tag lt"><span class="dot"></span>Holder</span><p class="text-[13.5px] leading-snug text-ink/75">${event.lt}</p></div>`
-                    : "";
-                return `
-            <div class="event-card group flex-shrink-0 rounded-xl2 bg-white border border-ink/12 shadow-lift overflow-hidden cursor-pointer hover:border-ink/25 transition-all" data-time="${event.time}">
+            // The line has four parts and the card shows all four: `was` sets
+            // the scene in a few muted words, `now` is the verdict, then the
+            // two horizons. `was` used to be dropped on the floor.
+            // The chip is a component (.dir-chip in index.css, shared with the
+            // screener), not a pile of utilities — colour and metrics live
+            // there so both surfaces stay identical.
+            // The chip's anchor is dropped when the verdict already names that
+            // price: "push past the Jul 16 level at 1183" over "BREAKING
+            // HIGHER · 1183" printed the same number twice, in two voices.
+            let chipText = event.chip || "";
+            const anchor = chipText.split("·")[1];
+            if (anchor && event.now && event.now.includes(anchor.trim())) {
+                chipText = chipText.split("·")[0].trim();
+            }
+            const chipTone = event.dir === "buy"
+                ? "text-up bg-up-bg border-up-edge"
+                : "text-down bg-down-bg border-down-edge";
+            const chipHtml = chipText
+                ? `<span class="inline-flex items-center mono text-[12px] font-bold px-2.5 py-1 rounded-full border ${chipTone} mt-3">${chipText}</span>`
+                : "";
+            // `was` is written and stored, but not shown: the engine's own
+            // wording for it ("2-session rally from 1148.40" at 1180) was
+            // contradicting the verdict beside it.
+            const stRow = event.st
+                ? `<div class="read-row"><span class="read-tag st"><span class="dot"></span>Trader</span><p class="text-[13.5px] leading-snug text-ink/75">${event.st}</p></div>`
+                : "";
+            const ltRow = event.lt
+                ? `<div class="read-row"><span class="read-tag lt"><span class="dot"></span>Holder</span><p class="text-[13.5px] leading-snug text-ink/75">${event.lt}</p></div>`
+                : "";
+            return `
+            <div class="event-card group flex-shrink-0 rounded-xl2 bg-white border border-ink/12 shadow-lift overflow-hidden cursor-pointer hover:border-ink/25 transition-all" data-time="${event.tb}">
                 <div class="px-5 pt-4 pb-3">
-                    <div class="flex items-center gap-2.5">
-                        <span class="event-when text-[12px] text-ink/40 ml-auto">${dateStr} ${timeStr}</span>
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <span class="font-extrabold text-[16px] tracking-tight">${ticker}</span>
+                        ${name ? `<span class="text-[13px] text-ink/45 font-medium">${name}</span>` : ""}
+                        <span class="event-when text-[12px] text-ink/40 ml-auto">${dateStr} · ${timeStr}</span>
                     </div>
-                    <p class="read text-[17px] leading-[1.5] text-ink mt-3">${iconHtml}${event.text}</p>
+                    <p class="read text-[17px] leading-[1.5] text-ink mt-3">${iconHtml}${event.now}</p>
                     ${chipHtml}
                 </div>
                 <div class="px-5 py-4 bg-paper/40 border-t border-ink/10 flex flex-col gap-2.5">
                     ${stRow}${ltRow}
+                    <div class="pt-0.5">${ASK_AI_BTN}</div>
                 </div>
-            </div>`;
-            }
-
-            // Old single-line card (events without the two-read split).
-            return `
-            <div class="event-card group flex-shrink-0 w-full bg-white border border-ink/10 rounded-xl p-3 cursor-pointer hover:border-ink/25 hover:shadow-card transition-all" data-time="${event.time}">
-                <div class="event-when text-[11px] text-ink/40 font-medium mb-1">${dateStr} ${timeStr}</div>
-                <div class="read text-[15px] text-ink leading-snug">
-                    ${iconHtml}<span class="${dirClass} mr-1">${dirArrow}</span>${event.text}
-                </div>
-                <div class="mt-2.5">${ASK_AI_BTN}</div>
             </div>`;
         })
         .join("");
@@ -488,5 +495,4 @@ window.__chartState = {
     hideListLoader,
     setEvents,
     get currentMode() { return currentMode; },
-    get MODE_SENS() { return MODE_SENS; },
 };
