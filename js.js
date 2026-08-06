@@ -61,44 +61,12 @@ function url(path) {
     return `${host}${path}`;
 }
 
-// --- Language (English is the default; ?ru switches UI text to Russian) ---
-// The page markup is English; RU_MODE swaps the affected pieces to Russian.
-// The ticker universe is identical in both languages — only UI text differs.
-const RU_MODE = new URLSearchParams(window.location.search).has("ru");
-window.__ruMode = RU_MODE;
-
-if (RU_MODE) {
-    // Russian UI — hero text and preset pills are kept from index.html (do not overwrite)
-    document.getElementById("autocomplete").placeholder = "Акция...";
-
-    document.querySelector("#signupSection h2").textContent = "Инструкция";
-    const initialText = document.getElementById("initial-text");
-    initialText.innerHTML =
-        '<p>1. Откройте бот кнопкой ниже и нажмите Start — он пришлёт код. Введите код в форму.</p>' +
-        '<a href="https://t.me/buydipru_bot?start=web" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-1 mb-2 px-5 py-2.5 bg-[#229ED9] hover:bg-[#1d8dc2] text-white text-sm font-semibold rounded-full transition-colors no-underline"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>Открыть бот в Telegram</a>' +
-        "<p>2. Выберите одну или несколько нужных вам акций.</p>" +
-        "<p>3. Настройте параметры или оставьте по умолчанию. БОТ будет слать алерты в течение торгового дня.</p>" +
-        '<p class="text-ink/40">Отписаться от алертов можно в его интерфейсе. Сервис не хранит Ваши данные.</p>';
-    const afterLoginEl = document.getElementById("final-result");
-    afterLoginEl.innerHTML =
-        '<h2 class="text-base font-bold text-ink mb-2">Вход выполнен</h2>' +
-        "<p>1. Выберите одну или несколько нужных вам акций. Для последней в списке отображается график.</p>" +
-        "<p>2. Можете настроить параметры в боксах или оставить по умолчанию. График обновляется. БОТ будет слать алерты в течение торгового дня.</p>";
-    document.querySelector(
-        '#code-confirmation-form input[name="code"]'
-    ).placeholder = "Код от БОТа";
-    document.querySelector("#code-confirmation-form button").textContent =
-        "Войти";
-
-    document.getElementById("submit_alerts").innerHTML =
-        '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor"></path><path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none"></path></svg>Подписаться';
-    document.querySelector("#submit_alerts + p").textContent =
-        "Нажимая на Подписаться, вы принимаете условия использования. Не является индивидуальной инвестиционной рекомендацией.";
-    document.getElementById("selections").textContent = "Пока нет уведомлений";
-
-    document.querySelector("footer p").innerHTML =
-        "&copy; 2026 &mdash; <b>Предупреждение о риске:</b> Торговля финансовыми инструментами сопряжена с высокими рисками, включая риск потери части или всей суммы инвестиций. Информация на сайте носит ориентировочный характер. Владелец сервиса отказывается от ответственности за любые потери, понесенные в результате торговых сделок, совершенных с оглядкой на указанную информацию.";
-}
+// --- Language ---
+// English only. There used to be a `?ru` mode that rewrote ~10 elements
+// (the login box, two placeholders, the footer) on an otherwise fully
+// English page — hero, live desk, screener, trust, pricing and both popups
+// were never translated — so it kept a second copy of a fraction of the
+// copy and rendered a half-Russian page. Removed rather than completed.
 
 // --- Signal mode (strategic / meaningful) ---
 // The service ships two tiers, so there are two modes. The old third mode
@@ -127,7 +95,6 @@ const initText = document.getElementById("initial-text");
 const afterLogin = document.getElementById("final-result");
 const autocompleteContainer = document.getElementById("autocompleteContainer");
 const submitAlertsButton = document.getElementById("submit_alerts");
-const selectionsContainer = document.getElementById("selections");
 const modeSwitch = document.getElementById("modeSwitch");
 const modeDescription = document.getElementById("modeDescription");
 const chartStockTitle = document.getElementById("chartStockTitle");
@@ -174,6 +141,8 @@ function onStockChange() {
             ? `${stock} <span class="text-ink/40 text-base font-normal ml-1">${name}</span>`
             : stock;
     }
+    // the subscription panel offers whatever stock is on the chart
+    if (window.__updateSubAddButton) window.__updateSubAddButton();
     clearAgentState();
     showLoader();
     showListLoader();
@@ -421,60 +390,190 @@ window.__dismissVpnNotice = function () {
 // ============================================================
 // Auth, subscriptions, init
 // ============================================================
-const AlertMes = {
-    0: (alert) =>
-        `${alert.stock.map((s) => s.ticker).join(" ")} ${alert.percentage}%`,
-};
+// ============================================================
+// The subscription — ONE record ({stocks, tier, status}), read whole and
+// written whole. It is deliberately NOT `selectedItems`: browsing a chart is
+// not the same act as asking to be alerted on that stock, and conflating them
+// meant clicking around the chart quietly changed what you were paying
+// attention to. Saving is idempotent — the old endpoint APPENDED, so pressing
+// Subscribe twice gave you two identical subscriptions.
+// ============================================================
+let account = null;
+let batches = [];
+
+/** `moex20` -> "MOEX top 20". The API speaks in ids, a person reads names. */
+function batchLabel(name) {
+    const m = /^(moex|us)(\d+)$/.exec(name || "");
+    return m ? `${m[1] === "us" ? "US" : "MOEX"} top ${m[2]}` : name;
+}
 
 (async () => {
-    function setSelections(selections) {
-        selectionsContainer.innerHTML = "";
-        selections.forEach((selection) => {
-            const selectionDiv = document.createElement("div");
-            selectionDiv.textContent = AlertMes[selection.alertType](selection);
-            const deleteButton = document.createElement("button");
-            deleteButton.type = "button";
-            deleteButton.textContent = RU_MODE ? "Удалить" : "Delete";
-            deleteButton.className =
-                "bg-violet hover:bg-violet-dark text-white font-bold py-2 px-4 rounded-lg ml-5";
-            deleteButton.onclick = () => handleDelete(selection.id);
-            selectionDiv.appendChild(deleteButton);
-            selectionsContainer.appendChild(selectionDiv);
-        });
+    // Batches are stored on the account BY REFERENCE — never expanded into the
+    // stock list, or "top 20" would freeze on the day you subscribed.
+    function renderBatches() {
+        const box = document.getElementById("subBatches");
+        if (!box) return;
+        if (!isLoggedIn || !account) {
+            box.innerHTML = '<span class="sub-empty">Log in to pick a batch.</span>';
+            return;
+        }
+        box.innerHTML = batches
+            .map((b) => {
+                const on = (account.groups || []).includes(b.name);
+                return (
+                    `<button type="button" class="sub-chip${on ? "" : " paused"}" ` +
+                    `data-batch="${b.name}">${on ? "✓ " : "+ "}${batchLabel(b.name)}` +
+                    `<span class="x">${b.size}</span></button>`
+                );
+            })
+            .join("");
     }
+
+    function renderSubscription() {
+        const stocksBox = document.getElementById("subStocks");
+        const chip = document.getElementById("subStatusChip");
+        const pauseBtn = document.getElementById("subPause");
+        const hint = document.getElementById("subHint");
+        if (!stocksBox) return;
+
+        if (!isLoggedIn || !account) {
+            stocksBox.innerHTML =
+                '<span class="sub-empty">Log in to turn alerts on.</span>';
+            chip.classList.add("hidden");
+            return;
+        }
+
+        const paused = account.status === "paused";
+        stocksBox.innerHTML = account.stocks.length
+            ? account.stocks
+                  .map(
+                      (t) =>
+                          `<span class="sub-chip${paused ? " paused" : ""}">${t}` +
+                          `<span class="x" data-drop="${t}" title="Remove">&times;</span></span>`
+                  )
+                  .join("")
+            : (account.groups || []).length
+            ? `<span class="sub-empty">Covered by ${account.groups
+                  .map(batchLabel)
+                  .join(", ")} — add single names here too.</span>`
+            : `<span class="sub-empty">No stocks yet — add the one you're looking at.</span>`;
+
+        chip.classList.remove("hidden");
+        chip.className =
+            "inline-flex items-center gap-1.5 text-[11px] font-bold rounded-full px-2.5 py-1 " +
+            (paused
+                ? "text-ink/50 bg-ink/5 border border-ink/12"
+                : "text-up bg-up-bg border border-up-edge");
+        chip.textContent = paused ? "paused" : "on";
+        pauseBtn.textContent = paused ? "Resume alerts" : "Pause all alerts";
+        hint.textContent = paused
+            ? "Alerts are paused. Your stocks are kept."
+            : "Alerts arrive on Telegram the moment something happens.";
+
+        const tierInput = document.querySelector(
+            `#subTier input[value="${account.tier}"]`
+        );
+        if (tierInput) tierInput.checked = true;
+        updateAddButton();
+        renderBatches();
+    }
+
+    // The button offers the stock currently on the chart — and refuses the
+    // ones the service does not watch, instead of accepting the subscription
+    // and then never sending anything (IMOEX had 10 subscribers and could not
+    // produce a single alert).
+    function updateAddButton() {
+        const btn = document.getElementById("subAddCurrent");
+        const label = document.getElementById("subAddLabel");
+        if (!btn) return;
+        const cur = selectedItems[selectedItems.length - 1];
+        if (!cur || !isLoggedIn || !account) {
+            btn.disabled = true;
+            label.textContent = "Add this stock";
+            return;
+        }
+        const t = cur.ticker.toUpperCase();
+        if (!cur.watched) {
+            btn.disabled = true;
+            label.textContent = `${t} — not watched yet`;
+        } else if (account.stocks.includes(t)) {
+            btn.disabled = true;
+            label.textContent = `${t} already added`;
+        } else {
+            btn.disabled = false;
+            label.textContent = `Add ${t}`;
+        }
+    }
+    window.__updateSubAddButton = updateAddButton;
+
+    function saveSubscription(patch = {}) {
+        const body = {
+            stocks: account.stocks,
+            groups: account.groups || [],
+            tier: account.tier,
+            status: account.status,
+            ...patch,
+        };
+        return post(url("/api/subscription/set"), body)
+            .then((r) => {
+                account = r.payload;
+                renderSubscription();
+                const saved = document.getElementById("subSaved");
+                if (saved) {
+                    saved.classList.remove("hidden");
+                    setTimeout(() => saved.classList.add("hidden"), 1800);
+                }
+            })
+            .catch((e) => alert(e?.error || e));
+    }
+
+    document.getElementById("subStocks")?.addEventListener("click", (e) => {
+        const t = e.target.dataset?.drop;
+        if (!t) return;
+        saveSubscription({ stocks: account.stocks.filter((s) => s !== t) });
+    });
+
+    // First batch defaults to major turns only: 30 stocks on "every alert" is
+    // ~45 messages a day, and 43% of users already reached for the kill switch
+    // at four stocks.
+    document.getElementById("subBatches")?.addEventListener("click", (e) => {
+        const name = e.target.closest("[data-batch]")?.dataset?.batch;
+        if (!name || !account) return;
+        const on = (account.groups || []).includes(name);
+        const groups = on
+            ? account.groups.filter((g) => g !== name)
+            : [...(account.groups || []), name];
+        const firstBig = !on && !account.stocks.length && groups.length === 1;
+        saveSubscription(firstBig ? { groups, tier: "S" } : { groups });
+    });
+
+    document.getElementById("subAddCurrent")?.addEventListener("click", () => {
+        const cur = selectedItems[selectedItems.length - 1];
+        if (!cur) return;
+        saveSubscription({
+            stocks: [...account.stocks, cur.ticker.toUpperCase()],
+        });
+    });
+
+    document.getElementById("subTier")?.addEventListener("change", (e) => {
+        if (e.target.name === "subTier") saveSubscription({ tier: e.target.value });
+    });
+
+    document.getElementById("subPause")?.addEventListener("click", () => {
+        saveSubscription({
+            status: account.status === "paused" ? "active" : "paused",
+        });
+    });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!selectedItems.length) {
-            alert("set something");
-            return;
-        }
         if (!isLoggedIn) {
-            alert("Please login");
+            document
+                .getElementById("signupSection")
+                .scrollIntoView({ behavior: "smooth" });
             return;
         }
-        post(url("/api/algos/new"), {
-            algo: { alertType: 0, stock: selectedItems },
-            otherData: {},
-        })
-            .then((r) => {
-                setSelections(r.payload);
-                alert(
-                    RU_MODE
-                        ? "Подписка выполнена! Отписаться можно внизу страницы или в БОТе."
-                        : "Subscribed! You can unsubscribe at the bottom of the page or via the BOT."
-                );
-            })
-            .catch((e) => alert(e));
-    };
-
-    const handleDelete = (id) => {
-        post(url("/api/algos/del"), { id })
-            .then((r) => {
-                setSelections(r.payload);
-                alert(RU_MODE ? "Удалено!" : "Deleted!");
-            })
-            .catch((e) => alert(e));
+        saveSubscription();
     };
 
     const confirmClick = async (code) => {
@@ -482,9 +581,38 @@ const AlertMes = {
         if (res.result) {
             if (res.token) localStorage.setItem("authToken", res.token);
             setIsLoggedIn(true);
+            await loadSubscription();
         }
         return res;
     };
+
+    // The batch list comes from the same source the bot uses, so the two can
+    // never offer different sets.
+    post(url("/api/batches"))
+        .then((r) => {
+            batches = r.payload || [];
+            renderBatches();
+        })
+        .catch(() => {});
+
+    function loadSubscription() {
+        return post(url("/api/subscription"))
+            .then((r) => {
+                setIsLoggedIn(true);
+                account = r.payload || {
+                    stocks: [],
+                    groups: [],
+                    tier: "M",
+                    status: "active",
+                    plan: "free",
+                };
+                renderSubscription();
+            })
+            .catch(() => {
+                account = null;
+                renderSubscription();
+            });
+    }
 
     confirmForm.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -505,12 +633,7 @@ const AlertMes = {
     submitAlertsButton.addEventListener("click", handleSubmit);
 
     // Load session & stocks
-    post(url("/api/algos"))
-        .then((res) => {
-            setIsLoggedIn(true);
-            setSelections(res.payload);
-        })
-        .catch(() => {});
+    loadSubscription();
 
     // If the stocks call is slow, the provider is likely throttling — show the
     // VPN notice optimistically, then reconcile once geo is known: keep it for
@@ -523,7 +646,10 @@ const AlertMes = {
             if (r.geo === "RU") maybeShowVpnNotice();
             else hideVpnNotice();
             setStocks(r.payload);
-            const def = r.payload.find((s) => s.ticker === "AAPL");
+            // PLZL is the default: the densest, freshest commentary we have
+            // (18 lines over 36 days, current today), so the chart never opens
+            // on a gap.
+            const def = r.payload.find((s) => s.ticker === "PLZL");
             if (def) setStock([def]);
             else if (r.payload.length) setStock([r.payload[0]]);
             initPresetPills(r.payload);

@@ -9,7 +9,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="output.css?v=5" crossorigin="" />
+    <link rel="stylesheet" href="output.css?v=6" crossorigin="" />
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
         (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -50,7 +50,7 @@
             <button class="px-2 py-1.5 text-sm font-semibold text-ink/65 hover:text-ink transition-colors"
                 onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Log in</button>
             <button class="px-5 py-2.5 text-sm font-bold text-white bg-ink hover:bg-ink/85 rounded-full transition-colors"
-                onclick="openGreetingPopup()">Get started</button>
+                onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Get started</button>
         </nav>
     </header>
 
@@ -59,7 +59,7 @@
         <section class="shell pt-12 pb-10">
             <div class="grid lg:grid-cols-[1.05fr_.95fr] gap-10 lg:gap-12 items-start">
                 <!-- left: promise -->
-                <div class="max-w-[34ch]">
+                <div class="max-w-[46ch]">
                     <a href="#agentSection"
                         class="inline-flex items-center gap-2 pl-2 pr-3.5 py-1.5 rounded-full bg-violet-bg border border-violet-edge hover:border-violet hover:-translate-y-px transition-all mb-6 no-underline">
                         <span class="hero-agent-spark inline-flex items-center justify-center w-[18px] h-[18px] rounded-full bg-violet text-white">
@@ -73,7 +73,7 @@
                         <span class="text-[.62rem] font-bold tracking-widest uppercase text-green-600">Live</span>
                     </a>
                     <h1 class="a-h1 text-[clamp(2.4rem,4.6vw,3.5rem)] text-balance">
-                        The market is <span class="text-violet">no longer a mystery</span>
+                        The stock market is <span class="text-violet">no longer a mystery</span>
                     </h1>
                     <p class="mt-6 text-[1.075rem] leading-relaxed text-ink/70">
                         DeepDIP watches market real time and explains every move — what happened, which level matters, where it's heading — with AI's hint on whether the move is real or fake.
@@ -84,7 +84,7 @@
                         <li class="flex gap-3"><span class="text-violet font-bold mt-px">·</span><span><b class="text-ink">AI screener</b> <span class="inline-flex items-center text-[10px] font-bold text-gold bg-gold-bg border border-gold-edge rounded-full px-1.5 py-0.5 align-middle">PRO</span> — describe what you're after, in plain words, and scan the whole market.</span></li>
                     </ul>
                     <div class="mt-8 flex flex-wrap items-center gap-3">
-                        <button class="px-6 py-3 text-sm font-bold text-white bg-violet hover:bg-violet-dark rounded-full shadow-card hover:-translate-y-px transition-all" onclick="openGreetingPopup()">Get started — it's free</button>
+                        <button class="px-6 py-3 text-sm font-bold text-white bg-violet hover:bg-violet-dark rounded-full shadow-card hover:-translate-y-px transition-all" onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Get started — it's free</button>
                         <a href="#chartSection" class="px-5 py-3 text-sm font-semibold text-ink/70 hover:text-ink no-underline">See live signals ↓</a>
                     </div>
                 </div>
@@ -194,10 +194,13 @@
                                 <div id="autocomplete-results" class="text-sm"></div>
                             </div>
                             <div class="flex gap-1.5 flex-wrap" id="presetPills">
-                                <button class="preset-pill active" data-ticker="TSLA">TSLA</button>
-                                <button class="preset-pill" data-ticker="AAPL">AAPL</button>
-                                <button class="preset-pill" data-ticker="BTC">BTC</button>
-                                <button class="preset-pill" data-ticker="PLZL">PLZL</button>
+                                <button class="preset-pill active" data-ticker="PLZL">PLZL</button>
+                                <button class="preset-pill" data-ticker="GMKN">GMKN</button>
+                                <button class="preset-pill" data-ticker="NVTK">NVTK</button>
+                                <button class="preset-pill" data-ticker="RUAL">RUAL</button>
+                                <button class="preset-pill" data-ticker="NVDA">NVDA</button>
+                                <button class="preset-pill" data-ticker="AMD">AMD</button>
+                                <button class="preset-pill" data-ticker="V">V</button>
                             </div>
                             <div class="flex items-center gap-2 ml-auto">
                                 <div class="mode-switch flex rounded-full bg-ink/5 p-0.5" id="modeSwitch">
@@ -282,6 +285,84 @@
                                 <p class="text-[11.5px] text-ink/40 mt-2 text-center">answers are grounded in the latest market data · not investment advice</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="shell pb-16" id="signupSection">
+            <div class="rounded-xl2 bg-white border border-ink/12 shadow-card overflow-hidden">
+                <div class="grid lg:grid-cols-2">
+                    <!-- instructions / login -->
+                    <div class="p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-ink/10">
+                        <h2 class="text-base font-bold text-ink mb-3">Connect &amp; log in</h2>
+                        <div class="text-sm text-ink/60 login-text hidden" id="final-result">
+                            <h2 class="text-base font-bold text-ink mb-2">Logged in</h2>
+                            <p class="mb-2">1. Select one or more stocks. The chart displays for the last selected stock.</p>
+                            <p>2. Configure settings or leave defaults. The bot sends alerts during the trading day.</p>
+                        </div>
+                        <div class="text-sm text-ink/65 login-text space-y-2" id="initial-text">
+                            <p class="text-ink font-semibold">Fastest way — everything happens inside Telegram:</p>
+                            <a href="https://t.me/buydipru_bot?start=web" target="_blank" rel="noopener" class="inline-flex items-center gap-2 my-1 px-5 py-2.5 bg-[#229ED9] hover:bg-[#1d8dc2] text-white text-sm font-semibold rounded-full transition-colors no-underline">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                                Open the bot &amp; press Start
+                            </a>
+                            <p>Then tap one batch — <b>MOEX top&nbsp;10 / 20 / 30</b> or <b>US top&nbsp;10 / 20 / 30</b> — or search a single name. Alerts start the same day. No code, no form, nothing to fill in.</p>
+                            <p>Every alert carries its own buttons: <b>mute this stock for a day</b>, <b>stop it entirely</b>, or open your settings. Send <b>/alerts</b> in the bot at any time to see and change everything in one message.</p>
+                            <p class="pt-1 text-ink/70"><b>Prefer the browser?</b> Send <b>/password</b> in the bot, paste the code below, and manage the same subscription from this page.</p>
+                            <p class="text-ink/40">Pause or unsubscribe any time, here or in the bot. The service does not store your personal data.</p>
+                        </div>
+                        <form id="code-confirmation-form" class="mt-4 flex gap-2">
+                            <input name="code" type="text" placeholder="Code from BOT" class="flex-1 py-2 px-3 rounded-lg bg-white border border-ink/15 text-ink text-sm placeholder-ink/40 outline-none focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all">
+                            <button type="submit" class="px-4 py-2 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-lg transition-colors">Login</button>
+                        </form>
+                        <div id="process-indicator" class="mt-3 hidden"><p class="text-sm text-ink/50">Processing…</p></div>
+                    </div>
+                    <!-- the subscription: one record, edited in place -->
+                    <div class="p-6 sm:p-8 bg-paper/40 flex flex-col gap-5" id="subPanel">
+                        <div>
+                            <div class="flex items-center gap-2.5 mb-1">
+                                <h2 class="text-base font-bold text-ink">Your alerts</h2>
+                                <span id="subStatusChip" class="hidden inline-flex items-center gap-1.5 text-[11px] font-bold rounded-full px-2.5 py-1"></span>
+                            </div>
+                            <p class="text-sm text-ink/60 leading-relaxed" id="subHint">Add the stocks you want watched. Alerts arrive on Telegram the moment something happens.</p>
+                        </div>
+
+                        <!-- what you are subscribed to -->
+                        <div>
+                            <div id="subStocks" class="flex flex-wrap gap-1.5 min-h-[34px] items-center"></div>
+                            <button id="subAddCurrent" class="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-bold text-violet bg-violet-bg border border-violet-edge rounded-full hover:border-violet transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                                <span id="subAddLabel">Add this stock</span>
+                            </button>
+                        </div>
+
+                        <!-- ready-made batches: stored by reference, so "top 20"
+                             keeps meaning the current top 20 -->
+                        <div class="hairline pt-4">
+                            <div class="text-[12px] font-semibold text-ink/45 mb-2">Or take a ready-made batch</div>
+                            <div id="subBatches" class="flex flex-wrap gap-1.5"></div>
+                            <p class="text-[11.5px] text-ink/40 mt-2">A batch always means today's top names — we keep it current for you. Big batches are best with <b>major turns only</b>.</p>
+                        </div>
+
+                        <!-- how much you want to hear -->
+                        <div class="hairline pt-4">
+                            <div class="text-[12px] font-semibold text-ink/45 mb-2">How much to send</div>
+                            <div class="flex flex-col gap-1.5" id="subTier">
+                                <label class="sub-opt"><input type="radio" name="subTier" value="M" checked><span><b>Every alert</b><em>Everything worth telling you about — around one a day per stock.</em></span></label>
+                                <label class="sub-opt"><input type="radio" name="subTier" value="S"><span><b>Major turns only</b><em>Just the big ones. A few a month per stock.</em></span></label>
+                            </div>
+                        </div>
+
+                        <div class="hairline pt-4 flex items-center gap-3 flex-wrap">
+                            <button class="subscribe-button inline-flex items-center justify-center px-7 py-2.5 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-full shadow-card hover:-translate-y-px transition-all disabled:opacity-40" id="submit_alerts">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor"></path><path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none"></path></svg>
+                                Save
+                            </button>
+                            <button id="subPause" class="text-[13px] font-semibold text-ink/50 hover:text-ink transition-colors underline decoration-ink/20 underline-offset-2">Pause all alerts</button>
+                            <span id="subSaved" class="hidden text-[12.5px] font-semibold text-up">Saved</span>
+                        </div>
+                        <p class="text-xs text-ink/40 -mt-2">Alerts are informational, not individual investment advice. You can pause or unsubscribe any time, here or in the bot.</p>
                     </div>
                 </div>
             </div>
@@ -377,7 +458,7 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
                         </div>
                         <div class="font-bold text-[15px] tracking-tight mb-1.5">Continuous coverage</div>
-                        <p class="text-[13.5px] leading-relaxed text-ink/60">Every bar of 400+ instruments watched through the trading day — MOEX, US stocks, futures, crypto.</p>
+                        <p class="text-[13.5px] leading-relaxed text-ink/60">Every bar, every trading day, across 400+ instruments — MOEX, US stocks, ETFs and indices. Nothing on your list moves without us seeing it.</p>
                     </div>
                     <div>
                         <div class="w-10 h-10 rounded-xl bg-violet-bg border border-violet-edge grid place-items-center text-violet mb-3">
@@ -420,7 +501,7 @@
                         <li class="flex gap-2.5 text-ink/40"><span class="text-ink/25 mt-px shrink-0 font-bold leading-none text-[15px]">×</span><span class="text-[13.5px] leading-snug">AI screener across the whole universe</span></li>
                         <li class="flex gap-2.5 text-ink/40"><span class="text-ink/25 mt-px shrink-0 font-bold leading-none text-[15px]">×</span><span class="text-[13.5px] leading-snug">Personalized “write what you want” alerts</span></li>
                     </ul>
-                    <button class="mt-6 w-full py-3 rounded-full text-sm font-bold text-white bg-ink hover:bg-ink/85 transition-colors" onclick="openGreetingPopup()">Start free</button>
+                    <button class="mt-6 w-full py-3 rounded-full text-sm font-bold text-white bg-ink hover:bg-ink/85 transition-colors" onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Start free</button>
                 </div>
                 <!-- PRO -->
                 <div class="rounded-xl2 border border-gold-edge bg-gold-bg/30 shadow-lift p-6 flex flex-col">
@@ -432,7 +513,7 @@
                         <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Unlimited chat with every alert</span></li>
                         <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">AI screener — scan the full universe in plain words</span></li>
                         <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Personalized alerts: tell it what you want, in your words</span></li>
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Priority coverage across MOEX · US · crypto</span></li>
+                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Priority coverage across MOEX · US · ETFs</span></li>
                     </ul>
                     <button class="mt-6 w-full py-3 rounded-full text-sm font-bold text-white bg-gold hover:opacity-90 transition-colors" onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Get PRO</button>
                 </div>
@@ -440,52 +521,6 @@
         </section>
 
         <!-- ===================== SIGNUP (Telegram OTP) ===================== -->
-        <section class="shell pb-16" id="signupSection">
-            <div class="rounded-xl2 bg-white border border-ink/12 shadow-card overflow-hidden">
-                <div class="grid lg:grid-cols-2">
-                    <!-- instructions / login -->
-                    <div class="p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-ink/10">
-                        <h2 class="text-base font-bold text-ink mb-3">Connect &amp; log in</h2>
-                        <div class="text-sm text-ink/60 login-text hidden" id="final-result">
-                            <h2 class="text-base font-bold text-ink mb-2">Logged in</h2>
-                            <p class="mb-2">1. Select one or more stocks. The chart displays for the last selected stock.</p>
-                            <p>2. Configure settings or leave defaults. The bot sends alerts during the trading day.</p>
-                        </div>
-                        <div class="text-sm text-ink/65 login-text space-y-2" id="initial-text">
-                            <p>1. Open the bot below and press Start — it sends a code. Enter the code in the form.</p>
-                            <a href="https://t.me/buydipru_bot?start=web" target="_blank" rel="noopener" class="inline-flex items-center gap-2 my-1 px-5 py-2.5 bg-[#229ED9] hover:bg-[#1d8dc2] text-white text-sm font-semibold rounded-full transition-colors no-underline">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                                Open bot in Telegram
-                            </a>
-                            <p>2. Select one or more stocks.</p>
-                            <p>3. Configure parameters or leave defaults. The bot sends alerts during the trading day.</p>
-                            <p class="text-ink/40">Unsubscribe anytime via the bot. The service does not store your personal data.</p>
-                        </div>
-                        <form id="code-confirmation-form" class="mt-4 flex gap-2">
-                            <input name="code" type="text" placeholder="Code from BOT" class="flex-1 py-2 px-3 rounded-lg bg-white border border-ink/15 text-ink text-sm placeholder-ink/40 outline-none focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all">
-                            <button type="submit" class="px-4 py-2 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-lg transition-colors">Login</button>
-                        </form>
-                        <div id="process-indicator" class="mt-3 hidden"><p class="text-sm text-ink/50">Processing…</p></div>
-                    </div>
-                    <!-- subscribe + subscriptions -->
-                    <div class="p-6 sm:p-8 bg-paper/40 flex flex-col gap-4">
-                        <div>
-                            <h2 class="text-base font-bold text-ink mb-2">Turn on alerts</h2>
-                            <p class="text-sm text-ink/60 leading-relaxed mb-4">Once you've picked stocks and a mode, subscribe to start receiving alerts on Telegram and here.</p>
-                            <button class="subscribe-button flex items-center justify-center px-8 py-2.5 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-full shadow-card hover:-translate-y-px transition-all" id="submit_alerts">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor"></path><path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none"></path></svg>
-                                Subscribe
-                            </button>
-                            <p class="text-xs text-ink/40 mt-2">By clicking Subscribe, you accept the terms of use. This is not individual investment advice.</p>
-                        </div>
-                        <div class="hairline pt-4">
-                            <div class="text-[12px] font-semibold text-ink/45 mb-1.5">Your alerts</div>
-                            <div id="selections" class="text-sm text-ink/50">No alerts yet</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <!-- ===================== FOOTER ===================== -->
@@ -512,9 +547,9 @@
                 <p class="text-sm text-ink/65 leading-relaxed mt-2">Most of us own stocks we can't read — so we sell good dips, sit through real breaks, or stop looking. DeepDIP is your eyes on the market: it watches every bar of your stocks, and when a move is meaningful, an AI analyst tells you in one honest sentence what happened, which level matters, and what it means for your horizon.</p>
             </div>
             <div class="px-6 py-4 border-t border-ink/10 flex flex-col gap-3 text-sm text-ink/70">
-                <div class="flex gap-3 items-start"><span class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">1</span><p class="leading-snug">Connect the Telegram bot <a href="https://t.me/buydipru_bot" class="font-semibold text-violet hover:text-violet-dark">buydipru_bot</a> — it sends your login code and, later, your alerts.</p></div>
-                <div class="flex gap-3 items-start"><span class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">2</span><p class="leading-snug">Pick what to watch — MOEX, US stocks, futures, crypto — and a signal mode.</p></div>
-                <div class="flex gap-3 items-start"><span class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">3</span><p class="leading-snug">Subscribe. Through the day you get plain-language reads — one line for traders, one for holders.</p></div>
+                <div class="flex gap-3 items-start"><span class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">1</span><p class="leading-snug">Open the Telegram bot <a href="https://t.me/buydipru_bot" class="font-semibold text-violet hover:text-violet-dark">buydipru_bot</a> and press Start. That is the whole sign-up.</p></div>
+                <div class="flex gap-3 items-start"><span class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">2</span><p class="leading-snug">Tap a batch — MOEX top 10/20/30 or US top 10/20/30 — or search one name. Change it any time with /alerts.</p></div>
+                <div class="flex gap-3 items-start"><span class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">3</span><p class="leading-snug">Through the day you get plain-language reads — one line for traders, one for holders. Mute or stop any stock straight from the alert.</p></div>
             </div>
             <div class="px-6 pb-6 pt-4 flex gap-2 border-t border-ink/10">
                 <button class="flex-1 py-2.5 rounded-full bg-violet hover:bg-violet-dark text-white text-sm font-bold transition-colors" onclick="window.open('https://t.me/buydipru_bot?start=web','_blank');closeGreetingPopup();document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Connect Telegram</button>
@@ -529,17 +564,17 @@
             <div class="help-sidebar w-[30%] p-6 overflow-y-auto border-r border-ink/10 bg-paper max-md:w-full max-md:max-h-[30%] max-md:border-r-0 max-md:border-b">
                 <h2 class="text-lg font-bold mb-4">Contents</h2>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="#conditions" class="text-violet hover:text-violet-dark">Условия использования</a></li>
-                    <li><a href="#chart-info" class="text-violet hover:text-violet-dark">График</a></li>
-                    <li><a href="#trend-following" class="text-violet hover:text-violet-dark">Алерты на тренд</a></li>
-                    <li><a href="#range-breakout" class="text-violet hover:text-violet-dark">Выход из боковика</a></li>
+                    <li><a href="#conditions" class="text-violet hover:text-violet-dark">Terms of use</a></li>
+                    <li><a href="#chart-info" class="text-violet hover:text-violet-dark">The chart</a></li>
+                    <li><a href="#what-we-send" class="text-violet hover:text-violet-dark">What we send</a></li>
+                    <li><a href="#how-much" class="text-violet hover:text-violet-dark">How much you get</a></li>
                 </ul>
             </div>
             <div class="help-main w-[70%] p-6 overflow-y-auto max-md:w-full max-md:max-h-[70%] [&_h3]:font-semibold [&_h3]:text-base [&_p]:text-sm [&_p]:text-ink/60 [&_p]:leading-relaxed [&_.help-section]:mb-6">
-                <div class="help-section" id="conditions"><h3>Условия использования</h3><p>Все уведомления имеют разный тип, в справке описано их примерное применение. Оповещения носят информационный характер, они не содержат рекомендаций, могут быть ошибочными или ложными. Вы используете систему на свой страх и риск.</p></div>
-                <div class="help-section" id="chart-info"><h3>График</h3><p>Отображаются все события, сгенерированные в прошлом для данных настроек. Одна свеча — 2 часа. График только отображает алерты для удобства изучения функциональности сервиса.</p></div>
-                <div class="help-section" id="trend-following"><h3>Алерты на тренд</h3><p>Уведомления на смену тренда и на его усиление. Чувствительность по умолчанию оптимальная, подходящая для всех типов акций.</p></div>
-                <div class="help-section" id="range-breakout"><h3>Выход из боковика</h3><p>Боковик — интервал цены, установленный в течение нескольких дней. Оповещение может говорить о потенциальной смене тренда или старте нового.</p></div>
+                <div class="help-section" id="conditions"><h3>Terms of use</h3><p>Alerts are informational. They carry no recommendation, they can be wrong or false, and nothing here is individual investment advice — you use the service at your own risk.</p></div>
+                <div class="help-section" id="chart-info"><h3>The chart</h3><p>A dot marks every alert the service sent on that stock, so you can see where it spoke. One candle is 2 hours. The chart is there for context only — this is an alerts product, not a trading terminal.</p></div>
+                <div class="help-section" id="what-we-send"><h3>What we send</h3><p>One short message when something meaningful happens: a breakout, a turn, a test of a level that has held for months, a sharp move backed by unusual volume. Each one says what happened, which price level matters, and what it means for a trader and for a long-term holder.</p></div>
+                <div class="help-section" id="how-much"><h3>How much you get</h3><p><b>Every alert</b> is roughly one a day per stock — everything worth telling you about. <b>Major turns only</b> is a few a month per stock: just the big ones. You can switch at any time, here or in the bot, and pause everything without losing your list.</p></div>
                 <div class="feedback-form mt-8 p-4 bg-paper rounded-lg" id="testimonials">
                     <h3 class="text-base font-semibold mb-3">Feedback</h3>
                     <form id="feedbackForm" onsubmit="submitFeedback(event)">
@@ -553,10 +588,10 @@
     </div>
 
     <script src="lightweight-charts.standalone.production.js?v=5.2.0"></script>
-    <script src="js.js?v=11"></script>
+    <script src="js.js?v=13"></script>
     <script src="chart.js?v=12"></script>
     <script src="chat.js?v=2"></script>
-    <script src="agent.js?v=4"></script>
+    <script src="agent.js?v=5"></script>
 
 </body>
 

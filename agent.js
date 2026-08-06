@@ -2,6 +2,9 @@
 (function () {
     "use strict";
 
+    // The screener's search scope on the public page.
+    const SCREENER_DEMO_STOCKS = ["NVDA", "AAPL"];
+
     // --- State ---
     let agentResults = null;
     let selectedSignal = null;
@@ -416,7 +419,12 @@
 
         try {
             const payload = { query };
-            if (!window.__ruMode) payload.stocks = ["NVDA", "AAPL"];
+            // Demo scope. This used to be keyed off the (now removed) `?ru`
+            // language flag — the UI language decided which stocks the
+            // screener searched, which was nonsense. Keeping the restriction
+            // explicit: the section's copy promises the whole universe, so
+            // widening it is a product call, not a translation one.
+            payload.stocks = SCREENER_DEMO_STOCKS;
             const res = await postJson(apiUrl("/api/retrieval"), payload);
 
             if (res.error) {
