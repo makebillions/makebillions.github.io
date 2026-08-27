@@ -9,25 +9,28 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="output.css?v=6" crossorigin="" />
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
-        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+            m[i].l = 1 * new Date();
+            for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })
+            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
         ym(97901249, "init", {
-             clickmap:true,
-             trackLinks:true,
-             accurateTrackBounce:true
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true
         });
     </script>
     <noscript>
         <div><img src="https://mc.yandex.ru/watch/97901249" style="position:absolute; left:-9999px;" alt="" /></div>
     </noscript>
     <!-- /Yandex.Metrika counter -->
+
+    <link rel="stylesheet" href="output.css?v=7" crossorigin="" />
 </head>
 
 <body class="a-page min-h-screen text-ink font-sans">
@@ -39,488 +42,571 @@
                 <span class="w-7 h-7 rounded-lg bg-violet grid place-items-center text-white text-sm -rotate-6">D</span>
                 Deep<span class="text-violet -ml-[3px]">DIP</span>
             </a>
-            <div class="hidden lg:flex items-center gap-7 text-[14px] font-semibold text-ink/55 ml-3">
-                <a class="text-ink hover:text-ink transition-colors" href="#chartSection">Signals</a>
-                <a class="hover:text-ink transition-colors" href="#agentSection">AI screener</a>
-                <a class="hover:text-ink transition-colors" href="#" onclick="openHelpPopup('#conditions');return false;">How it works</a>
+            <div class="hidden md:flex items-center gap-7 text-[14px] font-semibold text-ink/55 ml-3">
+                <a class="hover:text-ink transition-colors" href="#recordSection">The alerts</a>
+                <a class="hover:text-ink transition-colors" href="#proSection">Free vs PRO</a>
                 <a class="hover:text-ink transition-colors" href="#pricingSection">Pricing</a>
-                <a class="hover:text-ink transition-colors" href="#" onclick="openHelpPopup('#testimonials');return false;">Feedback</a>
             </div>
             <div class="flex-1"></div>
-            <button class="px-2 py-1.5 text-sm font-semibold text-ink/65 hover:text-ink transition-colors"
+            <button
+                class="hidden sm:inline-flex px-2 py-1.5 text-sm font-semibold text-ink/65 hover:text-ink transition-colors"
                 onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Log in</button>
-            <button class="px-5 py-2.5 text-sm font-bold text-white bg-ink hover:bg-ink/85 rounded-full transition-colors"
-                onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Get started</button>
+            <button
+                class="px-5 py-2.5 text-sm font-bold text-white bg-ink hover:bg-ink/85 rounded-full transition-colors whitespace-nowrap"
+                onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Start
+                free</button>
+            <button id="navToggle"
+                class="md:hidden w-9 h-9 grid place-items-center rounded-lg border border-ink/15 text-ink/70"
+                aria-label="Menu" aria-expanded="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round">
+                    <path d="M3 6h18M3 12h18M3 18h18" />
+                </svg>
+            </button>
         </nav>
+        <div id="navMenu" class="hidden md:hidden border-t border-ink/10 bg-paper/95 backdrop-blur">
+            <div class="shell py-3 flex flex-col gap-1 text-[15px] font-semibold text-ink/70">
+                <a class="py-2 hover:text-ink transition-colors" href="#recordSection">The alerts</a>
+                <a class="py-2 hover:text-ink transition-colors" href="#proSection">Free vs PRO</a>
+                <a class="py-2 hover:text-ink transition-colors" href="#pricingSection">Pricing</a>
+                <a class="py-2 hover:text-ink transition-colors" href="#signupSection">Log in</a>
+            </div>
+        </div>
     </header>
 
     <main>
-        <!-- ===================== HERO ===================== -->
-        <section class="shell pt-12 pb-10">
-            <div class="grid lg:grid-cols-[1.05fr_.95fr] gap-10 lg:gap-12 items-start">
-                <!-- left: promise -->
+        <!-- ===================== 1. HERO ===================== -->
+        <section class="shell pt-12 pb-12" style="max-width:1320px">
+            <div class="grid lg:grid-cols-[minmax(0,.78fr)_minmax(0,1.22fr)] gap-10 lg:gap-12 items-center">
                 <div class="max-w-[46ch]">
-                    <a href="#agentSection"
-                        class="inline-flex items-center gap-2 pl-2 pr-3.5 py-1.5 rounded-full bg-violet-bg border border-violet-edge hover:border-violet hover:-translate-y-px transition-all mb-6 no-underline">
-                        <span class="hero-agent-spark inline-flex items-center justify-center w-[18px] h-[18px] rounded-full bg-violet text-white">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                            </svg>
-                        </span>
-                        <span class="text-[.72rem] font-bold tracking-wider text-violet">Dedicated AI screener</span>
-                        <span class="w-[3px] h-[3px] rounded-full bg-ink/25"></span>
-                        <span class="text-[.62rem] font-bold tracking-widest uppercase text-green-600">Live</span>
-                    </a>
-                    <h1 class="a-h1 text-[clamp(2.4rem,4.6vw,3.5rem)] text-balance">
-                        The stock market is <span class="text-violet">no longer a mystery</span>
+                    <h1 class="a-h1 text-[clamp(2.2rem,3.5vw,3.1rem)] text-balance">
+                        What just happened to your stocks, <span class="text-violet">in one sentence</span>
                     </h1>
                     <p class="mt-6 text-[1.075rem] leading-relaxed text-ink/70">
-                        DeepDIP watches market real time and explains every move — what happened, which level matters, where it's heading — with AI's hint on whether the move is real or fake.
+                        DeepDIP watches the market and sends one plain line when something matters — what happened,
+                        which price decides what comes next, and what it means whether you trade or just hold.
                     </p>
-                    <ul class="mt-7 space-y-3.5 text-[.98rem] text-ink/75">
-                        <li class="flex gap-3"><span class="text-violet font-bold mt-px">·</span><span><b class="text-ink">Two reads in every alert</b> — one for <span class="text-short font-semibold">traders</span>, one for <span class="text-long font-semibold">long-term holders</span>.</span></li>
-                        <li class="flex gap-3"><span class="text-violet font-bold mt-px">·</span><span><b class="text-ink">Chat with any alert</b> — ask if it's real and what it means for your position.</span></li>
-                        <li class="flex gap-3"><span class="text-violet font-bold mt-px">·</span><span><b class="text-ink">AI screener</b> <span class="inline-flex items-center text-[10px] font-bold text-gold bg-gold-bg border border-gold-edge rounded-full px-1.5 py-0.5 align-middle">PRO</span> — describe what you're after, in plain words, and scan the whole market.</span></li>
-                    </ul>
                     <div class="mt-8 flex flex-wrap items-center gap-3">
-                        <button class="px-6 py-3 text-sm font-bold text-white bg-violet hover:bg-violet-dark rounded-full shadow-card hover:-translate-y-px transition-all" onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Get started — it's free</button>
-                        <a href="#chartSection" class="px-5 py-3 text-sm font-semibold text-ink/70 hover:text-ink no-underline">See live signals ↓</a>
+                        <button
+                            class="px-6 py-3 text-sm font-bold text-white bg-violet hover:bg-violet-dark rounded-full shadow-card hover:-translate-y-px transition-all"
+                            onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Start
+                            free</button>
+                        <a href="#recordSection"
+                            class="px-5 py-3 text-sm font-semibold text-ink/70 hover:text-ink no-underline">See a real
+                            week ↓</a>
                     </div>
                 </div>
 
-                <!-- right: example alert specimen (both reads) -->
                 <div>
-                    <div class="a-kicker mb-3">An alert looks like this</div>
-                    <article id="heroAlert" class="rounded-xl2 bg-white border border-ink/12 shadow-lift overflow-hidden">
-                        <div class="px-5 pt-4 pb-3">
-                            <div class="flex items-center gap-2.5">
-                                <span class="live-dot"></span>
-                                <span class="font-extrabold text-[16px] tracking-tight">PLZL</span>
-                                <span class="text-[13px] text-ink/45 font-medium">Polyus</span>
-                                <span class="text-[12px] text-ink/40 ml-auto">Today · 09:42</span>
+                    <div class="grid sm:grid-cols-2 gap-4 items-stretch">
+                        <article class="alert-card tier-free">
+                            <div class="tier-band">
+                                <span class="tier-name">Free</span>
+                                <span class="tier-model">our fast model</span>
                             </div>
-                            <p class="read text-[17px] leading-[1.5] text-ink mt-3">Polyus snapped back off the 13 420 base on heavier-than-usual activity — a clean V-reversal into midday.</p>
-                            <div class="flex items-center gap-3 mt-3 text-[12.5px]">
-                                <span class="inline-flex items-center gap-1.5 font-semibold text-ink/55 whitespace-nowrap">key level <b class="mono text-ink">13 420</b></span>
-                                <span class="w-px h-3.5 bg-ink/15"></span>
-                                <span class="mono font-bold text-up whitespace-nowrap">+2.4%</span>
+                            <div class="px-5 pt-4 pb-3">
+                                <div class="card-head">
+                                    <span class="ticker">KO</span>
+                                    <span class="when">13 Aug 17:03</span>
+                                </div>
+                                <div class="chip-row">
+                                    <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
+                                            <path d="M8 1l7 13H1L8 1z" fill="#f97316" />
+                                            <rect x="7.2" y="5.5" width="1.6" height="5" rx=".5" fill="#fff" />
+                                            <circle cx="8" cy="12" r=".9" fill="#fff" />
+                                        </svg></span>
+                                    <span class="dir-chip up">Buyers stepping in · 87.6</span>
+                                </div>
+                                <p class="was">1-session climb from 85.81</p>
+                                <p class="now">testing the 85.8-88.0 zone</p>
                             </div>
-                        </div>
-                        <div class="px-5 py-4 bg-paper/40 border-t border-ink/10 flex flex-col gap-2.5">
-                            <div class="read-row"><span class="read-tag st"><span class="dot"></span>Trader</span><p class="text-[13.5px] leading-snug text-ink/75">The bounce toward 13 900 is the move while 13 420 keeps holding. A close back under it ends the trade.</p></div>
-                            <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Holder</span><p class="text-[13.5px] leading-snug text-ink/75">Third defense of 13 420 since February — increasingly the multi-month floor. Nothing to do unless it finally breaks.</p></div>
-                        </div>
-                    </article>
-                    <p class="mt-3 text-[12.5px] text-ink/45 leading-relaxed">Plain-language, with a named price level and a read for each kind of holder. Tap one in the live feed to ask it anything.</p>
+                            <div class="card-foot">
+                                <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
+                                        term</span>
+                                    <p class="read-text">88.5-90.8 is the next ceiling and the broader market is up, so
+                                        a slow push toward that range may occur</p>
+                                </div>
+                                <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
+                                        term</span>
+                                    <p class="read-text">the spring low at 74.0-77.0 remains the ultimate floor for the
+                                        long-term view</p>
+                                </div>
+                            </div>
+                        </article>
 
-                    <!-- PRO showcase: the same kind of alert, written for one user's position -->
-                    <div class="mt-5 flex items-center gap-2.5 text-[11.5px] font-semibold text-ink/45">
-                        <span class="h-px flex-1 bg-ink/10"></span>
-                        <span>With <span class="text-gold font-bold">PRO</span>, written for your position</span>
-                        <span class="h-px flex-1 bg-ink/10"></span>
+                        <article class="alert-card tier-pro">
+                            <div class="tier-band">
+                                <span class="tier-name">PRO</span>
+                                <span class="tier-model">our reasoning model</span>
+                            </div>
+                            <div class="px-5 pt-4 pb-3">
+                                <div class="card-head">
+                                    <span class="ticker">KO</span>
+                                    <span class="when">13 Aug 17:03</span>
+                                </div>
+                                <div class="chip-row">
+                                    <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
+                                            <path d="M2 12l4-4 2 2 6-7v3h2V1h-5v2h3L9 9 7 7l-5 5z" fill="#f59e0b" />
+                                        </svg></span>
+                                    <span class="dir-chip up">Breaking higher · 87.6</span>
+                                </div>
+                                <p class="was">1-session climb from 85.81</p>
+                                <p class="now">pushing toward the top of the 85.8-88.0 zone</p>
+                            </div>
+                            <div class="card-foot">
+                                <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
+                                        term</span>
+                                    <p class="read-text">above 88.0 the next proven ceiling is 88.5-90.8, about 2.5%
+                                        away, while a turn back down has room to 85.8 before the zone breaks — the
+                                        upside is the nearer, smaller move</p>
+                                </div>
+                                <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
+                                        term</span>
+                                    <p class="read-text">a holder is watching whether price can finally add to the
+                                        late-July jump, with the July range below near 81.0-84.0 the first area that has
+                                        caught past dips</p>
+                                </div>
+                            </div>
+                        </article>
                     </div>
-                    <article id="heroAlertPersonal" class="mt-3 rounded-xl2 bg-white border border-gold-edge shadow-lift overflow-hidden">
-                        <div class="px-5 pt-4 pb-3">
-                            <div class="flex items-center gap-2.5 flex-wrap">
-                                <span class="font-extrabold text-[16px] tracking-tight">TSLA</span>
-                                <span class="text-[13px] text-ink/45 font-medium">Tesla</span>
-                                <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-gold bg-gold-bg border border-gold-edge rounded-full px-2.5 py-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>Personalized · you bought at $397
-                                </span>
-                                <span class="text-[12px] text-ink/40 ml-auto">May 07 · 16:30</span>
-                            </div>
-                            <p class="read text-[17px] leading-[1.5] text-ink mt-3">The breakout you bought just confirmed.</p>
-                            <span class="inline-flex items-center mono text-[12px] font-bold px-2.5 py-1 rounded-full border text-up bg-up-bg border-up-edge mt-3">Breaking higher · 411$</span>
-                        </div>
-                        <div class="px-5 py-4 bg-paper/40 border-t border-ink/10 flex flex-col gap-2.5">
-                            <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short term</span><p class="text-[13.5px] leading-snug text-ink/75">Up a few percent from $397; today's $411 came on the heaviest buying in two weeks. $405 is your line — hold it and $430 is next.</p></div>
-                            <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long term</span><p class="text-[13.5px] leading-snug text-ink/75">Your $397 entry is the floor that matters; above it the path points back to the May highs near $448.</p></div>
-                            <div class="flex items-start gap-2 mt-0.5 rounded-lg bg-gold-bg/60 border border-gold-edge px-3 py-2">
-                                <svg class="text-gold mt-px shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                                <p class="text-[12.5px] leading-snug text-ink/70">You don't need to watch every tick — we'll ping you the moment $405 gives way.</p>
-                            </div>
-                        </div>
-                    </article>
+                    <p class="hero-proof">Four sessions later KO stopped at 90.73 — inside the 88.5-90.8 ceiling both
+                        cards named.</p>
                 </div>
             </div>
         </section>
 
-        <!-- ===================== BENEFIT CHIPS ===================== -->
-        <section class="shell pb-9">
-            <div class="flex flex-wrap gap-2.5" id="featChips">
-                <span class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full border text-[13px] font-semibold text-ink/70 bg-white border-ink/12">
-                    <svg class="text-ink/45" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-                    Plain-language alerts
-                </span>
-                <span class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full border text-[13px] font-semibold text-ink/70 bg-white border-ink/12">
-                    <svg class="text-ink/45" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 3 8l4 4"/><path d="M3 8h14"/><path d="M17 20l4-4-4-4"/><path d="M21 16H7"/></svg>
-                    A read for traders &amp; holders
-                </span>
-                <span class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full border text-[13px] font-semibold text-gold bg-gold-bg border-gold-edge">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>
-                    Chat with any alert
-                </span>
-                <span class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full border text-[13px] font-semibold text-violet bg-violet-bg border-violet-edge">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15.5 10.1 10.9 5.5 9l4.6-1.4z"/></svg>
-                    AI screener<span class="ml-1 text-[9px] font-bold text-gold bg-gold-bg border border-gold-edge rounded-full px-1.5 py-px">PRO</span>
-                </span>
-                <span class="benefit-chip inline-flex items-center gap-2 px-3.5 py-2 rounded-full border text-[13px] font-semibold text-ink/70 bg-white border-ink/12">
-                    <svg class="text-ink/45" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
-                    Delivered on Telegram
-                </span>
-            </div>
-        </section>
-
-        <!-- ===================== WORKING AREA ===================== -->
-        <section class="workband py-9" id="chartSection">
+        <!-- ===================== 2. THE RECORD ===================== -->
+        <section class="workband py-11" id="recordSection">
             <div class="shell" style="max-width:1320px">
-                <div class="flex items-end justify-between gap-4 mb-5 flex-wrap">
-                    <div>
-                        <div class="a-kicker mb-1.5">The live desk</div>
-                        <h2 class="a-h1 text-[1.9rem]">Everything moving on your watchlist</h2>
-                    </div>
-                    <p class="text-[13px] text-ink/45 max-w-[40ch] leading-relaxed">Words first. The chart is for visual reference only — DeepDIP is an alerts product, not a trading terminal.</p>
+                <div class="max-w-[52ch] mb-6">
+                    <h2 class="a-h1 text-[1.9rem]">A real week on three stocks</h2>
+                    <p class="mt-2 text-[15px] leading-relaxed text-ink/60">Alerts from 14 to 21 August, with the chart
+                        running on past each one.</p>
                 </div>
 
-                <div class="grid grid-cols-1 xl:grid-cols-[1.5fr_1fr] gap-5 items-start">
-                    <!-- LEFT: picker + reference chart -->
-                    <div class="bg-white border border-ink/10 rounded-xl2 shadow-card p-4 sm:p-5 min-w-0">
-                        <!-- picker -->
+                <div class="grid grid-cols-1 xl:grid-cols-[1.45fr_1fr] gap-5 items-start">
+                    <!-- chart: second on narrow screens, the words come first -->
+                    <div
+                        class="bg-white border border-ink/10 rounded-xl2 shadow-card p-4 sm:p-5 min-w-0 order-2 xl:order-1 xl:sticky xl:top-20">
                         <div class="flex flex-wrap items-center gap-3">
-                            <div class="autocomplete-container relative flex-1 min-w-[170px] max-w-xs" id="autocompleteContainer">
-                                <input id="autocomplete" type="text" placeholder="Search a stock…" autocomplete="off"
+                            <div class="autocomplete-container relative flex-1 min-w-[170px] max-w-xs"
+                                id="autocompleteContainer">
+                                <input id="autocomplete" type="text" placeholder="or search any name" autocomplete="off"
                                     class="w-full py-2 px-3 text-sm font-medium rounded-lg bg-white border border-ink/15 text-ink placeholder-ink/40 outline-none hover:border-ink/30 focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all">
                                 <div id="autocomplete-results" class="text-sm"></div>
                             </div>
                             <div class="flex gap-1.5 flex-wrap" id="presetPills">
-                                <button class="preset-pill active" data-ticker="PLZL">PLZL</button>
-                                <button class="preset-pill" data-ticker="GMKN">GMKN</button>
-                                <button class="preset-pill" data-ticker="NVTK">NVTK</button>
-                                <button class="preset-pill" data-ticker="RUAL">RUAL</button>
-                                <button class="preset-pill" data-ticker="NVDA">NVDA</button>
-                                <button class="preset-pill" data-ticker="AMD">AMD</button>
-                                <button class="preset-pill" data-ticker="V">V</button>
-                            </div>
-                            <div class="flex items-center gap-2 ml-auto">
-                                <div class="mode-switch flex rounded-full bg-ink/5 p-0.5" id="modeSwitch">
-                                    <button class="mode-btn py-1.5 px-3 text-xs rounded-full text-ink/60 transition-all cursor-pointer" data-mode="strategic">Strategic</button>
-                                    <button class="mode-btn mode-active py-1.5 px-3 text-xs rounded-full text-white font-medium transition-all cursor-pointer" data-mode="meaningful">Meaningful</button>
-                                                                    </div>
+                                <button class="preset-pill active" data-ticker="AVGO">AVGO</button>
+                                <button class="preset-pill" data-ticker="AMZN">AMZN</button>
+                                <button class="preset-pill" data-ticker="TSLA">TSLA</button>
                             </div>
                         </div>
                         <div id="selected-items" class="flex flex-wrap gap-1.5"></div>
-                        <p class="mt-1.5 mb-4 text-xs text-ink/40" id="modeDescription">All signals including minor fluctuations.</p>
 
-                        <!-- chart title -->
-                        <div class="flex items-baseline justify-between gap-3 mb-2 flex-wrap">
-                            <h2 class="text-lg font-bold tracking-tight text-ink" id="chartStockTitle">—</h2>
-                            <span class="text-xs text-ink/40 font-medium hidden sm:inline">Price history · for visual reference</span>
+                        <div class="flex items-baseline justify-between gap-3 mb-2 mt-4 flex-wrap">
+                            <h3 class="text-lg font-bold tracking-tight text-ink" id="chartStockTitle">AVGO</h3>
                             <div id="signalShortcuts" class="flex flex-wrap gap-1.5"></div>
                         </div>
-                        <!-- chart -->
                         <div class="relative">
-                            <div id="chartLoader" class="hidden absolute inset-0 bg-white/60 flex justify-center items-center rounded-xl z-10"><div class="loader"></div></div>
-                            <div id="chart" class="w-full min-h-[300px] md:min-h-[380px] bg-gradient-to-b from-paper/50 to-white border border-ink/10 rounded-xl overflow-hidden"></div>
-                            <div class="chart-ref-note absolute left-3 bottom-2.5 flex items-center gap-1.5 text-[11.5px] text-ink/40 font-medium pointer-events-none z-[5]">
-                                dots mark where recent signals fired
+                            <div id="chartLoader"
+                                class="hidden absolute inset-0 bg-white/60 flex justify-center items-center rounded-xl z-10">
+                                <div class="loader"></div>
+                            </div>
+                            <div id="chart"
+                                class="w-full min-h-[280px] md:min-h-[340px] bg-gradient-to-b from-paper/50 to-white border border-ink/10 rounded-xl overflow-hidden">
                             </div>
                         </div>
-                        <p class="mt-3 text-[12.5px] text-ink/45 leading-relaxed">No timeframes, prices or buy/sell markings — just where alerts fired, for context.</p>
                     </div>
 
-                    <!-- RIGHT: feed / chat -->
-                    <div class="min-w-0 flex flex-col">
-                        <!-- FEED -->
-                        <div class="bg-white border border-ink/10 rounded-xl2 shadow-card p-3 relative flex flex-col" id="feedPanel">
-                            <div class="border-b border-ink/10 px-1 pb-2.5 mb-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="live-dot"></span>
-                                    <h3 class="text-base font-bold tracking-tight text-ink whitespace-nowrap">Signals:</h3>
-                                    <button id="openChatBtn" class="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-violet bg-violet-bg border border-violet-edge rounded-full hover:border-violet transition-colors">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>
-                                        Ask AI
-                                    </button>
-                                </div>
-                                <p class="text-xs text-ink/40 mt-1 leading-snug">plain-language reads · newest first</p>
-                            </div>
-                            <div id="eventsList" class="hidden opacity-50 pointer-events-none events-list nicescroll gap-3 overflow-y-auto overflow-x-hidden flex-1 min-h-[280px] max-h-[620px] pt-2 pr-1"></div>
-                            <div id="shimmerLoader" class="hidden events-list flex-col gap-2 pointer-events-none pt-2">
-                                <div class="animate-pulse h-16 rounded-xl bg-ink/5"></div>
-                                <div class="animate-pulse h-16 rounded-xl bg-ink/5"></div>
-                                <div class="animate-pulse h-16 rounded-xl bg-ink/5"></div>
-                            </div>
+                    <!-- alerts: first on narrow screens -->
+                    <div class="min-w-0 flex flex-col order-1 xl:order-2" id="feedPanel">
+                        <div class="flex rounded-full bg-ink/5 p-0.5 self-start mb-3" id="recordTabs">
+                            <button class="rec-tab rec-tab-on" data-tier="free">Free alert</button>
+                            <button class="rec-tab" data-tier="pro">PRO alert</button>
+                            <button class="rec-tab" data-tier="live">Real time</button>
                         </div>
-
-                        <!-- CHAT (hidden; swaps with feed) -->
-                        <div class="bg-white border border-ink/10 rounded-xl2 shadow-card overflow-hidden flex-col min-h-[520px] hidden" id="chatPanel">
-                            <div class="px-4 py-3 border-b border-ink/10 flex items-center gap-3 bg-violet-bg/50">
-                                <button class="w-8 h-8 grid place-items-center rounded-full border border-ink/15 bg-white text-ink/70 hover:text-ink transition-colors" id="chatBack">←</button>
-                                <div>
-                                    <div class="text-sm font-bold tracking-tight leading-none" id="chatTitle">— · this alert</div>
-                                    <div class="text-[11.5px] text-ink/45 mt-1" id="chatSub">conversation stays pinned to this signal</div>
-                                </div>
-                            </div>
-                            <div class="flex-1 overflow-y-auto nicescroll p-4 flex flex-col gap-4 min-h-[240px]" id="chatThread">
-                                <div class="self-start max-w-[92%] flex gap-2.5">
-                                    <span class="shrink-0 w-7 h-7 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet mt-0.5">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15.5 10.1 10.9 5.5 9l4.6-1.4z"/></svg>
-                                    </span>
-                                    <div class="bg-paper/70 border border-ink/10 rounded-2xl rounded-tl-md px-4 py-3 read text-[15px] leading-relaxed text-ink" id="chatFirstMsg"></div>
-                                </div>
-                            </div>
-                            <div class="border-t border-ink/10 p-3">
-                                <div class="flex gap-1.5 flex-wrap mb-2.5" id="chatChips">
-                                    <span class="chat-suggestion cursor-pointer text-xs font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-2.5 py-1 hover:border-violet transition-colors">Is this a trap or a real move?</span>
-                                    <span class="chat-suggestion cursor-pointer text-xs font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-2.5 py-1 hover:border-violet transition-colors">What does it mean long-term?</span>
-                                    <span class="chat-suggestion cursor-pointer text-xs font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-2.5 py-1 hover:border-violet transition-colors">What level matters now?</span>
-                                    <span class="chat-suggestion cursor-pointer text-xs font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-2.5 py-1 hover:border-violet transition-colors">What's the market doing?</span>
-                                </div>
-                                <div class="flex gap-2">
-                                    <input id="chatInput" type="text" placeholder="Ask anything about this stock…" class="flex-1 rounded-lg border border-ink/15 bg-white px-3.5 py-2.5 text-sm text-ink placeholder-ink/40 outline-none focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all">
-                                    <button id="chatSend" class="rounded-lg bg-violet hover:bg-violet-dark text-white px-4 grid place-items-center transition-colors" aria-label="Send">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
-                                    </button>
-                                </div>
-                                <p class="text-[11.5px] text-ink/40 mt-2 text-center">answers are grounded in the latest market data · not investment advice</p>
-                            </div>
+                        <div id="eventsList"
+                            class="events-list nicescroll gap-3 overflow-y-auto overflow-x-hidden flex-1 min-h-[280px] max-h-none pr-1">
+                        </div>
+                        <div id="shimmerLoader" class="hidden events-list flex-col gap-2 pointer-events-none pt-2">
+                            <div class="animate-pulse h-16 rounded-xl bg-ink/5"></div>
+                            <div class="animate-pulse h-16 rounded-xl bg-ink/5"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- ===================== 3. WHAT PRO ADDS ===================== -->
+        <section class="shell py-14" id="proSection">
+            <h2 class="a-h1 text-[2rem] mb-8">What PRO adds</h2>
+
+            <div class="grid md:grid-cols-3 gap-5">
+                <div class="axis-card">
+                    <div class="axis-name">Coverage</div>
+                    <p class="axis-line"><span class="axis-tier">Free:</span> 30 stocks.</p>
+                    <p class="axis-line"><span class="axis-tier pro">PRO:</span> everything we watch — MOEX, US, ETFs,
+                        indices.</p>
+                </div>
+                <div class="axis-card">
+                    <div class="axis-name">The read</div>
+                    <p class="axis-line"><span class="axis-tier">Free:</span> what happened, and what may come next.</p>
+                    <p class="axis-line"><span class="axis-tier pro">PRO:</span> both sides of the move, which one is
+                        bigger, and the price that decides it.</p>
+                </div>
+                <div class="axis-card">
+                    <div class="axis-name">The conversation</div>
+                    <p class="axis-line axis-lead">Ask any alert what it means for you.</p>
+                    <p class="axis-line"><span class="axis-tier">Free:</span> a few questions a day.</p>
+                    <p class="axis-line"><span class="axis-tier pro">PRO:</span> as many as you have credits for.</p>
+                </div>
+            </div>
+
+
+            <div class="max-w-2xl mx-auto mt-9">
+                <div class="reader-label">what to do, and the price that says you're wrong</div>
+                <article class="alert-card tier-pro">
+                    <div class="tier-band">
+                        <span class="tier-name">PRO</span>
+                        <span class="tier-model">our reasoning model</span>
+                    </div>
+                    <div class="px-5 pt-4 pb-3">
+                        <div class="card-head">
+                            <span class="ticker">KO</span>
+                            <span class="when">13 Aug 17:03</span>
+                        </div>
+                        <div class="chip-row">
+                            <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
+                                    <path d="M8 1l7 13H1L8 1z" fill="#f97316" />
+                                    <rect x="7.2" y="5.5" width="1.6" height="5" rx=".5" fill="#fff" />
+                                    <circle cx="8" cy="12" r=".9" fill="#fff" />
+                                </svg></span>
+                            <span class="dir-chip up">Buyers stepping in · 87.6</span>
+                        </div>
+                        <p class="was">One-session climb from 85.81 into today</p>
+                        <p class="now">climbed to 87.61, nearing the top of 85.8-88.0</p>
+                    </div>
+                    <div class="card-foot">
+                        <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short term</span>
+                            <p class="read-text">The broader market is up too, so this is not stock-specific; wait for a
+                                push through 88.5 before buying, with a drop below 85.81, 2.1% below, canceling the
+                                bounce.</p>
+                        </div>
+                        <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long term</span>
+                            <p class="read-text">If it breaks above 88.5-90.8, the July high of 90.8 is the next marker,
+                                a move that took two sessions in late July.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="mt-8 max-w-3xl mx-auto">
+                <div class="a-kicker mb-3">On any alert</div>
+                <div class="rounded-xl2 bg-white border border-ink/12 shadow-card overflow-hidden">
+                    <div class="px-5 py-4 border-b border-ink/10 bg-paper/50">
+                        <div class="card-head">
+                            <span class="ticker">AVGO</span>
+                            <span class="when">14 Aug 16:30</span>
+                        </div>
+                        <p class="now mt-2">dropped to 407.68</p>
+                        <p class="read-text mt-1.5">the 383-400 area is the next floor, 3.8% away, so a further slide
+                            may occur while the market is flat</p>
+                    </div>
+                    <div class="p-5 flex flex-col gap-4">
+                        <div class="msg-user">
+                            <p>Is this a real break or a fake one?</p>
+                        </div>
+                        <div class="msg-ai">
+                            <p>Nothing is broken yet. 383-400 is still 3.8% below, so price has not reached it. What did
+                                happen is a whole normal day of movement inside the first half hour, and the broader
+                                market is flat — so this is the stock on its own, not the market.</p>
+                        </div>
+                        <div class="msg-user">
+                            <p>I hold it from 392. And now?</p>
+                        </div>
+                        <div class="msg-ai">
+                            <p>Your 392 sits inside 383-400 — you bought in the zone price is falling toward. Above it
+                                nothing has changed for you. A close below 383 puts the summer floor at 358-375 next,
+                                which is 8.7% under your entry.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== 4. IT KNOWS WHAT YOU OWN ===================== -->
+        <!-- D leads: it is the only card about a person rather than a chart.
+             A, B and C are ONE fire — same stock, same minute, three readers —
+             and they are kept in their own frame so nothing ever claims two
+             different stocks are the same alert. -->
+        <section class="workband py-14">
+            <div class="shell">
+                <h2 class="a-h1 text-[2rem] mb-7">It knows what you own</h2>
+
+                <div class="max-w-2xl mx-auto">
+                    <div>
+                        <div class="reader-label">he is losing money and asked what to do</div>
+                        <article class="alert-card tier-pro">
+                            <div class="tier-band">
+                                <span class="tier-name">PRO</span>
+                                <span class="tier-model">personalised</span>
+                            </div>
+                            <div class="px-5 pt-4 pb-3">
+                                <div class="card-head">
+                                    <span class="ticker">BRK.B</span>
+                                    <span class="when">13 Aug 16:34</span>
+                                </div>
+                                <div class="chip-row">
+                                    <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
+                                            <path d="M8 14l-5-6h4V2h2v6h4l-5 6z" fill="#ef4444" />
+                                        </svg></span>
+                                    <span class="dir-chip down">Floor under pressure · 509</span>
+                                </div>
+                                <p class="was">3-session slide from 537</p>
+                                <p class="now">leaning on the 508 floor, not yet through it</p>
+                            </div>
+                            <div class="card-foot">
+                                <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
+                                        term</span>
+                                    <p class="read-text">sit through it for now — you are 2.2% down, today's 508.74
+                                        against your 520, and the 508-520 shelf is the line that decides whether this
+                                        steadies or breaks</p>
+                                </div>
+                                <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
+                                        term</span>
+                                    <p class="read-text">the 486-498 July range is the level that would mark a real
+                                        breakdown</p>
+                                </div>
+                            </div>
+                        </article>
+                        <p class="told">He told it: 40 shares from 520, 6 August · asked “I am down on this. Do I cut it
+                            or sit through it?”</p>
+                    </div>
+                </div>
+
+                <div class="pair-group max-w-5xl mx-auto">
+                    <p class="pair-heading">the same alert for two different readers</p>
+                    <div class="grid md:grid-cols-2 gap-5 items-start">
+                        <div>
+                            <div class="reader-label">he fears bad news, and the chart agrees</div>
+                            <article class="alert-card tier-pro">
+                                <div class="tier-band">
+                                    <span class="tier-name">PRO</span>
+                                    <span class="tier-model">personalised</span>
+                                </div>
+                                <div class="px-5 pt-4 pb-3">
+                                    <div class="card-head">
+                                        <span class="ticker">AVGO</span>
+                                        <span class="when">14 Aug 16:30</span>
+                                    </div>
+                                    <div class="chip-row">
+                                        <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
+                                                <path d="M8 14l-5-6h4V2h2v6h4l-5 6z" fill="#ef4444" />
+                                            </svg></span>
+                                        <span class="dir-chip down">Floor under pressure · 408</span>
+                                    </div>
+                                    <p class="was">5-session slide from 432.31</p>
+                                    <p class="now">selling through the morning, testing the summer range top</p>
+                                </div>
+                                <div class="card-foot">
+                                    <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
+                                            term</span>
+                                        <p class="read-text">the bars fit your worry about orders, and you are still
+                                            4.0% up at 407.68 against your 392, so the 383-400 zone decides whether that
+                                            gain survives</p>
+                                    </div>
+                                    <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
+                                            term</span>
+                                        <p class="read-text">the 383-400 zone decides whether this is a pause or the
+                                            breakout failing</p>
+                                    </div>
+                                </div>
+                            </article>
+                            <p class="told">He told it: 20 shares from 392, early August · “I read their biggest
+                                customer cut orders for next quarter”</p>
+                        </div>
+
+                        <div>
+                            <div class="reader-label">he thinks it is noise, and the chart disagrees</div>
+                            <article class="alert-card tier-pro">
+                                <div class="tier-band">
+                                    <span class="tier-name">PRO</span>
+                                    <span class="tier-model">personalised</span>
+                                </div>
+                                <div class="px-5 pt-4 pb-3">
+                                    <div class="card-head">
+                                        <span class="ticker">AVGO</span>
+                                        <span class="when">14 Aug 16:30</span>
+                                    </div>
+                                    <div class="chip-row">
+                                        <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
+                                                <path d="M8 14l-5-6h4V2h2v6h4l-5 6z" fill="#ef4444" />
+                                            </svg></span>
+                                        <span class="dir-chip down">Floor under pressure · 408</span>
+                                    </div>
+                                    <p class="was">5-session slide from 432.31</p>
+                                    <p class="now">sharp drop to 407.68, testing the summer range top</p>
+                                </div>
+                                <div class="card-foot">
+                                    <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
+                                            term</span>
+                                        <p class="read-text">the bars do not yet fit your AI-cycle view — this is a
+                                            pullback into the breakout zone, and the 383-400 shelf decides whether it is
+                                            just that or something worse</p>
+                                    </div>
+                                    <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
+                                            term</span>
+                                        <p class="read-text">the 383-400 zone decides whether the August breakout
+                                            survives or fails</p>
+                                    </div>
+                                </div>
+                            </article>
+                            <p class="told">He told it: “I think the AI cycle is over” · owns none</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-2xl mx-auto mt-10">
+                    <div>
+                        <div class="reader-label">he asked whether to add</div>
+                        <article class="alert-card tier-pro">
+                            <div class="tier-band">
+                                <span class="tier-name">PRO</span>
+                                <span class="tier-model">personalised</span>
+                            </div>
+                            <div class="px-5 pt-4 pb-3">
+                                <div class="card-head">
+                                    <span class="ticker">AVGO</span>
+                                    <span class="when">14 Aug 16:30</span>
+                                </div>
+                                <div class="chip-row">
+                                    <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
+                                            <path d="M8 14l-5-6h4V2h2v6h4l-5 6z" fill="#ef4444" />
+                                        </svg></span>
+                                    <span class="dir-chip down">Floor under pressure · 408</span>
+                                </div>
+                                <p class="was">5-session slide from 432.31</p>
+                                <p class="now">sharp drop in the last half-hour to 407.68, testing the summer range top
+                                </p>
+                            </div>
+                            <div class="card-foot">
+                                <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
+                                        term</span>
+                                    <p class="read-text">do not add more yet — you are 4.0% up at 407.68 against your
+                                        392, and the 383-400 zone is where this dip either steadies or turns into a real
+                                        retreat</p>
+                                </div>
+                                <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
+                                        term</span>
+                                    <p class="read-text">the 383-400 zone decides whether the August breakout survives
+                                        at all</p>
+                                </div>
+                            </div>
+                        </article>
+                        <p class="told">He told it: 20 shares from 392 · “this dip is noise, I want to add” · asked “do
+                            I add more?”</p>
+                    </div>
+                </div>
+
+                <p class="mt-8 text-[12.5px] text-ink/45 text-center">A price you tell us locates you, never the chart.
+                </p>
+            </div>
+        </section>
+
+        <!-- ===================== 5. PRICING ===================== -->
+        <section class="shell py-14" id="pricingSection">
+            <h2 class="a-h1 text-[2rem] mb-8">Pricing</h2>
+            <div class="grid md:grid-cols-2 gap-5 max-w-4xl" id="pricingCards">
+                <div class="rounded-xl2 border border-ink/12 bg-white shadow-card p-6 flex flex-col">
+                    <h3 class="text-[19px] font-extrabold tracking-tight">Free</h3>
+                    <div class="flex items-baseline gap-1.5 mt-2"><span
+                            class="text-[34px] font-extrabold tracking-tight">0</span><span
+                            class="text-[13px] font-semibold text-ink/50">forever</span></div>
+                    <ul class="flex flex-col gap-3 flex-1 mt-6">
+                        <li class="price-row">30 stocks</li>
+                        <li class="price-row">our fast model</li>
+                        <li class="price-row">read the alerts</li>
+                        <li class="price-row">ask a few questions a day</li>
+                        <li class="price-row">Telegram</li>
+                    </ul>
+                    <button
+                        class="mt-6 w-full py-3 rounded-full text-sm font-bold text-white bg-ink hover:bg-ink/85 transition-colors"
+                        onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Start
+                        free</button>
+                </div>
+                <div class="rounded-xl2 border border-gold-edge bg-gold-bg/30 shadow-lift p-6 flex flex-col">
+                    <h3 class="text-[19px] font-extrabold tracking-tight">PRO</h3>
+                    <div class="flex items-baseline gap-1.5 mt-2"><span
+                            class="text-[34px] font-extrabold tracking-tight">590</span><span
+                            class="text-[13px] font-semibold text-ink/50">₽ / month</span></div>
+                    <ul class="flex flex-col gap-3 flex-1 mt-6">
+                        <li class="price-row pro">every asset we watch</li>
+                        <li class="price-row pro">our reasoning model</li>
+                        <li class="price-row pro">alerts written for your position</li>
+                        <li class="price-row pro">ask as much as you buy credits for</li>
+                        <li class="price-row pro">Telegram</li>
+                    </ul>
+                    <button
+                        class="mt-6 w-full py-3 rounded-full text-sm font-bold text-white bg-gold hover:opacity-90 transition-colors"
+                        onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Start in
+                        the bot</button>
+                </div>
+            </div>
+            <div class="credits-note max-w-4xl">
+                <div class="axis-name">Credits</div>
+                <p>Your subscription covers the alerts. Anything you ask for on top — a question, a deeper read of one
+                    alert, an alert written around what you own — costs a credit. Buy them when you need them; they are
+                    not a monthly fee.</p>
+            </div>
+        </section>
+
+        <!-- ===================== 6. START ===================== -->
         <section class="shell pb-16" id="signupSection">
             <div class="rounded-xl2 bg-white border border-ink/12 shadow-card overflow-hidden">
                 <div class="grid lg:grid-cols-2">
-                    <!-- instructions / login -->
                     <div class="p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-ink/10">
-                        <h2 class="text-base font-bold text-ink mb-3">Connect &amp; log in</h2>
-                        <div class="text-sm text-ink/60 login-text hidden" id="final-result">
-                            <h2 class="text-base font-bold text-ink mb-2">Logged in</h2>
-                            <p class="mb-2">1. Select one or more stocks. The chart displays for the last selected stock.</p>
-                            <p>2. Configure settings or leave defaults. The bot sends alerts during the trading day.</p>
-                        </div>
+                        <h2 class="a-h1 text-[1.5rem] mb-4">Start in the bot</h2>
+                        <a href="https://t.me/buydipru_bot?start=web" target="_blank" rel="noopener"
+                            class="inline-flex items-center gap-2 mb-4 px-5 py-2.5 bg-[#229ED9] hover:bg-[#1d8dc2] text-white text-sm font-semibold rounded-full transition-colors no-underline">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                            </svg>
+                            Open the bot and press Start
+                        </a>
                         <div class="text-sm text-ink/65 login-text space-y-2" id="initial-text">
-                            <p class="text-ink font-semibold">Fastest way — everything happens inside Telegram:</p>
-                            <a href="https://t.me/buydipru_bot?start=web" target="_blank" rel="noopener" class="inline-flex items-center gap-2 my-1 px-5 py-2.5 bg-[#229ED9] hover:bg-[#1d8dc2] text-white text-sm font-semibold rounded-full transition-colors no-underline">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                                Open the bot &amp; press Start
-                            </a>
-                            <p>Then tap one batch — <b>MOEX top&nbsp;10 / 20 / 30</b> or <b>US top&nbsp;10 / 20 / 30</b> — or search a single name. Alerts start the same day. No code, no form, nothing to fill in.</p>
-                            <p>Every alert carries its own buttons: <b>mute this stock for a day</b>, <b>stop it entirely</b>, or open your settings. Send <b>/alerts</b> in the bot at any time to see and change everything in one message.</p>
-                            <p class="pt-1 text-ink/70"><b>Prefer the browser?</b> Send <b>/password</b> in the bot, paste the code below, and manage the same subscription from this page.</p>
-                            <p class="text-ink/40">Pause or unsubscribe any time, here or in the bot. The service does not store your personal data.</p>
+                            <p>Then pick a batch — MOEX or US top 10, 20 or 30 — or search one name. Alerts start the
+                                same day.</p>
+                            <p>Every alert carries its own buttons: mute this stock, stop it, or open your settings.</p>
                         </div>
-                        <form id="code-confirmation-form" class="mt-4 flex gap-2">
-                            <input name="code" type="text" placeholder="Code from BOT" class="flex-1 py-2 px-3 rounded-lg bg-white border border-ink/15 text-ink text-sm placeholder-ink/40 outline-none focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all">
-                            <button type="submit" class="px-4 py-2 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-lg transition-colors">Login</button>
+                        <div class="text-sm text-ink/60 login-text hidden" id="final-result">
+                            <p>Every alert carries its own buttons: mute this stock, stop it, or open your settings.</p>
+                        </div>
+                        <form id="code-confirmation-form" class="mt-5 flex gap-2 max-w-sm">
+                            <input name="code" type="text" placeholder="Code from BOT"
+                                class="flex-1 py-2 px-3 rounded-lg bg-white border border-ink/15 text-ink text-sm placeholder-ink/40 outline-none focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all">
+                            <button type="submit"
+                                class="px-4 py-2 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-lg transition-colors">Log
+                                in</button>
                         </form>
-                        <div id="process-indicator" class="mt-3 hidden"><p class="text-sm text-ink/50">Processing…</p></div>
+                        <div id="process-indicator" class="mt-3 hidden">
+                            <p class="text-sm text-ink/50">Processing…</p>
+                        </div>
                     </div>
-                    <!-- the subscription: one record, edited in place -->
-                    <div class="p-6 sm:p-8 bg-paper/40 flex flex-col gap-5" id="subPanel">
-                        <div>
-                            <div class="flex items-center gap-2.5 mb-1">
-                                <h2 class="text-base font-bold text-ink">Your alerts</h2>
-                                <span id="subStatusChip" class="hidden inline-flex items-center gap-1.5 text-[11px] font-bold rounded-full px-2.5 py-1"></span>
-                            </div>
-                            <p class="text-sm text-ink/60 leading-relaxed" id="subHint">Add the stocks you want watched. Alerts arrive on Telegram the moment something happens.</p>
-                        </div>
 
-                        <!-- what you are subscribed to -->
-                        <div>
-                            <div id="subStocks" class="flex flex-wrap gap-1.5 min-h-[34px] items-center"></div>
-                            <button id="subAddCurrent" class="mt-2.5 inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-bold text-violet bg-violet-bg border border-violet-edge rounded-full hover:border-violet transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-                                <span id="subAddLabel">Add this stock</span>
-                            </button>
+                    <div class="p-6 sm:p-8 bg-paper/40">
+                        <h2 class="a-h1 text-[1.5rem] mb-4">Your settings page</h2>
+                        <!-- SCREENSHOT SLOT — owner supplies the image. Do not draw a UI here. -->
+                        <div class="device-frame">
+                            <div class="device-bar"><span></span><span></span><span></span></div>
+                            <div class="device-screen" id="settingsShot"></div>
                         </div>
-
-                        <!-- ready-made batches: stored by reference, so "top 20"
-                             keeps meaning the current top 20 -->
-                        <div class="hairline pt-4">
-                            <div class="text-[12px] font-semibold text-ink/45 mb-2">Or take a ready-made batch</div>
-                            <div id="subBatches" class="flex flex-wrap gap-1.5"></div>
-                            <p class="text-[11.5px] text-ink/40 mt-2">A batch always means today's top names — we keep it current for you. Big batches are best with <b>major turns only</b>.</p>
-                        </div>
-
-                        <!-- how much you want to hear -->
-                        <div class="hairline pt-4">
-                            <div class="text-[12px] font-semibold text-ink/45 mb-2">How much to send</div>
-                            <div class="flex flex-col gap-1.5" id="subTier">
-                                <label class="sub-opt"><input type="radio" name="subTier" value="M" checked><span><b>Every alert</b><em>Everything worth telling you about — around one a day per stock.</em></span></label>
-                                <label class="sub-opt"><input type="radio" name="subTier" value="S"><span><b>Major turns only</b><em>Just the big ones. A few a month per stock.</em></span></label>
-                            </div>
-                        </div>
-
-                        <div class="hairline pt-4 flex items-center gap-3 flex-wrap">
-                            <button class="subscribe-button inline-flex items-center justify-center px-7 py-2.5 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-full shadow-card hover:-translate-y-px transition-all disabled:opacity-40" id="submit_alerts">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="currentColor"></path><path d="M13.73 21a2 2 0 0 1-3.46 0" fill="none"></path></svg>
-                                Save
-                            </button>
-                            <button id="subPause" class="text-[13px] font-semibold text-ink/50 hover:text-ink transition-colors underline decoration-ink/20 underline-offset-2">Pause all alerts</button>
-                            <span id="subSaved" class="hidden text-[12.5px] font-semibold text-up">Saved</span>
-                        </div>
-                        <p class="text-xs text-ink/40 -mt-2">Alerts are informational, not individual investment advice. You can pause or unsubscribe any time, here or in the bot.</p>
+                        <p class="mt-4 text-sm text-ink/65 leading-relaxed">Stocks, how much we send, which kinds of
+                            alert — all in one place.</p>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- ===================== SCREENER ===================== -->
-        <section class="shell py-14" id="agentSection">
-            <div class="max-w-[36ch] mb-7">
-                <div class="a-kicker mb-2">The AI screener</div>
-                <h2 class="a-h1 text-[2rem]">What's moving right now</h2>
-                <p class="mt-3 text-[1rem] leading-relaxed text-ink/65">Describe what you're after in plain words. DeepDIP scans the whole universe — not a fixed watchlist — and hands back the names that fit, with what each is doing and the level that matters.</p>
-            </div>
-
-            <form id="agentForm" class="flex flex-col sm:flex-row gap-2.5 max-w-2xl">
-                <textarea id="agentQuery" rows="1" class="flex-1 rounded-xl bg-white border border-ink/15 text-ink text-[15px] placeholder-ink/40 px-4 py-3 outline-none focus:border-violet focus:ring-[3px] focus:ring-violet/20 transition-all resize-none" placeholder="“what's moving up right now”, “gap then a run”, “stronger than the index”…"></textarea>
-                <button type="submit" id="agentSubmit" class="px-6 py-3 text-[14px] font-bold text-white bg-violet hover:bg-violet-dark rounded-xl transition-colors whitespace-nowrap">Scan all</button>
-            </form>
-            <div class="flex flex-wrap gap-1.5 mt-3" id="screenerExamples">
-                <button type="button" class="scr-ex text-[12.5px] font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-3 py-1.5 hover:border-violet transition-colors">what's moving up right now</button>
-                <button type="button" class="scr-ex text-[12.5px] font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-3 py-1.5 hover:border-violet transition-colors">gap then a run</button>
-                <button type="button" class="scr-ex text-[12.5px] font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-3 py-1.5 hover:border-violet transition-colors">stronger than the index</button>
-                <button type="button" class="scr-ex text-[12.5px] font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-3 py-1.5 hover:border-violet transition-colors">testing a multi-month level</button>
-            </div>
-            <p id="agentStatus" class="text-xs text-ink/40 mt-2"></p>
-
-            <!-- live results list (hardcoded sample) -->
-            <div class="mt-7 rounded-xl2 bg-white border border-ink/12 shadow-card overflow-hidden">
-                <div class="flex items-center gap-2 px-4 sm:px-5 py-3 border-b border-ink/10 bg-paper/50">
-                    <span class="live-dot"></span>
-                    <span class="text-[13px] font-bold tracking-tight">Matching the universe now</span>
-                    <span class="text-[12px] text-ink/40 ml-2 hidden sm:inline">6 of 400+ instruments · sample</span>
-                    <span class="ml-auto text-[11px] font-semibold text-violet bg-violet-bg border border-violet-edge rounded-full px-2.5 py-1">updates live</span>
-                </div>
-                <div id="screenerList">
-                    <div class="scr-row flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 border-b border-ink/8 last:border-b-0 cursor-pointer">
-                        <div class="w-[68px] shrink-0"><div class="font-extrabold text-[15px] tracking-tight leading-none">SBER</div><div class="text-[11px] text-ink/40 mt-0.5">Sber</div></div>
-                        <span class="dir-chip up shrink-0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>Up</span>
-                        <p class="flex-1 text-[13.5px] text-ink/70 leading-snug min-w-0">Pushing through 318 on the third attempt, volume rising</p>
-                        <div class="text-right shrink-0 hidden sm:block"><div class="text-[10px] font-semibold text-ink/40 uppercase tracking-wide">level</div><div class="mono font-bold text-[13.5px] whitespace-nowrap">318</div></div>
-                    </div>
-                    <div class="scr-row flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 border-b border-ink/8 last:border-b-0 cursor-pointer">
-                        <div class="w-[68px] shrink-0"><div class="font-extrabold text-[15px] tracking-tight leading-none">GAZP</div><div class="text-[11px] text-ink/40 mt-0.5">Gazprom</div></div>
-                        <span class="dir-chip down shrink-0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7 17 17"/><path d="M17 7v10H7"/></svg>Down</span>
-                        <p class="flex-1 text-[13.5px] text-ink/70 leading-snug min-w-0">Breaking the 128 support that held all week, accelerating</p>
-                        <div class="text-right shrink-0 hidden sm:block"><div class="text-[10px] font-semibold text-ink/40 uppercase tracking-wide">level</div><div class="mono font-bold text-[13.5px] whitespace-nowrap">128</div></div>
-                    </div>
-                    <div class="scr-row flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 border-b border-ink/8 last:border-b-0 cursor-pointer">
-                        <div class="w-[68px] shrink-0"><div class="font-extrabold text-[15px] tracking-tight leading-none">YDEX</div><div class="text-[11px] text-ink/40 mt-0.5">Yandex</div></div>
-                        <span class="dir-chip up shrink-0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>Up</span>
-                        <p class="flex-1 text-[13.5px] text-ink/70 leading-snug min-w-0">Gap-and-go off the open, trend extending cleanly</p>
-                        <div class="text-right shrink-0 hidden sm:block"><div class="text-[10px] font-semibold text-ink/40 uppercase tracking-wide">level</div><div class="mono font-bold text-[13.5px] whitespace-nowrap">4 050</div></div>
-                    </div>
-                    <div class="scr-row flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 border-b border-ink/8 last:border-b-0 cursor-pointer">
-                        <div class="w-[68px] shrink-0"><div class="font-extrabold text-[15px] tracking-tight leading-none">PLZL</div><div class="text-[11px] text-ink/40 mt-0.5">Polyus</div></div>
-                        <span class="dir-chip up shrink-0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>Up</span>
-                        <p class="flex-1 text-[13.5px] text-ink/70 leading-snug min-w-0">Holding 13 420, coiling just under 13 900</p>
-                        <div class="text-right shrink-0 hidden sm:block"><div class="text-[10px] font-semibold text-ink/40 uppercase tracking-wide">level</div><div class="mono font-bold text-[13.5px] whitespace-nowrap">13 900</div></div>
-                    </div>
-                    <div class="scr-row flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 border-b border-ink/8 last:border-b-0 cursor-pointer">
-                        <div class="w-[68px] shrink-0"><div class="font-extrabold text-[15px] tracking-tight leading-none">TSLA</div><div class="text-[11px] text-ink/40 mt-0.5">Tesla</div></div>
-                        <span class="dir-chip down shrink-0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7 17 17"/><path d="M17 7v10H7"/></svg>Down</span>
-                        <p class="flex-1 text-[13.5px] text-ink/70 leading-snug min-w-0">Failed retest of 250, rolling over into the close</p>
-                        <div class="text-right shrink-0 hidden sm:block"><div class="text-[10px] font-semibold text-ink/40 uppercase tracking-wide">level</div><div class="mono font-bold text-[13.5px] whitespace-nowrap">250</div></div>
-                    </div>
-                    <div class="scr-row flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 border-b border-ink/8 last:border-b-0 cursor-pointer">
-                        <div class="w-[68px] shrink-0"><div class="font-extrabold text-[15px] tracking-tight leading-none">NVDA</div><div class="text-[11px] text-ink/40 mt-0.5">Nvidia</div></div>
-                        <span class="dir-chip up shrink-0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>Up</span>
-                        <p class="flex-1 text-[13.5px] text-ink/70 leading-snug min-w-0">Breakout above 132, stronger than the index</p>
-                        <div class="text-right shrink-0 hidden sm:block"><div class="text-[10px] font-semibold text-ink/40 uppercase tracking-wide">level</div><div class="mono font-bold text-[13.5px] whitespace-nowrap">132</div></div>
-                    </div>
-                </div>
-                <!-- agent hooks (used by agent.js when wired) -->
-                <div id="agentActionBar" class="hidden px-5 py-3 flex items-center justify-center gap-3 border-t border-ink/10">
-                    <button id="agentProceed" class="px-5 py-2 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-lg transition-colors">Proceed</button>
-                    <span class="text-xs text-ink/40">or</span>
-                    <button id="agentRetry" class="px-4 py-2 text-sm text-ink/50 hover:text-ink/80 bg-ink/5 hover:bg-ink/10 rounded-lg transition-colors">try again</button>
-                </div>
-                <div id="agentComments" class="hidden px-5 py-3 space-y-2 border-t border-ink/10"></div>
-            </div>
-            <p class="mt-3 text-[12.5px] text-ink/45">The full screener — across every market, refreshed continuously — is part of <b class="text-gold">PRO</b>.</p>
-        </section>
-
-        <!-- ===================== TRUST ===================== -->
-        <section class="workband py-14">
-            <div class="shell">
-                <div class="max-w-[52ch]">
-                    <div class="a-kicker mb-3">Why you can lean on it</div>
-                    <p class="a-h1 text-[1.65rem] leading-[1.3] text-ink/90" id="trustLine">We tell you what is happening and which level matters — not where the price will go.</p>
-                </div>
-                <div class="grid sm:grid-cols-3 gap-x-8 gap-y-7 mt-9" id="trustPoints">
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-violet-bg border border-violet-edge grid place-items-center text-violet mb-3">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
-                        </div>
-                        <div class="font-bold text-[15px] tracking-tight mb-1.5">Continuous coverage</div>
-                        <p class="text-[13.5px] leading-relaxed text-ink/60">Every bar, every trading day, across 400+ instruments — MOEX, US stocks, ETFs and indices. Nothing on your list moves without us seeing it.</p>
-                    </div>
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-violet-bg border border-violet-edge grid place-items-center text-violet mb-3">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-                        </div>
-                        <div class="font-bold text-[15px] tracking-tight mb-1.5">Said in plain words</div>
-                        <p class="text-[13.5px] leading-relaxed text-ink/60">No jargon, no indicators to read. One honest sentence: what happened and the level that matters.</p>
-                    </div>
-                    <div>
-                        <div class="w-10 h-10 rounded-xl bg-violet-bg border border-violet-edge grid place-items-center text-violet mb-3">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>
-                        </div>
-                        <div class="font-bold text-[15px] tracking-tight mb-1.5">You can question it</div>
-                        <p class="text-[13.5px] leading-relaxed text-ink/60">Every alert opens a conversation — ask if it's real, what it means for your horizon, what to watch next.</p>
-                    </div>
-                </div>
-                <p class="mt-9 pt-6 hairline text-[12.5px] text-ink/45 max-w-[70ch] leading-relaxed" id="trustNote">Alerts are informational and can be wrong or false. Nothing here is individual investment advice — you act at your own risk.</p>
-            </div>
-        </section>
-
-        <!-- ===================== PRICING ===================== -->
-        <section class="shell py-14" id="pricingSection">
-            <div class="max-w-[34ch] mb-8">
-                <div class="a-kicker mb-2">Pricing</div>
-                <h2 class="a-h1 text-[2rem]">Start free. Go PRO when you want more.</h2>
-                <p class="mt-3 text-[1rem] leading-relaxed text-ink/65">Free covers the core — alerts and a little chat. PRO opens up unlimited chat, the full screener, and alerts written around you.</p>
-            </div>
-            <div class="grid md:grid-cols-2 gap-5 max-w-4xl" id="pricingCards">
-                <!-- Free -->
-                <div class="rounded-xl2 border border-ink/12 bg-white shadow-card p-6 flex flex-col">
-                    <div class="flex items-center gap-3 mb-1"><h3 class="text-[19px] font-extrabold tracking-tight">Free</h3></div>
-                    <div class="flex items-baseline gap-1.5 mt-2"><span class="text-[34px] font-extrabold tracking-tight">0</span><span class="text-[13px] font-semibold text-ink/50">forever</span></div>
-                    <p class="text-[13.5px] text-ink/60 leading-relaxed mt-2 mb-4">See the whole service and get the core alerts.</p>
-                    <ul class="flex flex-col gap-2.5 flex-1">
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Plain-language alerts on the stocks you pick</span></li>
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Both reads — trader and long-term holder</span></li>
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">A few chat questions per alert each day</span></li>
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Delivered on Telegram + this page</span></li>
-                        <li class="flex gap-2.5 text-ink/40"><span class="text-ink/25 mt-px shrink-0 font-bold leading-none text-[15px]">×</span><span class="text-[13.5px] leading-snug">Unlimited chat with every alert</span></li>
-                        <li class="flex gap-2.5 text-ink/40"><span class="text-ink/25 mt-px shrink-0 font-bold leading-none text-[15px]">×</span><span class="text-[13.5px] leading-snug">AI screener across the whole universe</span></li>
-                        <li class="flex gap-2.5 text-ink/40"><span class="text-ink/25 mt-px shrink-0 font-bold leading-none text-[15px]">×</span><span class="text-[13.5px] leading-snug">Personalized “write what you want” alerts</span></li>
-                    </ul>
-                    <button class="mt-6 w-full py-3 rounded-full text-sm font-bold text-white bg-ink hover:bg-ink/85 transition-colors" onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Start free</button>
-                </div>
-                <!-- PRO -->
-                <div class="rounded-xl2 border border-gold-edge bg-gold-bg/30 shadow-lift p-6 flex flex-col">
-                    <div class="flex items-center gap-3 mb-1"><h3 class="text-[19px] font-extrabold tracking-tight">PRO</h3><span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-gold bg-white border border-gold-edge rounded-full px-2.5 py-1">★ Most chosen</span></div>
-                    <div class="flex items-baseline gap-1.5 mt-2"><span class="text-[34px] font-extrabold tracking-tight">590</span><span class="text-[13px] font-semibold text-ink/50">₽ / month</span></div>
-                    <p class="text-[13.5px] text-ink/60 leading-relaxed mt-2 mb-4">Talk to everything, scan everything, and shape your own alerts.</p>
-                    <ul class="flex flex-col gap-2.5 flex-1">
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Everything in Free</span></li>
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Unlimited chat with every alert</span></li>
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">AI screener — scan the full universe in plain words</span></li>
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Personalized alerts: tell it what you want, in your words</span></li>
-                        <li class="flex gap-2.5 text-ink/80"><span class="text-up mt-px shrink-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="text-[13.5px] leading-snug">Priority coverage across MOEX · US · ETFs</span></li>
-                    </ul>
-                    <button class="mt-6 w-full py-3 rounded-full text-sm font-bold text-white bg-gold hover:opacity-90 transition-colors" onclick="document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Get PRO</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===================== SIGNUP (Telegram OTP) ===================== -->
     </main>
 
     <!-- ===================== FOOTER ===================== -->
@@ -530,68 +616,17 @@
             Deep<span class="text-violet -ml-[3px]">DIP</span>
         </div>
         <p class="text-xs text-ink/40 leading-relaxed max-w-[80ch]">
-            &copy; 2026 — <b>Risk Warning:</b> Trading financial instruments involves high risks, including the risk of losing part or all of your investment. Information on this site is indicative. The service owner disclaims responsibility for any losses incurred as a result of trades made based on this information.
+            &copy; 2026 — <b>Risk Warning:</b> Trading financial instruments involves high risks, including the risk of
+            losing part or all of your investment. Information on this site is indicative. The service owner disclaims
+            responsibility for any losses incurred as a result of trades made based on this information. Alerts are
+            informational and are not individual investment advice.
         </p>
     </footer>
 
-    <!-- ===================== GREETING POPUP ===================== -->
-    <div class="hidden fixed inset-0 bg-ink/45 backdrop-blur-sm z-[1000]" id="greetingPopup" onclick="closeGreetingPopup()">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-md bg-white rounded-xl2 border border-ink/10 shadow-lift overflow-hidden" onclick="event.stopPropagation()">
-            <div class="px-6 pt-6 pb-5 bg-gradient-to-b from-paper/60 to-white">
-                <div class="flex items-center gap-2.5 mb-4 flex-wrap">
-                    <span class="w-7 h-7 rounded-lg bg-violet grid place-items-center text-white text-sm font-extrabold -rotate-6">D</span>
-                    <span class="font-extrabold text-lg tracking-tight">Deep<span class="text-violet">DIP</span></span>
-                    <span class="ml-auto inline-flex items-center gap-1.5 text-[11px] font-bold text-gold bg-gold-bg border border-gold-edge rounded-full px-2.5 py-1"><span class="w-1.5 h-1.5 rounded-full bg-gold"></span>New · chat with any alert</span>
-                </div>
-                <h3 class="read text-2xl leading-snug font-semibold tracking-tight">Markets punish guessing.</h3>
-                <p class="text-sm text-ink/65 leading-relaxed mt-2">Most of us own stocks we can't read — so we sell good dips, sit through real breaks, or stop looking. DeepDIP is your eyes on the market: it watches every bar of your stocks, and when a move is meaningful, an AI analyst tells you in one honest sentence what happened, which level matters, and what it means for your horizon.</p>
-            </div>
-            <div class="px-6 py-4 border-t border-ink/10 flex flex-col gap-3 text-sm text-ink/70">
-                <div class="flex gap-3 items-start"><span class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">1</span><p class="leading-snug">Open the Telegram bot <a href="https://t.me/buydipru_bot" class="font-semibold text-violet hover:text-violet-dark">buydipru_bot</a> and press Start. That is the whole sign-up.</p></div>
-                <div class="flex gap-3 items-start"><span class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">2</span><p class="leading-snug">Tap a batch — MOEX top 10/20/30 or US top 10/20/30 — or search one name. Change it any time with /alerts.</p></div>
-                <div class="flex gap-3 items-start"><span class="shrink-0 w-6 h-6 rounded-full bg-violet-bg border border-violet-edge grid place-items-center text-violet text-xs font-bold">3</span><p class="leading-snug">Through the day you get plain-language reads — one line for traders, one for holders. Mute or stop any stock straight from the alert.</p></div>
-            </div>
-            <div class="px-6 pb-6 pt-4 flex gap-2 border-t border-ink/10">
-                <button class="flex-1 py-2.5 rounded-full bg-violet hover:bg-violet-dark text-white text-sm font-bold transition-colors" onclick="window.open('https://t.me/buydipru_bot?start=web','_blank');closeGreetingPopup();document.getElementById('signupSection').scrollIntoView({behavior:'smooth'})">Connect Telegram</button>
-                <button class="flex-1 py-2.5 rounded-full border border-ink/15 text-ink/70 hover:text-ink hover:border-ink/30 text-sm font-semibold transition-colors" onclick="closeGreetingPopup();document.getElementById('chartSection').scrollIntoView({behavior:'smooth'})">Explore signals first</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===================== HELP POPUP ===================== -->
-    <div class="help-popup hidden fixed inset-0 w-full h-full bg-ink/45 backdrop-blur-sm z-[1000]" id="helpPopup" onclick="closeHelpPopup()">
-        <div class="help-content absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[900px] h-[85%] max-h-[600px] rounded-xl flex overflow-hidden border border-ink/15 shadow-lift bg-white text-ink max-md:flex-col" onclick="event.stopPropagation()">
-            <div class="help-sidebar w-[30%] p-6 overflow-y-auto border-r border-ink/10 bg-paper max-md:w-full max-md:max-h-[30%] max-md:border-r-0 max-md:border-b">
-                <h2 class="text-lg font-bold mb-4">Contents</h2>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="#conditions" class="text-violet hover:text-violet-dark">Terms of use</a></li>
-                    <li><a href="#chart-info" class="text-violet hover:text-violet-dark">The chart</a></li>
-                    <li><a href="#what-we-send" class="text-violet hover:text-violet-dark">What we send</a></li>
-                    <li><a href="#how-much" class="text-violet hover:text-violet-dark">How much you get</a></li>
-                </ul>
-            </div>
-            <div class="help-main w-[70%] p-6 overflow-y-auto max-md:w-full max-md:max-h-[70%] [&_h3]:font-semibold [&_h3]:text-base [&_p]:text-sm [&_p]:text-ink/60 [&_p]:leading-relaxed [&_.help-section]:mb-6">
-                <div class="help-section" id="conditions"><h3>Terms of use</h3><p>Alerts are informational. They carry no recommendation, they can be wrong or false, and nothing here is individual investment advice — you use the service at your own risk.</p></div>
-                <div class="help-section" id="chart-info"><h3>The chart</h3><p>A dot marks every alert the service sent on that stock, so you can see where it spoke. One candle is 2 hours. The chart is there for context only — this is an alerts product, not a trading terminal.</p></div>
-                <div class="help-section" id="what-we-send"><h3>What we send</h3><p>One short message when something meaningful happens: a breakout, a turn, a test of a level that has held for months, a sharp move backed by unusual volume. Each one says what happened, which price level matters, and what it means for a trader and for a long-term holder.</p></div>
-                <div class="help-section" id="how-much"><h3>How much you get</h3><p><b>Every alert</b> is roughly one a day per stock — everything worth telling you about. <b>Major turns only</b> is a few a month per stock: just the big ones. You can switch at any time, here or in the bot, and pause everything without losing your list.</p></div>
-                <div class="feedback-form mt-8 p-4 bg-paper rounded-lg" id="testimonials">
-                    <h3 class="text-base font-semibold mb-3">Feedback</h3>
-                    <form id="feedbackForm" onsubmit="submitFeedback(event)">
-                        <textarea id="feedbackText" name="feedbackText" rows="3" class="w-full p-2 bg-white text-ink text-sm rounded-lg border border-ink/15 outline-none focus:border-violet" required placeholder="Your feedback…"></textarea>
-                        <button type="submit" class="mt-2 px-4 py-2 bg-violet hover:bg-violet-dark text-white text-sm font-semibold rounded-lg transition-colors">Submit</button>
-                    </form>
-                </div>
-            </div>
-            <span class="help-close absolute top-3 right-4 text-2xl text-ink/50 hover:text-ink cursor-pointer transition-colors" onclick="closeHelpPopup()">&times;</span>
-        </div>
-    </div>
-
     <script src="lightweight-charts.standalone.production.js?v=5.2.0"></script>
-    <script src="js.js?v=13"></script>
-    <script src="chart.js?v=12"></script>
-    <script src="chat.js?v=2"></script>
-    <script src="agent.js?v=5"></script>
+    <script src="js.js?v=14"></script>
+    <script src="chart.js?v=13"></script>
+    <script src="record.js?v=1"></script>
 
 </body>
 

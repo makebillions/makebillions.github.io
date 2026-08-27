@@ -2,9 +2,9 @@
 // chart.js — Chart instance, markers, events list, shortcuts
 // Depends on: LightweightCharts (global), SIGNAL_ICONS, MODE_TIERS, currentMode (from js.js)
 // Exposes: chart, series, setChart(), renderMarkers(), scrollChartToTimeLocal(),
-//          renderSignalShortcutsFromEvents(), filterAndRenderEvents(),
-//          setEvents(), showLoader/hideLoader, showListLoader/hideListLoader,
-//          window.__chartState (for agent.js)
+//          renderSignalShortcutsFromEvents(), setEvents(),
+//          showLoader/hideLoader, showListLoader/hideListLoader
+// The CARDS are rendered by record.js — this file owns the chart only.
 // ============================================================
 
 // --- Signal icon SVGs (rally, dip, momentum, attention) ---
@@ -179,133 +179,94 @@ function setChart(data) {
     }
     chart.timeScale().setVisibleLogicalRange({ from: firstVisIdx - 0.5, to: lastIndex + 0.5 });
 
+    window.__candleTimes = data.candles.map((x) => x[0]);
     setEvents(data);
     renderMarkers();
-    renderSignalShortcutsFromEvents();
+    if (signalShortcuts) signalShortcuts.innerHTML = "";
 
     chart.priceScale("right").applyOptions({ scaleMargins: { top: 0, bottom: 0 } });
 }
 
 function renderMarkers() {
-    const allowedTiers = MODE_TIERS[currentMode];
+    const ticker = (document.getElementById("chartStockTitle")?.textContent || "")
+        .trim().split(/\s+/)[0].toUpperCase();
+    const live = window.__recordTier && window.__recordTier() === "live";
+    // Real time draws EVERY shipped signal, including the ones that carry no
+    // written line: a bare alert is still an alert and still earns a dot — 177
+    // of them exist. The frozen tabs draw the record's own alerts.
+    const marks = live
+        ? (allAlerts || []).map((s) => ({ t: s.tb, dir: s.dir === "buy" ? "up" : "down" }))
+        : (window.__recordMarks ? window.__recordMarks(ticker) : []);
 
-    // One dot per candle + direction: several alerts can land on the same 2h
-    // bar, and they are one moment to the reader.
+    const bars = window.__candleTimes || [];
+    if (!bars.length) { setSeriesMarkers([]); return; }
+    const from = bars[0], to = bars[bars.length - 1];
     const seen = new Set();
     const markers = [];
-    allAlerts.forEach((s) => {
-        if (!allowedTiers.includes(s.tier)) return;
-        const key = `${s.tb}_${s.dir}`;
-        if (seen.has(key)) return;
+    let earliest = Infinity;
+    for (const m of marks) {
+        // A marker needs a candle to sit on, and snapping a time from OUTSIDE
+        // the loaded window would plant a dot on the nearest edge bar and lie
+        // about when the alert fired. Those are dropped, not moved.
+        if (m.t < from || m.t > to) continue;
+        if (m.t < earliest) earliest = m.t;
+        let best = bars[0], dist = Infinity;
+        for (const b of bars) { const d = Math.abs(b - m.t); if (d < dist) { dist = d; best = b; } }
+        // Several alerts can land on one bar; to the reader that is one moment.
+        const key = `${best}_${m.dir}`;
+        if (seen.has(key)) continue;
         seen.add(key);
         markers.push({
-            time: s.tb,
-            position: s.dir === "buy" ? "belowBar" : "aboveBar",
-            color: s.dir === "buy" ? MARKER_BUY_COLOR : MARKER_SELL_COLOR,
+            time: best,
+            // Direction is carried by POSITION, not colour: buy below the bar,
+            // sell above. Flattening every dot to aboveBar threw that away.
+            position: m.dir === "up" ? "belowBar" : "aboveBar",
+            color: m.dir === "up" ? MARKER_BUY_COLOR : MARKER_SELL_COLOR,
             shape: "circle",
-            size: 1,
+            size: 1.4,
             text: "",
         });
-    });
-
+    }
     markers.sort((a, b) => a.time - b.time);
     setSeriesMarkers(markers);
+
+    // The default window is the last 28 days, but the live stream reaches back
+    // months — so a visitor saw seven cards and one dot. Widen just enough that
+    // every card on screen has its dot on screen too.
+    if (live && markers.length) {
+        // Widen to the earliest alert IN RANGE, not the earliest surviving
+        // marker: dedupe collapses alerts sharing a bar, and using the survivor
+        // left the oldest card's dot just off screen.
+        let firstIdx = 0;
+        for (let i = 0; i < bars.length; i++) { if (bars[i] >= earliest) { firstIdx = i; break; } }
+        const vis = chart.timeScale().getVisibleLogicalRange();
+        if (firstIdx >= 0 && vis && firstIdx < vis.from) {
+            chart.timeScale().setVisibleLogicalRange({
+                from: firstIdx - 2, to: bars.length - 0.5,
+            });
+        }
+    }
 }
 
 // ============================================================
 // Events list (horizontal scroll below chart)
 // ============================================================
 function setEvents(data) {
-    closeAlertChat(); // stock changed — drop any open alert chat
     // The feed is a list, not a chart overlay — show every comment regardless
     // of whether a candle exists at that time. (Candles can cover a shorter
     // span than the signal history; gating the feed by candle range silently
     // hid older comments. Markers still get range-filtered in renderMarkers,
     // since those genuinely need a candle to sit on.)
     // Only alerts that have a line earn a card; the rest are markers only.
+    // mEvents feeds the dated shortcut pills only. The CARDS are the frozen
+    // record in record.js — the page shows checked alert text, not whatever
+    // the pre-computed file happens to hold today.
     mEvents = (data.signals || []).filter((s) => s.now);
-    filterAndRenderEvents();
+    // What the service actually shipped on this stock. The frozen record is a
+    // fixed week; this is the live stream, and the Real time tab reads it.
+    window.__liveAlerts = mEvents;
+    if (window.__renderRecord) window.__renderRecord();
 }
-
-function filterAndRenderEvents() {
-    // Full DOM rebuild. Resets scroll to the top so the latest signal is
-    // visible by default. The feed is NOT filtered by mode — every commentary
-    // line shows regardless of tier (only chart markers respect the mode).
-    renderEvents(mEvents);
-    eventsList.scrollTop = 0;
-}
-
-// "Ask AI" pill \u2014 same in both card variants (opens the alert-pinned chat).
-const ASK_AI_BTN =
-    `<button class="event-chat-btn self-start inline-flex items-center gap-1.5 text-xs font-bold text-violet bg-violet-bg border border-violet-edge rounded-full px-3 py-1 group-hover:border-violet transition-colors">` +
-    `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>Ask AI</button>`;
-
-function renderEvents(events) {
-    // Newest-first so the latest signal sits at the top of the overlay.
-    const sorted = [...events].sort((a, b) => b.time - a.time);
-    // Card header carries the instrument, same as the design's feed card — a
-    // row holding only a timestamp reads as a gap above the sentence.
-    const sel = selectedItems[selectedItems.length - 1] || {};
-    const ticker = sel.ticker || "";
-    const name = sel.name && sel.name !== ticker ? sel.name : "";
-    eventsList.innerHTML = sorted
-        .map((event) => {
-            const date = new Date(event.time * 1000);
-            const dateStr = String(date.getUTCDate()).padStart(2, "0") + "." + String(date.getUTCMonth() + 1).padStart(2, "0");
-            const timeStr = String(date.getUTCHours()).padStart(2, "0") + ":" + String(date.getUTCMinutes()).padStart(2, "0");
-            const dirClass = event.dir === "buy" ? "text-green-600/80" : "text-red-600/80";
-            const dirArrow = event.dir === "buy" ? "\u25B2" : "\u25BC";
-            const iconHtml = event.icon && SIGNAL_ICONS[event.icon] ? SIGNAL_ICONS[event.icon] : "";
-
-            // The line has four parts and the card shows all four: `was` sets
-            // the scene in a few muted words, `now` is the verdict, then the
-            // two horizons. `was` used to be dropped on the floor.
-            // The chip is a component (.dir-chip in index.css, shared with the
-            // screener), not a pile of utilities — colour and metrics live
-            // there so both surfaces stay identical.
-            // The chip's anchor is dropped when the verdict already names that
-            // price: "push past the Jul 16 level at 1183" over "BREAKING
-            // HIGHER · 1183" printed the same number twice, in two voices.
-            let chipText = event.chip || "";
-            const anchor = chipText.split("·")[1];
-            if (anchor && event.now && event.now.includes(anchor.trim())) {
-                chipText = chipText.split("·")[0].trim();
-            }
-            const chipTone = event.dir === "buy"
-                ? "text-up bg-up-bg border-up-edge"
-                : "text-down bg-down-bg border-down-edge";
-            const chipHtml = chipText
-                ? `<span class="inline-flex items-center mono text-[12px] font-bold px-2.5 py-1 rounded-full border ${chipTone} mt-3">${chipText}</span>`
-                : "";
-            // `was` is written and stored, but not shown: the engine's own
-            // wording for it ("2-session rally from 1148.40" at 1180) was
-            // contradicting the verdict beside it.
-            const stRow = event.st
-                ? `<div class="read-row"><span class="read-tag st"><span class="dot"></span>Trader</span><p class="text-[13.5px] leading-snug text-ink/75">${event.st}</p></div>`
-                : "";
-            const ltRow = event.lt
-                ? `<div class="read-row"><span class="read-tag lt"><span class="dot"></span>Holder</span><p class="text-[13.5px] leading-snug text-ink/75">${event.lt}</p></div>`
-                : "";
-            return `
-            <div class="event-card group flex-shrink-0 rounded-xl2 bg-white border border-ink/12 shadow-lift overflow-hidden cursor-pointer hover:border-ink/25 transition-all" data-time="${event.tb}">
-                <div class="px-5 pt-4 pb-3">
-                    <div class="flex items-center gap-2.5 flex-wrap">
-                        <span class="font-extrabold text-[16px] tracking-tight">${ticker}</span>
-                        ${name ? `<span class="text-[13px] text-ink/45 font-medium">${name}</span>` : ""}
-                        <span class="event-when text-[12px] text-ink/40 ml-auto">${dateStr} · ${timeStr}</span>
-                    </div>
-                    <p class="read text-[17px] leading-[1.5] text-ink mt-3">${iconHtml}${event.now}</p>
-                    ${chipHtml}
-                </div>
-                <div class="px-5 py-4 bg-paper/40 border-t border-ink/10 flex flex-col gap-2.5">
-                    ${stRow}${ltRow}
-                    <div class="pt-0.5">${ASK_AI_BTN}</div>
-                </div>
-            </div>`;
-        })
-        .join("");
-}
-
 
 // Track when the user last scrolled the overlay themselves \u2014 chart-pan
 // auto-sync defers to manual scroll for ~2s so we don't yank position.
@@ -382,18 +343,6 @@ chart.subscribeClick((param) => {
         Math.abs(Number(cur.dataset.time) - param.time) < Math.abs(Number(prev.dataset.time) - param.time) ? cur : prev
     , items[0]);
     if (closest) eventsList.scrollTo({ top: closest.offsetTop - eventsList.offsetTop - eventsList.offsetHeight / 2, behavior: "smooth" });
-});
-
-// Click event card → scroll chart to that time; "Open chat" → chat panel
-eventsList.addEventListener("click", (e) => {
-    const card = e.target.closest(".event-card");
-    if (!card) return;
-    if (e.target.closest(".event-chat-btn")) {
-        openAlertChat(card);
-        return;
-    }
-    const t = Number(card.dataset.time);
-    if (t) scrollChartToTimeLocal(t);
 });
 
 // ============================================================

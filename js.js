@@ -19,7 +19,9 @@ function debounce(func, delay) {
 function getAnonId() {
     let id = localStorage.getItem("anonId");
     if (!id) {
-        id = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
+        id = crypto.randomUUID
+            ? crypto.randomUUID()
+            : Math.random().toString(36).slice(2) + Date.now().toString(36);
         localStorage.setItem("anonId", id);
     }
     return id;
@@ -55,7 +57,7 @@ function post(url, data = {}) {
 // --- API config ---
 // const host = "https://e82a-159-255-38-244.ngrok-free.app";
 const host = "https://api.deepdip.tech";
-// const host = "http://localhost:4000";
+// const host = window.__apiHost || "http://localhost:4000";
 window.__agentHost = host;
 function url(path) {
     return `${host}${path}`;
@@ -145,12 +147,23 @@ function onStockChange() {
     if (window.__updateSubAddButton) window.__updateSubAddButton();
     clearAgentState();
     showLoader();
-    showListLoader();
-    loadChart(stock).then((data) => {
-        hideLoader();
-        setChart(data);
-        hideListLoader();
-    });
+    // The alerts are frozen text and owe the chart nothing, so they are drawn
+    // immediately and never hidden while it loads. Hiding them meant a failed
+    // chart fetch — python down, or one ticker with no series — left the
+    // visitor a spinning chart and no words at all, which is backwards: the
+    // chart is the reference and the words are the product.
+    if (window.__renderRecord) window.__renderRecord();
+    loadChart(stock)
+        .then((data) => {
+            if (data) setChart(data);
+        })
+        .catch(() => {
+            // nothing to draw; the alerts beside it still stand
+        })
+        .finally(() => {
+            hideLoader();
+            hideListLoader();
+        });
 }
 
 function clearAgentState() {
@@ -271,6 +284,9 @@ const autocompleteHandler = function () {
             item.hasLlm ? '<span class="stock-llm-badge"></span>' : ""
         }`;
         div.addEventListener("click", function () {
+            // A searched name is not in the frozen week, so the words beside
+            // the chart have to be the live ones.
+            if (window.__forceLiveTab) window.__forceLiveTab();
             selectedItems = [item];
             renderSelectedItems();
             updatePresetPillStates();
@@ -320,6 +336,28 @@ function updatePresetPillStates() {
             (s) => s.ticker.toUpperCase() === ticker
         );
         pill.classList.toggle("active", isSelected);
+    });
+}
+
+// ============================================================
+// Mobile navigation
+// The links are hidden below the md breakpoint, so without this the nav
+// simply disappears on a phone — and most visitors arrive from a Telegram
+// message on one.
+// ============================================================
+const navToggle = document.getElementById("navToggle");
+const navMenu = document.getElementById("navMenu");
+if (navToggle && navMenu) {
+    navToggle.addEventListener("click", () => {
+        const open = navMenu.classList.toggle("hidden") === false;
+        navToggle.setAttribute("aria-expanded", String(open));
+    });
+    // a jump to a section should close the menu behind it
+    navMenu.addEventListener("click", (e) => {
+        if (e.target.closest("a")) {
+            navMenu.classList.add("hidden");
+            navToggle.setAttribute("aria-expanded", "false");
+        }
     });
 }
 
@@ -414,15 +452,20 @@ function batchLabel(name) {
         const box = document.getElementById("subBatches");
         if (!box) return;
         if (!isLoggedIn || !account) {
-            box.innerHTML = '<span class="sub-empty">Log in to pick a batch.</span>';
+            box.innerHTML =
+                '<span class="sub-empty">Log in to pick a batch.</span>';
             return;
         }
         box.innerHTML = batches
             .map((b) => {
                 const on = (account.groups || []).includes(b.name);
                 return (
-                    `<button type="button" class="sub-chip${on ? "" : " paused"}" ` +
-                    `data-batch="${b.name}">${on ? "✓ " : "+ "}${batchLabel(b.name)}` +
+                    `<button type="button" class="sub-chip${
+                        on ? "" : " paused"
+                    }" ` +
+                    `data-batch="${b.name}">${on ? "✓ " : "+ "}${batchLabel(
+                        b.name
+                    )}` +
                     `<span class="x">${b.size}</span></button>`
                 );
             })
@@ -448,7 +491,9 @@ function batchLabel(name) {
             ? account.stocks
                   .map(
                       (t) =>
-                          `<span class="sub-chip${paused ? " paused" : ""}">${t}` +
+                          `<span class="sub-chip${
+                              paused ? " paused" : ""
+                          }">${t}` +
                           `<span class="x" data-drop="${t}" title="Remove">&times;</span></span>`
                   )
                   .join("")
@@ -556,7 +601,8 @@ function batchLabel(name) {
     });
 
     document.getElementById("subTier")?.addEventListener("change", (e) => {
-        if (e.target.name === "subTier") saveSubscription({ tier: e.target.value });
+        if (e.target.name === "subTier")
+            saveSubscription({ tier: e.target.value });
     });
 
     document.getElementById("subPause")?.addEventListener("click", () => {
@@ -588,12 +634,14 @@ function batchLabel(name) {
 
     // The batch list comes from the same source the bot uses, so the two can
     // never offer different sets.
-    post(url("/api/batches"))
-        .then((r) => {
-            batches = r.payload || [];
-            renderBatches();
-        })
-        .catch(() => {});
+    if (document.getElementById("subBatches")) {
+        post(url("/api/batches"))
+            .then((r) => {
+                batches = r.payload || [];
+                renderBatches();
+            })
+            .catch(() => {});
+    }
 
     function loadSubscription() {
         return post(url("/api/subscription"))
@@ -630,7 +678,9 @@ function batchLabel(name) {
             });
     });
 
-    submitAlertsButton.addEventListener("click", handleSubmit);
+    // The account panel lives on the settings page now, so this button is not
+    // on the landing page — bind only if some page still carries it.
+    submitAlertsButton?.addEventListener("click", handleSubmit);
 
     // Load session & stocks
     loadSubscription();
@@ -640,19 +690,17 @@ function batchLabel(name) {
     // RU, drop it for anyone else (e.g. slow but not throttled).
     const slowTimer = setTimeout(maybeShowVpnNotice, 2500);
     // One unified universe regardless of UI language.
-    post(url("/api/stocks"), {}).then(
-        (r) => {
-            clearTimeout(slowTimer);
-            if (r.geo === "RU") maybeShowVpnNotice();
-            else hideVpnNotice();
-            setStocks(r.payload);
-            // PLZL is the default: the densest, freshest commentary we have
-            // (18 lines over 36 days, current today), so the chart never opens
-            // on a gap.
-            const def = r.payload.find((s) => s.ticker === "PLZL");
-            if (def) setStock([def]);
-            else if (r.payload.length) setStock([r.payload[0]]);
-            initPresetPills(r.payload);
-        }
-    );
+    post(url("/api/stocks"), {}).then((r) => {
+        clearTimeout(slowTimer);
+        if (r.geo === "RU") maybeShowVpnNotice();
+        else hideVpnNotice();
+        setStocks(r.payload);
+        // AVGO opens the record — KO moved to the hero, and the chart has
+        // to be showing the stock whose alert sits at the top of the list
+        // beside it.
+        const def = r.payload.find((s) => s.ticker === "AVGO");
+        if (def) setStock([def]);
+        else if (r.payload.length) setStock([r.payload[0]]);
+        initPresetPills(r.payload);
+    });
 })();
