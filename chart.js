@@ -119,10 +119,14 @@ function setChart(data) {
     // One list: every shipped alert carries its own line. Compact positional
     // tuples decode to objects once, so filters, markers and cards all read
     // the same object.
-    //   [tb, t, dir(1=buy/0=sell), tier("M"|"S"), icon, chip, was, now, st, lt]
+    //   [tb, t, dir(1=buy/0=sell), tier("M"|"S"), icon, chip, was, now, st, lt,
+    //    nodot]
     // tb is the 2h-floored time the marker sits on; t is the exact fire
     // minute the card shows. Fields after tier are 0 when the alert has no
     // line yet — it still draws a marker, it just has no card.
+    // nodot=1 is the mirror case: stored commentary with no current fire, so
+    // it earns a card and never a dot. The dots on this chart are the engine's
+    // signals; an older engine's drawn beside them would be unreadable.
     data.signals = (data.signals || []).map((s) => ({
         tb: s[0],
         time: s[1],
@@ -134,6 +138,7 @@ function setChart(data) {
         now: s[7] || null,
         st: s[8] || null,
         lt: s[9] || null,
+        nodot: s[10] === 1,
     }));
 
     const lastIndex = data.candles.length - 1;
@@ -151,7 +156,8 @@ function setChart(data) {
     // Markers need a candle to sit on, so they are range-filtered here. The
     // feed is not — see setEvents.
     allAlerts = data.signals.filter(
-        (s) => s.tb >= currentCandleRange.from && s.tb <= currentCandleRange.to
+        (s) => !s.nodot &&
+            s.tb >= currentCandleRange.from && s.tb <= currentCandleRange.to
     );
 
     // Volume is folded into each candle as [time, close, volume]; pull it out
@@ -191,12 +197,22 @@ function renderMarkers() {
     const ticker = (document.getElementById("chartStockTitle")?.textContent || "")
         .trim().split(/\s+/)[0].toUpperCase();
     const live = window.__recordTier && window.__recordTier() === "live";
-    // Real time draws EVERY shipped signal, including the ones that carry no
-    // written line: a bare alert is still an alert and still earns a dot — 177
-    // of them exist. The frozen tabs draw the record's own alerts.
-    const marks = live
-        ? (allAlerts || []).map((s) => ({ t: s.tb, dir: s.dir === "buy" ? "up" : "down" }))
-        : (window.__recordMarks ? window.__recordMarks(ticker) : []);
+    // THE SHIPPED STREAM IS ALWAYS THE DOT LAYER. It draws every signal,
+    // including the ones carrying no written line: a bare alert is still an
+    // alert and still earns a dot.
+    //
+    // The frozen tabs used to REPLACE it with the record's own handful, and the
+    // record knows three stocks — so picking any other name left the chart
+    // blank, and the free tab was the one a visitor landed on. A tab is a
+    // different READING of the same week; it was never meant to be a different
+    // set of signals.
+    const stream = (allAlerts || []).map(
+        (s) => ({ t: s.tb, dir: s.dir === "buy" ? "up" : "down" }));
+    // On a frozen tab the record's own fires ride ON TOP, drawn larger, so the
+    // card beside the chart points at something the eye can find. Highlights
+    // go first: they win the one-dot-per-bar dedupe below.
+    const hi = (!live && window.__recordMarks) ? window.__recordMarks(ticker) : [];
+    const marks = [...hi.map((m) => ({ ...m, hi: true })), ...stream];
 
     const bars = window.__candleTimes || [];
     if (!bars.length) { setSeriesMarkers([]); return; }
@@ -223,7 +239,9 @@ function renderMarkers() {
             position: m.dir === "up" ? "belowBar" : "aboveBar",
             color: m.dir === "up" ? MARKER_BUY_COLOR : MARKER_SELL_COLOR,
             shape: "circle",
-            size: 1.4,
+            // The record's fire is the one the card is about, so it reads as a
+            // bigger dot inside the stream rather than as the only dot.
+            size: m.hi ? 2.6 : 1.4,
             text: "",
         });
     }

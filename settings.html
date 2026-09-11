@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth antialiased">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="output.css?v=1789136268" />
+</head>
+
+<body class="a-page min-h-screen text-ink font-sans">
+
+    <header class="sticky top-0 z-40 w-full border-b border-ink/10 bg-paper/85 backdrop-blur">
+        <nav class="shell h-16 flex items-center gap-6">
+            <a href="index.html" class="flex items-center gap-2.5 font-extrabold text-lg tracking-tight no-underline text-ink">
+                <span class="w-7 h-7 rounded-lg bg-violet grid place-items-center text-white text-sm -rotate-6">D</span>
+                Deep<span class="text-violet -ml-[3px]">DIP</span>
+            </a>
+            <div class="flex-1"></div>
+            <a href="https://t.me/buydipru_bot" target="_blank" rel="noopener"
+               class="text-sm font-semibold text-ink/55 hover:text-ink no-underline transition-colors">Open the bot</a>
+        </nav>
+    </header>
+
+    <main class="shell py-9" style="max-width:940px">
+
+        <!-- ============ LOGIN GATE ============ -->
+        <section id="gate" class="hidden">
+            <h1 class="a-h1 text-[1.9rem] mb-3">Your alerts</h1>
+            <p class="text-sm text-ink/60 leading-relaxed max-w-[52ch] mb-6">
+                Make an account to pick your stocks, ask about them and manage your plan.
+                Alerts arrive on Telegram, which you connect once you are in.
+            </p>
+
+            <div class="set-gate">
+                <div class="set-gate-tabs" id="gateTabs">
+                    <button class="on" data-mode="signup">Create account</button>
+                    <button data-mode="login">Log in</button>
+                    <button data-mode="code">I have a bot code</button>
+                </div>
+
+                <!-- email + password: signup and login share the form -->
+                <form id="gateForm" class="set-gate-form">
+                    <label id="gateEmailRow">
+                        <span>Email</span>
+                        <input name="email" type="email" autocomplete="email" placeholder="you@example.com">
+                    </label>
+                    <label id="gatePwRow">
+                        <span>Password</span>
+                        <input name="password" type="password" autocomplete="current-password"
+                               placeholder="at least 8 characters">
+                    </label>
+                    <label id="gateCodeRow" class="hidden">
+                        <span>Code from the bot</span>
+                        <input name="code" type="text" inputmode="numeric" placeholder="6 digits">
+                    </label>
+                    <button type="submit" id="gateSubmit">Create account</button>
+                </form>
+
+                <div class="set-gate-or"><span>or</span></div>
+                <!-- Google Identity Services renders into this. With no client id
+                     configured the script never loads and the note below says so. -->
+                <div id="googleBtn"></div>
+                <p id="googleNote" class="set-hint hidden">Google sign-in is not switched on yet.</p>
+
+                <p id="gateCodeHint" class="set-hint hidden">
+                    Send <b>/password</b> to the bot and it replies with a code. This logs you
+                    into the account that bot chat already belongs to.
+                </p>
+            </div>
+            <p id="gateError" class="hidden mt-3 text-sm text-down"></p>
+        </section>
+
+        <!-- ============ THE PAGE ============ -->
+        <!-- Five sections, one subject each: what you follow, how it is sent,
+             one stock at a time, what it costs, and the account itself. Every
+             control here either works or is not a control — settings.js reads
+             /api/features and refuses to draw a live switch for anything the
+             service does not yet honour. -->
+        <div id="page" class="hidden">
+
+            <!-- blocked outranks everything -->
+            <div id="blockedBar" class="hidden set-blocked">
+                <b>You blocked the bot, so nothing can reach you.</b>
+                <p>Unblock <a href="https://t.me/buydipru_bot" target="_blank" rel="noopener">buydipru_bot</a> in Telegram and press Start. Your stocks are kept — everything below is here, and none of it can send until then.</p>
+            </div>
+
+            <div class="set-bar">
+                <h1 class="a-h1 text-[1.9rem]">Your alerts</h1>
+                <span id="planChip" class="set-pill"></span>
+                <span id="creditChip" class="set-pill"></span>
+                <span id="quietChip" class="set-pill hidden">🌙 Quiet</span>
+                <span id="pausedChip" class="set-pill hidden">⏸ Paused</span>
+            </div>
+
+            <!-- Delivery is telegram. An account without it hears NOTHING, and
+                 that has to be the loudest thing on the page until it is fixed. -->
+            <div id="linkTgBar" class="hidden set-blocked set-link-tg">
+                <b>Connect Telegram to start receiving alerts.</b>
+                <p>Your stocks and plan are saved here, but the alerts themselves arrive in Telegram.
+                   Open <a href="https://t.me/buydipru_bot?start=web" target="_blank" rel="noopener">buydipru_bot</a>,
+                   send <b>/password</b>, and paste the code it gives you.</p>
+                <form id="linkTgForm" class="set-link-form">
+                    <input name="code" type="text" inputmode="numeric" placeholder="6-digit code">
+                    <button type="submit">Connect</button>
+                </form>
+                <p id="linkTgError" class="hidden set-warn"></p>
+            </div>
+
+            <nav class="set-nav" id="setNav">
+                <a href="#secStocks" class="on">Stocks</a>
+                <a href="#secStock">One stock</a>
+                <a href="#secAlerts">Everything else</a>
+                <a href="#secPlan">Plan &amp; credits</a>
+                <a href="#secAccount">Account</a>
+            </nav>
+
+            <!-- ============ 1. WHAT YOU WATCH ============ -->
+            <section class="set-card" id="secStocks">
+                <div class="set-head">
+                    <h2 id="watchCount">Watching —</h2>
+                    <span class="set-bot">bot: /alerts</span>
+                </div>
+
+                <div id="startPanel" class="set-start hidden">
+                    <p class="set-start-line">Pick one batch or search a single name. Alerts start the same day.</p>
+                    <div id="startBatches" class="set-start-row"></div>
+                    <div class="set-add">
+                        <input id="startInput" type="text" autocomplete="off" placeholder="or search a stock" class="set-search">
+                        <div id="startMenu" class="set-menu hidden"></div>
+                    </div>
+                </div>
+
+                <div id="watchBody">
+                <div class="set-group">
+                    <div class="set-label">Batches <span class="set-note">— kept current for you</span></div>
+                    <div id="batchChips" class="set-chips"></div>
+                    <div class="set-add">
+                        <button id="batchAdd" class="set-add-btn">+ add a batch</button>
+                        <div id="batchMenu" class="set-menu hidden"></div>
+                    </div>
+                    <p class="set-hint">A batch is live: MOEX top 30 means today's top 30, and the names in it change without you doing anything.</p>
+                </div>
+
+                <div class="set-group">
+                    <div class="set-label">Your own picks</div>
+                    <div id="pickChips" class="set-chips"></div>
+                    <div class="set-add">
+                        <input id="pickInput" type="text" autocomplete="off" placeholder="+ add a stock" class="set-search">
+                        <div id="pickMenu" class="set-menu hidden"></div>
+                    </div>
+                </div>
+
+                <div class="set-group" id="silentGroup">
+                    <div class="set-label">Not sending</div>
+                    <div id="silentList" class="set-silent"></div>
+                </div>
+                </div>
+            </section>
+
+            <!-- ============ 2. ONE STOCK ============ -->
+            <!-- THE MAIN EVENT. A setting belongs to a stock, so this is where
+                 a reader spends their time: what they told us about it, and
+                 then how it is delivered. It leads with the note because that
+                 is the part only they can supply. Defaults come AFTER, because
+                 a fallback is not what anyone opens this page to change. -->
+            <section class="set-card set-primary" id="secStock">
+                <div class="set-head">
+                    <h2>Set up one stock</h2>
+                    <span class="set-bot">bot: /reason TICKER</span>
+                </div>
+                <div class="set-scope">
+                    <label for="scopePick">Stock</label>
+                    <select id="scopePick"></select>
+                    <span id="scopeState" class="set-scope-state"></span>
+                </div>
+                <div id="scopePane" class="set-pane"></div>
+            </section>
+
+            <!-- ============ 3. THE FALLBACK ============ -->
+            <!-- Deliberately quiet and deliberately last of the alert sections.
+                 It is the answer for stocks nobody has opened, and it used to
+                 sit above the per-stock panel drawing the identical four
+                 control groups — two sections that looked the same and neither
+                 said which one you were editing. -->
+            <section class="set-card set-secondary" id="secAlerts">
+                <div class="set-head">
+                    <h2>Everything else</h2>
+                    <span class="set-bot">bot: /alerts</span>
+                </div>
+                <p class="set-hint" style="margin-top:-.5rem;margin-bottom:1rem">
+                    What a stock gets when you have not set it up above. Change
+                    one stock and it stops following these.</p>
+                <!-- CLOSED BY DEFAULT. Open, it repeats the same four control
+                     groups as the panel above and doubles the length of the
+                     page, which is what made the two sections read as one
+                     confusing thing said twice. -->
+                <details id="defaultDetails">
+                    <summary id="defaultSummary"></summary>
+                    <div id="defaultPane"></div>
+                </details>
+                <p id="tierWarn" class="hidden set-warn"></p>
+
+                <div class="set-group" id="pauseGroup">
+                    <div class="set-label">Everything off</div>
+                    <div class="set-actions" style="margin-top:0">
+                        <button id="pauseBtn" class="set-btn"></button>
+                        <span class="set-bot" style="margin-left:0">bot: /pauseall</span>
+                    </div>
+                    <p id="pauseNote" class="set-hint"></p>
+                </div>
+            </section>
+
+            <!-- ============ 4. PLAN AND CREDITS ============ -->
+            <div class="grid md:grid-cols-2 gap-5" id="secPlan">
+                <section class="set-card mb-0">
+                    <div class="set-head"><h2>Your plan</h2></div>
+                    <ul id="planRows" class="flex flex-col gap-2.5 mt-1"></ul>
+                </section>
+
+                <section class="set-card mb-0">
+                    <div class="set-head"><h2>Your credits</h2>
+                        <span class="set-bot">bot: /credits</span></div>
+                    <p class="set-hint" style="margin-top:0">What is left, and what it went on — a deeper read, a question, an alert written around what you own. A credit taken for work that never came back is given back automatically.</p>
+                    <div id="creditBody"></div>
+                </section>
+            </div>
+
+            <!-- ============ 5. THE ACCOUNT ITSELF ============ -->
+            <section class="set-card" id="secAccount">
+                <div class="set-head"><h2>Your account</h2></div>
+
+                <div class="set-group">
+                    <div class="set-label">How you log in</div>
+                    <div id="loginWays"></div>
+                    <!-- Only for an account that has no email yet: someone who
+                         arrived through the bot. Linking cannot give them one —
+                         it refuses to absorb an account that has anything on
+                         it — so this is where it happens, from inside the
+                         account they are already in. -->
+                    <form id="addLoginForm" class="set-gate-form hidden" style="margin-top:.8rem">
+                        <label><span>Email</span>
+                            <input name="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+                        <label><span>Password</span>
+                            <input name="password" type="password" autocomplete="new-password" placeholder="at least 8 characters"></label>
+                        <button type="submit">Save</button>
+                    </form>
+                    <p id="addLoginMsg" class="hidden set-warn"></p>
+                </div>
+
+                <div class="set-group">
+                    <div class="set-label">Telegram</div>
+                    <div id="tgRow"></div>
+                    <p id="tgMsg" class="hidden set-warn"></p>
+                </div>
+
+                <div class="set-group" id="langGroup">
+                    <div class="set-label">Language</div>
+                    <div class="flex flex-col gap-1.5" id="langChoice">
+                        <label class="sub-opt"><input type="radio" name="setLang" value="en">
+                            <span><b>English</b></span></label>
+                        <label class="sub-opt"><input type="radio" name="setLang" value="ru">
+                            <span><b>Русский</b></span></label>
+                    </div>
+                    <p id="langNote" class="set-pending-note hidden"></p>
+                </div>
+
+                <div class="set-group">
+                    <div class="set-label">Leaving</div>
+                    <div class="set-actions" style="margin-top:0">
+                        <button id="logoutBtn" class="set-btn">Log out</button>
+                        <button id="deleteBtn" class="set-btn danger">Delete account</button>
+                    </div>
+                    <p class="set-pending-note">Deleting your account removes everything and signs you out.</p>
+                    <p id="deleteMsg" class="hidden set-warn"></p>
+                </div>
+            </section>
+
+            <footer class="set-foot">
+                <p>Alerts are informational and are not individual investment advice. Trading financial instruments involves high risks, including the risk of losing part or all of your investment.</p>
+            </footer>
+        </div>
+    </main>
+    <script src="settings.js?v=1789136434"></script>
+</body>
+</html>

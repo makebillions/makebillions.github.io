@@ -72,7 +72,11 @@ const RECORD = [
     },
 ];
 
-let recordTier = "free";   // free | pro | live
+// Real time is the LANDING tab. It is the only one whose cards exist for every
+// stock, so it is the only one that can be a default: the frozen tabs cover
+// three names, and a visitor who opened on one of them and searched anything
+// else got a chart with nothing on it.
+let recordTier = "live";   // free | pro | live
 
 const TIER_BAND = {
     free: ["Free", "our fast model"],
@@ -209,4 +213,9 @@ window.__recordMarks = (ticker) =>
 // The record is frozen data, so it must not wait on a chart fetch. If the API
 // is slow or down the words still stand — they are the product; the chart is
 // reference.
+// Paint the tab strip from `recordTier` rather than trusting the markup: the
+// default lives in one place, and HTML that disagreed with it would show a
+// highlighted tab whose content is not on screen.
+document.querySelectorAll("#recordTabs .rec-tab").forEach((b) =>
+    b.classList.toggle("rec-tab-on", b.dataset.tier === recordTier));
 renderRecord();
