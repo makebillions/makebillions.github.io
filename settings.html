@@ -9,7 +9,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="output.css?v=1789136268" />
+    <link rel="stylesheet" href="output.css?v=1790538603" />
 </head>
 
 <body class="a-page min-h-screen text-ink font-sans">
@@ -76,23 +76,21 @@
         </section>
 
         <!-- ============ THE PAGE ============ -->
-        <!-- Five sections, one subject each: what you follow, how it is sent,
-             one stock at a time, what it costs, and the account itself. Every
-             control here either works or is not a control — settings.js reads
-             /api/features and refuses to draw a live switch for anything the
-             service does not yet honour. -->
+        <!-- One subject per card: your stocks (pick one, set it up), the
+             language, what it costs, and the account itself. Every control
+             here does what it says. -->
         <div id="page" class="hidden">
 
             <!-- blocked outranks everything -->
             <div id="blockedBar" class="hidden set-blocked">
                 <b>You blocked the bot, so nothing can reach you.</b>
-                <p>Unblock <a href="https://t.me/buydipru_bot" target="_blank" rel="noopener">buydipru_bot</a> in Telegram and press Start. Your stocks are kept — everything below is here, and none of it can send until then.</p>
+                <p>Unblock <a href="https://t.me/buydipru_bot" target="_blank" rel="noopener">buydipru_bot</a> in Telegram, press Start, then Resume. Your stocks are kept.</p>
             </div>
 
             <div class="set-bar">
                 <h1 class="a-h1 text-[1.9rem]">Your alerts</h1>
                 <span id="planChip" class="set-pill"></span>
-                <span id="creditChip" class="set-pill"></span>
+                <a id="balanceChip" class="set-pill" href="#secPlan"></a>
                 <span id="quietChip" class="set-pill hidden">🌙 Quiet</span>
                 <span id="pausedChip" class="set-pill hidden">⏸ Paused</span>
             </div>
@@ -113,29 +111,34 @@
 
             <nav class="set-nav" id="setNav">
                 <a href="#secStocks" class="on">Stocks</a>
-                <a href="#secStock">One stock</a>
-                <a href="#secAlerts">Everything else</a>
-                <a href="#secPlan">Plan &amp; credits</a>
+                <a href="#secLang">Language</a>
+                <a href="#secPlan">Plan &amp; balance</a>
                 <a href="#secAccount">Account</a>
             </nav>
 
-            <!-- ============ 1. WHAT YOU WATCH ============ -->
-            <section class="set-card" id="secStocks">
+            <!-- ============ STOCKS ============ -->
+            <!-- A SETTING BELONGS TO A STOCK. One picker finds any stock we
+                 watch, in both markets; picking it opens its settings below.
+                 "Your stocks" is the way back to anything already set up. -->
+            <section class="set-card set-primary" id="secStocks">
                 <div class="set-head">
-                    <h2 id="watchCount">Watching —</h2>
+                    <h2 id="watchCount">Stocks</h2>
                     <span class="set-bot">bot: /alerts</span>
                 </div>
 
-                <div id="startPanel" class="set-start hidden">
-                    <p class="set-start-line">Pick one batch or search a single name. Alerts start the same day.</p>
-                    <div id="startBatches" class="set-start-row"></div>
-                    <div class="set-add">
-                        <input id="startInput" type="text" autocomplete="off" placeholder="or search a stock" class="set-search">
-                        <div id="startMenu" class="set-menu hidden"></div>
-                    </div>
+                <button id="pickerOpen" class="set-picker" type="button" aria-haspopup="dialog">
+                    <span class="set-picker-icon" aria-hidden="true">⌕</span>
+                    <span class="set-picker-text">Find a stock, ETF, future or coin — SBER, Apple, gold, Bitcoin</span>
+                    <span class="set-picker-kbd">MOEX · US · crypto</span>
+                </button>
+
+                <div class="set-group set-mystocks">
+                    <div class="set-label">Your stocks <span class="set-note">— tap one to set it up</span></div>
+                    <div id="myStocks" class="set-strip"></div>
+                    <p class="set-hint set-legend"><i class="all">every alert</i> every move we catch ·
+                        <i>major moves</i> only the big ones · 🧠 reasoning · 🌙 silent · ✎ written for you · 💤 paused</p>
                 </div>
 
-                <div id="watchBody">
                 <div class="set-group">
                     <div class="set-label">Batches <span class="set-note">— kept current for you</span></div>
                     <div id="batchChips" class="set-chips"></div>
@@ -143,69 +146,54 @@
                         <button id="batchAdd" class="set-add-btn">+ add a batch</button>
                         <div id="batchMenu" class="set-menu hidden"></div>
                     </div>
-                    <p class="set-hint">A batch is live: MOEX top 30 means today's top 30, and the names in it change without you doing anything.</p>
+                    <p class="set-hint">A batch is live: MOEX top 30 means today's top 30, and the names in it change without you doing anything. A batch sends major moves; open one stock in it to hear more.</p>
                 </div>
 
-                <div class="set-group">
-                    <div class="set-label">Your own picks</div>
-                    <div id="pickChips" class="set-chips"></div>
-                    <div class="set-add">
-                        <input id="pickInput" type="text" autocomplete="off" placeholder="+ add a stock" class="set-search">
-                        <div id="pickMenu" class="set-menu hidden"></div>
-                    </div>
-                </div>
+                <!-- the selected stock (or batch) -->
+                <div id="scopePane" class="set-pane"></div>
 
                 <div class="set-group" id="silentGroup">
                     <div class="set-label">Not sending</div>
                     <div id="silentList" class="set-silent"></div>
                 </div>
-                </div>
             </section>
 
-            <!-- ============ 2. ONE STOCK ============ -->
-            <!-- THE MAIN EVENT. A setting belongs to a stock, so this is where
-                 a reader spends their time: what they told us about it, and
-                 then how it is delivered. It leads with the note because that
-                 is the part only they can supply. Defaults come AFTER, because
-                 a fallback is not what anyone opens this page to change. -->
-            <section class="set-card set-primary" id="secStock">
-                <div class="set-head">
-                    <h2>Set up one stock</h2>
-                    <span class="set-bot">bot: /reason TICKER</span>
+            <!-- The picker. A popover on a wide screen, a full-screen sheet on
+                 a phone — same markup, the stylesheet decides. -->
+            <div id="pickerSheet" class="set-sheet hidden" role="dialog" aria-modal="true" aria-label="Find a stock">
+                <div class="set-sheet-box">
+                    <div class="set-sheet-top">
+                        <input id="pickerInput" type="search" autocomplete="off" enterkeyhint="search"
+                               placeholder="Ticker or company name">
+                        <button id="pickerClose" class="set-sheet-close" type="button" aria-label="Close">✕</button>
+                    </div>
+                    <div class="set-tabs" id="pickerTabs" role="tablist">
+                        <button data-market="all" class="on" role="tab">All</button>
+                        <button data-market="moex" role="tab">MOEX</button>
+                        <button data-market="us" role="tab">US</button>
+                        <button data-market="etf" role="tab">ETFs</button>
+                        <button data-market="future" role="tab">Futures</button>
+                        <button data-market="crypto" role="tab">Crypto</button>
+                        <button data-market="mine" role="tab">Yours</button>
+                    </div>
+                    <div id="pickerList" class="set-sheet-list" role="listbox"></div>
                 </div>
-                <div class="set-scope">
-                    <label for="scopePick">Stock</label>
-                    <select id="scopePick"></select>
-                    <span id="scopeState" class="set-scope-state"></span>
-                </div>
-                <div id="scopePane" class="set-pane"></div>
-            </section>
+            </div>
 
-            <!-- ============ 3. THE FALLBACK ============ -->
-            <!-- Deliberately quiet and deliberately last of the alert sections.
-                 It is the answer for stocks nobody has opened, and it used to
-                 sit above the per-stock panel drawing the identical four
-                 control groups — two sections that looked the same and neither
-                 said which one you were editing. -->
+            <!-- ============ STOCKS NOBODY SET UP ============ -->
             <section class="set-card set-secondary" id="secAlerts">
                 <div class="set-head">
-                    <h2>Everything else</h2>
+                    <h2>Every other stock</h2>
                     <span class="set-bot">bot: /alerts</span>
                 </div>
                 <p class="set-hint" style="margin-top:-.5rem;margin-bottom:1rem">
-                    What a stock gets when you have not set it up above. Change
-                    one stock and it stops following these.</p>
-                <!-- CLOSED BY DEFAULT. Open, it repeats the same four control
-                     groups as the panel above and doubles the length of the
-                     page, which is what made the two sections read as one
-                     confusing thing said twice. -->
+                    What a stock you picked gets until you set it up above. A stock you set up keeps its own settings.</p>
                 <details id="defaultDetails">
                     <summary id="defaultSummary"></summary>
                     <div id="defaultPane"></div>
                 </details>
-                <p id="tierWarn" class="hidden set-warn"></p>
 
-                <div class="set-group" id="pauseGroup">
+                <div class="set-group" id="pauseGroup" style="margin-top:1.2rem">
                     <div class="set-label">Everything off</div>
                     <div class="set-actions" style="margin-top:0">
                         <button id="pauseBtn" class="set-btn"></button>
@@ -215,33 +203,39 @@
                 </div>
             </section>
 
-            <!-- ============ 4. PLAN AND CREDITS ============ -->
+            <!-- ============ LANGUAGE ============ -->
+            <section class="set-card" id="secLang">
+                <div class="set-head"><h2>Alert language</h2><em class="set-pro">PRO</em></div>
+                <label class="set-switch-row" id="langRow">
+                    <span class="set-switch-text"><b>Alerts in Russian</b>
+                        <em id="langNote">Every alert, and the buttons under it, arrive in Russian.</em></span>
+                    <input type="checkbox" role="switch" id="langSwitch" class="set-switch">
+                </label>
+            </section>
+
+            <!-- ============ PLAN AND BALANCE ============ -->
             <div class="grid md:grid-cols-2 gap-5" id="secPlan">
                 <section class="set-card mb-0">
                     <div class="set-head"><h2>Your plan</h2></div>
-                    <ul id="planRows" class="flex flex-col gap-2.5 mt-1"></ul>
+                    <div id="planBody"></div>
                 </section>
 
                 <section class="set-card mb-0">
-                    <div class="set-head"><h2>Your credits</h2>
-                        <span class="set-bot">bot: /credits</span></div>
-                    <p class="set-hint" style="margin-top:0">What is left, and what it went on — a deeper read, a question, an alert written around what you own. A credit taken for work that never came back is given back automatically.</p>
-                    <div id="creditBody"></div>
+                    <div class="set-head"><h2>Your balance</h2>
+                        <span class="set-bot">bot: /balance</span></div>
+                    <div id="balanceBody"></div>
                 </section>
             </div>
 
-            <!-- ============ 5. THE ACCOUNT ITSELF ============ -->
-            <section class="set-card" id="secAccount">
+            <!-- ============ THE ACCOUNT ITSELF ============ -->
+            <section class="set-card" id="secAccount" style="margin-top:1.25rem">
                 <div class="set-head"><h2>Your account</h2></div>
 
                 <div class="set-group">
                     <div class="set-label">How you log in</div>
                     <div id="loginWays"></div>
                     <!-- Only for an account that has no email yet: someone who
-                         arrived through the bot. Linking cannot give them one —
-                         it refuses to absorb an account that has anything on
-                         it — so this is where it happens, from inside the
-                         account they are already in. -->
+                         arrived through the bot. -->
                     <form id="addLoginForm" class="set-gate-form hidden" style="margin-top:.8rem">
                         <label><span>Email</span>
                             <input name="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
@@ -256,17 +250,6 @@
                     <div class="set-label">Telegram</div>
                     <div id="tgRow"></div>
                     <p id="tgMsg" class="hidden set-warn"></p>
-                </div>
-
-                <div class="set-group" id="langGroup">
-                    <div class="set-label">Language</div>
-                    <div class="flex flex-col gap-1.5" id="langChoice">
-                        <label class="sub-opt"><input type="radio" name="setLang" value="en">
-                            <span><b>English</b></span></label>
-                        <label class="sub-opt"><input type="radio" name="setLang" value="ru">
-                            <span><b>Русский</b></span></label>
-                    </div>
-                    <p id="langNote" class="set-pending-note hidden"></p>
                 </div>
 
                 <div class="set-group">
@@ -284,7 +267,11 @@
                 <p>Alerts are informational and are not individual investment advice. Trading financial instruments involves high risks, including the risk of losing part or all of your investment.</p>
             </footer>
         </div>
+
+        <!-- Every refusal and confirmation shows HERE, fixed on screen: the old
+             warning line sat in a lower section and vanished in six seconds. -->
+        <div id="toast" class="set-toast hidden" role="status" aria-live="polite"></div>
     </main>
-    <script src="settings.js?v=1789136434"></script>
+    <script src="settings.js?v=1790545258"></script>
 </body>
 </html>
