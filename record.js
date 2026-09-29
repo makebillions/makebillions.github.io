@@ -1,10 +1,10 @@
 // ============================================================
-// record.js — the frozen record: real alerts, one tier at a time.
+// record.js — real alerts, one tier at a time.
 //
-// The cards here are NOT fetched. They are the checked alert text from the
-// brief, held as data so the Free/PRO tab swaps a read of the SAME fire
-// rather than a different event. The chart beside them is live and keeps
-// running past each alert; only the words are frozen.
+// Free and PRO are examples held as data: real lines subscribers received
+// (call logs, Sep 2026) — Free written without reasoning, PRO with it —
+// picked among calls that price did not contradict over the next sessions.
+// Real time is the stock on the chart, as sent. The chart is live.
 // ============================================================
 
 const ICONS = {
@@ -13,68 +13,124 @@ const ICONS = {
     momentum: `<svg viewBox="0 0 16 16" fill="none"><path d="M2 12l4-4 2 2 6-7v3h2V1h-5v2h3L9 9 7 7l-5 5z" fill="#f59e0b"/></svg>`,
     attention: `<svg viewBox="0 0 16 16" fill="none"><path d="M8 1l7 13H1L8 1z" fill="#f97316"/><rect x="7.2" y="5.5" width="1.6" height="5" rx=".5" fill="#fff"/><circle cx="8" cy="12" r=".9" fill="#fff"/></svg>`,
 };
+ICONS.dip = ICONS.drop;
+ICONS.important = ICONS.attention;
 
 // t = unix seconds of the fire, so a card can select its dot on the chart.
 const RECORD = [
     {
-        stock: "AVGO",
-        t: Date.UTC(2026, 7, 14, 16, 30) / 1000,
-        when: "14 Aug 16:30",
-        next: "Price reached 391 the next session, cut through 383-400 the day after, and touched 357.89 three sessions later — the top of the second zone the PRO line named.",
+        stock: "SBER", t: 1790604240, when: "28 Sep 14:04",
         free: {
-            icon: "drop", dir: "down", chip: "Floor under pressure · 408",
-            was: "5-session slide from 432.31",
-            now: "dropped to 407.68",
-            st: "the 383-400 area is the next floor and it is 3.8% away, so a further slide may occur while the broader market remains flat",
-            lt: "the summer floor at 358-375 remains the primary support for the long-term recovery",
-        },
-        pro: {
-            icon: "drop", dir: "down", chip: "Sharp drop · 408",
-            was: "five-session slide from 432.31 into today",
-            now: "broke under 412.07 to 407.68, market flat",
-            st: "Wait for a test of 383-400 before buying; the downside view is wrong if price rallies back into 424-434, 5.2% above.",
-            lt: "If the slide continues through 383-400, the next floor could be 358-375, 10.5% below, the summer low, within a few weeks.",
+            icon: "drop",
+            dir: "down",
+            chip: "Floor under pressure · 274",
+            was: "slow 11-session slide from 289.78",
+            now: "opened near 276.35 and fell to 273.60 on high volume",
+            st: "price lost 275.39 for the first time in 18 sessions; a drop that may accelerate if 265.86 fails",
+            lt: "a recovery from a 20.3% crash that ended in July",
         },
     },
     {
-        stock: "AMZN",
-        t: Date.UTC(2026, 7, 14, 17, 36) / 1000,
-        when: "14 Aug 17:36",
-        next: "Nothing. Over the next four sessions the stock moved about one and a half percent and never came near the zone the alert named. The alert said wait, and waiting was the right thing to do.",
-        free: null,   // no free-voice line exists for this fire yet
+        stock: "ORCL", t: 1790380440, when: "25 Sep 23:54",
         pro: {
-            icon: "drop", dir: "down", chip: "Breaking down · 264",
-            was: "five-session slide from 279.98 into today",
-            now: "lost the 270-276 floor, now 263.77",
-            st: "The broader market is flat, so this is stock-specific; wait for a slide toward 227-240 before buying, with the down view wrong if price climbs back into 270-276, 3.5% above.",
-            lt: "If the slide continues, the next real floor is 227-240, 11.7% below, within a few weeks, with 199-211 below that at 22.3%.",
+            icon: "drop",
+            dir: "down",
+            chip: "Floor under pressure · 137",
+            was: "a slow three-week slide from 169.12, the biggest 19% fall in five weeks",
+            now: "slipped to 137.08 and sits on 137.02 above the 136.96 low, with the broader market higher",
+            st: "price has slid back to 137.02, the line every one of the last 25 closes has held; the biggest fall in five weeks leaves it stretched, and a break into 114-122 means more downside",
+            lt: "the 80% climb from 137.83 in April to 248.13 in June is entirely undone; price is back at the ground it left",
         },
     },
     {
-        stock: "TSLA",
-        t: Date.UTC(2026, 7, 14, 17, 44) / 1000,
-        when: "14 Aug 17:44",
-        next: "Price slid to 331.47 over two sessions — inside the floor the PRO line named — then rallied and stopped at 351.39, one tick past the 350.90 the PRO line said had to be cleared first.",
-        free: {
-            icon: "momentum", dir: "up", chip: "Breaking higher · 343",
-            was: "3-session climb from 323.68",
-            now: "broke above the 328-337 ceiling",
-            st: "369-385 is the next major shelf and the broader market is flat, so a move toward it may be slow",
-            lt: "the recovery from 298 is only two weeks old, but getting back to 425-453 would mark a full return to the May peak",
-        },
+        stock: "QCOM", t: 1790354160, when: "25 Sep 16:36",
         pro: {
-            icon: "drop", dir: "down", chip: "Losing steam · 343",
-            was: "2-session climb from 327.20",
-            now: "stalled and turned back from 350.90",
-            st: "a slide has room to the 328-337 floor, 2.9% below, while a renewed push would need to clear today's 350.90 high before the 369-385 shelf opens up — the bigger move is down",
-            lt: "a holder is watching whether the floor that caught the August recovery can hold again, with the crash low at 297-312 below it",
+            icon: "momentum",
+            dir: "up",
+            chip: "Breaking higher · 198",
+            was: "Nine-session climb of 16% from 171.01, biggest in five weeks and quick",
+            now: "Opened above yesterday's close, dipped to 195.20, then pushed to 198.21 as the broader market lagged",
+            st: "A recovery since late July has taken price above July's stalling area, the biggest run in five weeks and stretched; a fall back into 188-195 would end the push",
+            lt: "The summer's 23% slide into a 147.61 low at the end of July has been more than undone by a 34% climb back to 198",
+        },
+    },
+    {
+        stock: "COST", t: 1790353920, when: "25 Sep 16:32",
+        pro: {
+            icon: "rally",
+            dir: "up",
+            chip: "Buyers stepping in · 899",
+            was: "A quick one-session bounce from 885.84, up 1.5% — modest but fast for this stock",
+            now: "Slipped to 885.84, then shot back to 899.29 in the last few minutes",
+            st: "Price fell under 893.85 today and won it back fast, inside a four-month, 18% slide, with the broader market barely up; a drop below 885.84, today's six-month low, would end the bounce",
+            lt: "The spring rally up to May's 1094.90 peak has fully unwound in an 82-session, 18% fall, leaving price near its six-month low",
+        },
+    },
+    {
+        stock: "PLZL", t: 1790257560, when: "24 Sep 13:46",
+        pro: {
+            icon: "rally",
+            dir: "up",
+            chip: "Buyers stepping in · 956",
+            was: "A slow nine-session slide of 10.5% from 1041.20 to 931.80, modest for this stock",
+            now: "An early slide to 931.80 on heavy opening volume, then a climb back to 955.80",
+            st: "Three weeks inside a 945.20-1068.40 band, crossing its middle three times, today's dip to 931.80 bought back above 949.52 while the market slips; a drop under 949.52 would say the bounce has failed",
+            lt: "Sitting just above the floor of a 60% collapse from April to July; the fast August rally to 1367 has since been handed back",
+        },
+    },
+    {
+        stock: "NLMK", t: 1790254740, when: "24 Sep 12:59",
+        pro: {
+            icon: "drop",
+            dir: "down",
+            chip: "Floor under pressure · 70.3",
+            was: "A five-session fall from 75.82 to 69.20, a slow 8.7%, modest for this stock",
+            now: "Slid from 72.52 to 70.32, now at the session low, midday selling on heavier volume",
+            st: "The 17% bounce off 69.20 has stalled, leaving price back under 70.39, which four sessions closed above, with the broader market barely lower; a close below keeps the nine-session 70.36-73.60 range's floor under pressure",
+            lt: "A 42% crash from April to July, then a 34% rally off 57.00; today is 23% above that low, 28% below where the fall began",
+        },
+    },
+    {
+        stock: "NLMK", t: 1790028180, when: "21 Sep 22:03",
+        free: {
+            icon: "attention",
+            dir: "up",
+            chip: "Holding the floor · 70.5",
+            was: "a slow 7.5% slide from 76.22 over ten sessions, gentle for this stock",
+            now: "dipped to 69.36 early, climbed back to 70.50, now just above 70.41",
+            st: "three days boxed in 70.36-73.60 and today's dip below 70.41 was bought back, so the floor is being tested rather than lost; a close under 70.41 would say the buyers have stepped aside",
+            lt: "a 43% crash from March's 100.18 to July's 57.00, and the 34% bounce off that low has stalled well short of repairing it",
+        },
+    },
+    {
+        stock: "NVDA", t: 1789775520, when: "18 Sep 23:52",
+        free: {
+            icon: "momentum",
+            dir: "up",
+            chip: "Breaking higher · 222",
+            was: "slow five-session climb from 209.11",
+            now: "ran from 219.25 to 222.48 and held most of the gain",
+            st: "price has won back 221.90 after six sessions below it; the recovery is steady but slow. A drop below 219.25 would mean the break failed",
+            lt: "sits 5.6% below the peak of a 42.5% rally that ran through May",
+        },
+    },
+    {
+        stock: "AMD", t: 1789772100, when: "18 Sep 22:55",
+        free: {
+            icon: "momentum",
+            dir: "up",
+            chip: "Breaking higher · 557",
+            was: "fast 11-session climb from 442.25, the biggest such run in five weeks",
+            now: "ran from 541.89 to 557.10 and is holding the high",
+            st: "a steep rally that has pushed price into a major ceiling; the move is stretched after its biggest run in over a month. A loss of 553 would be the break",
+            lt: "a recovery that has erased most of the summer's biggest drop, which saw price fall 22.2% in five sessions",
         },
     },
 ];
 
 // Real time is the LANDING tab. It is the only one whose cards exist for every
-// stock, so it is the only one that can be a default: the frozen tabs cover
-// three names, and a visitor who opened on one of them and searched anything
+// stock, so it is the only one that can be a default: the example tabs cover
+// a few names, and a visitor who opened on one of them and searched anything
 // else got a chart with nothing on it.
 let recordTier = "live";   // free | pro | live
 

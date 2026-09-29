@@ -19,9 +19,7 @@ function debounce(func, delay) {
 function getAnonId() {
     let id = localStorage.getItem("anonId");
     if (!id) {
-        id = crypto.randomUUID
-            ? crypto.randomUUID()
-            : Math.random().toString(36).slice(2) + Date.now().toString(36);
+        id = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36));
         localStorage.setItem("anonId", id);
     }
     return id;
@@ -55,9 +53,11 @@ function post(url, data = {}) {
 }
 
 // --- API config ---
-// const host = "https://e82a-159-255-38-244.ngrok-free.app";
-const host = "https://api.deepdip.tech";
-// const host = window.__apiHost || "http://localhost:4000";
+// A local copy talks to the local API, the published site to production, so
+// publishing needs no edit. window.__apiHost overrides both (the test harness).
+const host = window.__apiHost ||
+    (["localhost", "127.0.0.1", ""].includes(location.hostname)
+        ? "http://localhost:4000" : "https://api.deepdip.tech");
 window.__agentHost = host;
 function url(path) {
     return `${host}${path}`;
@@ -452,20 +452,15 @@ function batchLabel(name) {
         const box = document.getElementById("subBatches");
         if (!box) return;
         if (!isLoggedIn || !account) {
-            box.innerHTML =
-                '<span class="sub-empty">Log in to pick a batch.</span>';
+            box.innerHTML = '<span class="sub-empty">Log in to pick a batch.</span>';
             return;
         }
         box.innerHTML = batches
             .map((b) => {
                 const on = (account.groups || []).includes(b.name);
                 return (
-                    `<button type="button" class="sub-chip${
-                        on ? "" : " paused"
-                    }" ` +
-                    `data-batch="${b.name}">${on ? "✓ " : "+ "}${batchLabel(
-                        b.name
-                    )}` +
+                    `<button type="button" class="sub-chip${on ? "" : " paused"}" ` +
+                    `data-batch="${b.name}">${on ? "✓ " : "+ "}${batchLabel(b.name)}` +
                     `<span class="x">${b.size}</span></button>`
                 );
             })
@@ -491,9 +486,7 @@ function batchLabel(name) {
             ? account.stocks
                   .map(
                       (t) =>
-                          `<span class="sub-chip${
-                              paused ? " paused" : ""
-                          }">${t}` +
+                          `<span class="sub-chip${paused ? " paused" : ""}">${t}` +
                           `<span class="x" data-drop="${t}" title="Remove">&times;</span></span>`
                   )
                   .join("")
@@ -601,8 +594,7 @@ function batchLabel(name) {
     });
 
     document.getElementById("subTier")?.addEventListener("change", (e) => {
-        if (e.target.name === "subTier")
-            saveSubscription({ tier: e.target.value });
+        if (e.target.name === "subTier") saveSubscription({ tier: e.target.value });
     });
 
     document.getElementById("subPause")?.addEventListener("click", () => {
@@ -690,17 +682,19 @@ function batchLabel(name) {
     // RU, drop it for anyone else (e.g. slow but not throttled).
     const slowTimer = setTimeout(maybeShowVpnNotice, 2500);
     // One unified universe regardless of UI language.
-    post(url("/api/stocks"), {}).then((r) => {
-        clearTimeout(slowTimer);
-        if (r.geo === "RU") maybeShowVpnNotice();
-        else hideVpnNotice();
-        setStocks(r.payload);
-        // AVGO opens the record — KO moved to the hero, and the chart has
-        // to be showing the stock whose alert sits at the top of the list
-        // beside it.
-        const def = r.payload.find((s) => s.ticker === "AVGO");
-        if (def) setStock([def]);
-        else if (r.payload.length) setStock([r.payload[0]]);
-        initPresetPills(r.payload);
-    });
+    post(url("/api/stocks"), {}).then(
+        (r) => {
+            clearTimeout(slowTimer);
+            if (r.geo === "RU") maybeShowVpnNotice();
+            else hideVpnNotice();
+            setStocks(r.payload);
+            // The first preset pill opens the record, so the default lives in
+            // the HTML alone.
+            const first = document.querySelector("#presetPills .preset-pill")?.dataset.ticker;
+            const def = r.payload.find((s) => s.ticker === first);
+            if (def) setStock([def]);
+            else if (r.payload.length) setStock([r.payload[0]]);
+            initPresetPills(r.payload);
+        }
+    );
 })();
