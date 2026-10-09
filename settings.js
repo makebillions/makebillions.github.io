@@ -332,7 +332,8 @@ const KIND_COPY = [
     ["breakout", "Breakouts", "Price pushes through a level that had held it back before."],
     ["rejected", "False breaks and rejections", "It tried to get through and was pushed back. The level held."],
     ["bounce", "Bounces off support", "A dip into a level that has held before, with buyers stepping back in."],
-    ["momentum", "Momentum and surges", "The move is running faster than this stock normally moves in a day."],
+    ["momentum", "Momentum", "The move is running faster than this stock normally moves in a day."],
+    ["trend", "Trend continuation", "The move keeps extending at its usual pace, without a burst."],
     ["fading", "Exhaustion and reversals", "A long run shows its first sign of tiring, or it turns over sharply."],
     ["quiet", "Going sideways", "Drifting inside a range with nothing yet deciding which way it leaves."],
 ];

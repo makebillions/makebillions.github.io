@@ -76,47 +76,35 @@
 
     <main>
         <!-- ===================== 1. HERO =====================
-             TWO CARDS, ONE FIRE. Both lines are real output on KO 13 Aug
-             17:03 — the free one is in the call log, the reasoning one is in
-             temp/runs/reasoning_pasted/README.md. Same minute, same sheet, so
-             the only variable is the model. The bands say what each card IS,
-             never "free alert vs pro alert": the alert text does not change
-             with a subscription, the re-read is what PRO buys. -->
+             ONE REAL ALERT AND WHAT CAME NEXT (2026-10-09). NFLX 09-04 18:00, lean, flash thinking, on
+             a true-highs/lows sheet (tools.backtest.sheet_at, BTD_L2_TRUE_HL); outcome from the
+             15-second prints. The free-vs-reasoning comparison left the hero for the PRO section. -->
         <section class="shell pt-12 pb-16" style="max-width:1320px">
             <div class="grid lg:grid-cols-[minmax(0,.78fr)_minmax(0,1.22fr)] gap-10 lg:gap-12 items-start">
                 <div class="max-w-[46ch]">
                     <a href="#recordSection"
                         class="inline-flex items-center gap-2 px-3 py-1.5 mb-6 rounded-full bg-violet-bg border border-violet-edge hover:border-violet transition-colors no-underline">
-                        <span class="text-[13px] font-bold tracking-wider text-violet">Watching 100 stocks, right
-                            now</span>
+                        <span class="text-[13px] font-bold tracking-wider text-violet">Stocks, indices and gold,
+                            live</span>
                     </a>
                     <h1 class="a-h1 text-[clamp(2.4rem,4.6vw,3.5rem)] text-balance">
                         You find out <span class="text-violet">while it is happening</span>
                     </h1>
                     <p class="mt-6 text-[1.075rem] leading-relaxed text-ink/70">
-                        DeepDIP watches 100 stocks in Moscow and New York through the whole session. When something
-                        real happens on one you follow — a level gives way, a fall stops, a run begins — you get one
-                        short sentence: what happened, which price matters now, and what may come next. No charts to
-                        read and no jargon. You do not have to be a trader.
+                        When a level gives way, a fall stops or a run begins on a name you follow, you get one short
+                        alert: what happened, the price that matters now, and what may come next. No charts, no
+                        jargon.
                     </p>
                     <ul class="mt-7 space-y-3.5 text-[15px] text-ink/75">
                         <li class="flex gap-3"><span class="text-violet font-bold">·</span><span><b
-                                    class="text-ink">The timing is the point</b> — our engine follows every stock
-                                minute by minute and knows the prices it has actually turned at before. A move you
-                                hear about the next morning is one you can no longer act on.</span></li>
+                                    class="text-ink">The timing is the point</b> — a move you hear about the next
+                                morning is one you can no longer act on.</span></li>
                         <li class="flex gap-3"><span class="text-violet font-bold">·</span><span><b
-                                    class="text-ink">Every alert is read, not just reported</b> — what it means for
-                                this week, and what it means for the months ahead, in one sentence you can act
-                                on.</span></li>
+                                    class="text-ink">Every alert is read, not just reported</b> — what it means this
+                                week, and for the months ahead.</span></li>
                         <li class="flex gap-3"><span class="text-violet font-bold">·</span><span><b
-                                    class="text-ink">Ask it anything about an alert</b> — whether the break is real,
-                                or what it changes for shares you already hold. <b class="text-gold">PRO</b> sends it
-                                back to our reasoning model for a full re-read of the chart.</span></li>
-                        <li class="flex gap-3"><span class="text-violet font-bold">·</span><span><b
-                                    class="text-ink">You decide what reaches you</b> — which stocks, or a batch that
-                                stays current on its own, and how much it sends. Silence one for a week without
-                                losing it. All on one settings page.</span>
-                        </li>
+                                    class="text-ink">You decide what reaches you</b> — your stocks or whole groups,
+                                every alert or only the major moves.</span></li>
                     </ul>
                     <div class="mt-8 flex flex-wrap items-center gap-3">
                         <button
@@ -127,11 +115,13 @@
                             class="px-5 py-3 text-sm font-semibold text-ink/70 hover:text-ink no-underline">See real
                             alerts ↓</a>
                     </div>
+                    <p class="mt-4 text-[13px] text-ink/70"><b class="text-ink">Nothing hidden</b> — a free account, and
+                        real alerts on a real chart right below.</p>
                 </div>
 
                 <div>
-                    <div class="a-kicker mb-3">One alert, and the same alert thought through *</div>
-                    <div class="grid sm:grid-cols-2 gap-4 items-stretch">
+                    <div class="a-kicker mb-3">One real alert, and what came next</div>
+                    <div class="max-w-lg">
                         <article class="alert-card">
                             <div class="tier-band">
                                 <span class="tier-name">The alert</span>
@@ -146,58 +136,30 @@
                                     <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
                                             <path d="M8 14l-5-6h4V2h2v6h4l-5 6z" fill="#ef4444" />
                                         </svg></span>
-                                    <span class="dir-chip down">Floor under pressure · 79.9</span>
+                                    <span class="dir-chip down">Five-session 81.0-83.5 hold breaks · 79.9</span>
                                 </div>
-                                <p class="was">1-session slide from 83.50</p>
-                                <p class="now">fell away from the 81.0-83.5 ceiling</p>
+                                <p class="was">climbed from July's 65.39 low to five straight sessions in the 81.0-83.5
+                                    area</p>
+                                <p class="now">falls 3.4% out of that area to 79.81 while the market slips only 0.48%</p>
                             </div>
                             <div class="card-foot">
                                 <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
                                         term</span>
-                                    <p class="read-text">74.0-77.0 is the next floor 5.5% below and the broader market is down, so a further slide is likely</p>
+                                    <p class="read-text">Today's drop exits the 81.0-83.5 area that held five sessions
+                                        while the market barely moved. A close below 79.02 opens 74.0-77.0; a close back
+                                        above 81.0 would undo it.</p>
                                 </div>
                                 <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
                                         term</span>
-                                    <p class="read-text">the recovery began at 66.5-69.5 seven weeks ago, so the long-term trend remains the primary anchor</p>
+                                    <p class="read-text">Price sits 26.7% below April's 108.94 high and 22.1% above
+                                        July's 65.39 low; the July recovery is now being tested.</p>
                                 </div>
                             </div>
                         </article>
-
-                        <article class="alert-card tier-pro">
-                            <div class="tier-band">
-                                <span class="tier-name">PRO</span>
-                                <span class="tier-model">sent to the reasoning model</span>
-                            </div>
-                            <div class="px-5 pt-4 pb-3">
-                                <div class="card-head">
-                                    <span class="ticker">NFLX</span>
-                                    <span class="when">4 Sep 18:00</span>
-                                </div>
-                                <div class="chip-row">
-                                    <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
-                                            <path d="M8 14l-5-6h4V2h2v6h4l-5 6z" fill="#ef4444" />
-                                        </svg></span>
-                                    <span class="dir-chip down">Sharp drop · 79.9</span>
-                                </div>
-                                <p class="was">1-session slide from 83.50</p>
-                                <p class="now">rejected at the 81.0-83.5 ceiling, slid to 79.84</p>
-                            </div>
-                            <div class="card-foot">
-                                <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
-                                        term</span>
-                                    <p class="read-text">the next real shelf below is 74.0-77.0, 1.5 normal days away, and nothing sits in between, so a further slide that far is likely</p>
-                                </div>
-                                <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
-                                        term</span>
-                                    <p class="read-text">the recovery from the 66.5-69.5 floor is only seven weeks old, so this drop would need to break that zone before the longer repair is in doubt</p>
-                                </div>
-                            </div>
-                        </article>
+                        <p class="hero-proof">It closed below 79.02 that day, then closed inside 74.0-77.0 for the
+                            next three sessions.</p>
+                        <p class="hero-note">Real output on real market data.</p>
                     </div>
-                    <p class="hero-proof">Two sessions later NFLX traded 76.02, inside the 74-77 floor both lines
-                        named, and it has not left it since.</p>
-                    <p class="hero-note">* One alert, 4 September. On the left the line every subscriber received. On the right the
-                        same alert sent back to the reasoning model. Real output on real market data.</p>
                 </div>
             </div>
         </section>
@@ -208,7 +170,7 @@
                 <div class="max-w-[52ch] mb-6">
                     <h2 class="a-h1 text-[1.9rem]">Real alerts, as they went out</h2>
                     <p class="mt-2 text-[15px] leading-relaxed text-ink/60">Moscow and New York, the last few weeks,
-                        with the chart running on to today.</p>
+                        with the chart running on to today. Open to everyone — no signup, no paywall.</p>
                 </div>
 
                 <div class="grid grid-cols-1 xl:grid-cols-[1.45fr_1fr] gap-5 items-start">
@@ -266,16 +228,12 @@
         </section>
 
         <!-- ===================== 3. WHY THIS EXISTS =====================
-             THE PURPOSE, TOLD IN EVIDENCE. Three situations a working person
-             is actually in, each with one real line and what price did after.
-             Two free lines and one reasoning line, deliberately — the third
-             says the answer is often "nothing to do", which is the honest
-             pitch and the one that stops a subscriber churning.
-             EVERY LINE HERE IS CLEAN OF VOLUME TALK. US carries no volume
-             data and 6 of the 8 best-performing stored lines mention trade
-             anyway; these three do not, so they can be published as they are.
-             GLD 08-05, UNH 08-13 free; AMZN 08-14 reasoning (pasted, in
-             temp/runs/reasoning_pasted/README.md). No example-price clash. -->
+             THE PURPOSE, TOLD IN EVIDENCE. Three situations a working person is in, each with one
+             real line and what price did after; the third says the answer is often "nothing to do".
+             Rewritten 2026-10-09 in the live voices on real renders (tools.backtest.sheet_at, flash
+             thinking): GLD 08-05 18:00 and TSLA 09-25 16:36 lean (US; TSLA on a true-highs/lows sheet,
+             BTD_L2_TRUE_HL), SBER 09-29 14:51 precise (MOEX).
+             Every price is on its sheet; outcomes from minute data. The US lines have no volume talk. -->
         <section class="workband py-14" id="whySection">
             <div class="shell" style="max-width:1320px">
                 <div class="max-w-[52ch] mb-8">
@@ -283,8 +241,8 @@
                     <p class="mt-3 text-[15px] leading-relaxed text-ink/60">You have a job, and the market
                         moves while you are doing it. By the time there is a free half hour the move is over,
                         or it is still going and you cannot tell which. Reading three articles afterwards does
-                        not fix that. So we watch during the session and send one sentence when something on
-                        your list actually changes — and say so plainly when nothing has.</p>
+                        not fix that. So we watch every minute of the session and send one short alert when
+                        something on your list actually changes.</p>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-5 items-start">
@@ -304,26 +262,28 @@
                                     <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
                                             <path d="M2 12l4-4 2 2 6-7v3h2V1h-5v2h3L9 9 7 7l-5 5z" fill="#f59e0b" />
                                         </svg></span>
-                                    <span class="dir-chip up">Breaking higher · 390</span>
+                                    <span class="dir-chip up">Gold's biggest jump in weeks · 390</span>
                                 </div>
-                                <p class="was">6-session rally from 367.22</p>
-                                <p class="now">climb continuing at 389.81</p>
+                                <p class="was">months of decline from 491.33, then two small gains from 371.53 to 374.12</p>
+                                <p class="now">gapped up to 384.88 and ran to 389.80, up 4.19% while the market moved
+                                    0.33%</p>
                             </div>
                             <div class="card-foot">
                                 <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
                                         term</span>
-                                    <p class="read-text">a push toward today's high of 389.81 is likely while the
-                                        broader market also moves higher, though the path toward the Dec 31 ceiling
-                                        at 397 is clear of any proven level</p>
+                                    <p class="read-text">Sharpest jump in weeks, up 4.2% against a flat market; a
+                                        close below today's 384.45 low would mark it failed, while a close over 401.99
+                                        opens the June range.</p>
                                 </div>
                                 <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
                                         term</span>
-                                    <p class="read-text">the climb from the June 24 low of 363 may continue for weeks
-                                        as the current move is very large for this stock</p>
+                                    <p class="read-text">Still 20.7% under the March peak of 491.33, today lifts it
+                                        off the summer base near the June low at 363.47.</p>
                                 </div>
                             </div>
                         </article>
-                        <p class="told">Gold cleared 397 two sessions later and was still 404.98 eight sessions on.</p>
+                        <p class="told">It closed above 401.99 three sessions later, never came back to 384.45, and
+                            reached 413.85 by Aug 19.</p>
                     </div>
 
                     <div>
@@ -335,36 +295,36 @@
                             </div>
                             <div class="px-5 pt-4 pb-3">
                                 <div class="card-head">
-                                    <span class="ticker">UNH</span>
-                                    <span class="when">13 Aug 21:42</span>
+                                    <span class="ticker">TSLA</span>
+                                    <span class="when">25 Sep 16:36</span>
                                 </div>
                                 <div class="chip-row">
                                     <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
-                                            <path d="M8 1l7 13H1L8 1z" fill="#f97316" />
-                                            <rect x="7.2" y="5.5" width="1.6" height="5" rx=".5" fill="#fff" />
-                                            <circle cx="8" cy="12" r=".9" fill="#fff" />
+                                            <path d="M8 14l-5-6h4V2h2v6h4l-5 6z" fill="#ef4444" />
                                         </svg></span>
-                                    <span class="dir-chip down">Floor under pressure · 399</span>
+                                    <span class="dir-chip down">Gap up fails, sharp reversal · 373</span>
                                 </div>
-                                <p class="was">4-session slide from 412.78</p>
-                                <p class="now">broke through the 400-408 floor at 399.29</p>
+                                <p class="was">three sessions closing higher from 364.23 to 380.24, then Thursday's close
+                                    at 377.91</p>
+                                <p class="now">reversed from 386.83 at the open to 370.26, now 372.55 below the 375.70
+                                    level</p>
                             </div>
                             <div class="card-foot">
                                 <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
                                         term</span>
-                                    <p class="read-text">a further drop toward the late-May base at 375-388 is
-                                        possible if price keeps falling, especially as the broader market is
-                                        climbing</p>
+                                    <p class="read-text">The open push failed and price is below 375.70, down while
+                                        the market rises; a drop through 360.75 would extend the fall, while a push back
+                                        to 386.83 would flip the story.</p>
                                 </div>
                                 <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
                                         term</span>
-                                    <p class="read-text">the persistent selling since July suggests the slide may
-                                        continue toward 375-388 over the coming weeks</p>
+                                    <p class="read-text">Still 17.8% below May's 453.40 high but 25.3% above July's
+                                        297.38 low, this recovery is now stalling near the 377-385 area.</p>
                                 </div>
                             </div>
                         </article>
-                        <p class="told">It fell into that 375-388 base on the fourth session and closed 384.78 on the
-                            fifth.</p>
+                        <p class="told">It dropped through 360.75 the next session and fell as low as 345.88 on Sep
+                            30.</p>
                     </div>
 
                     <div>
@@ -376,34 +336,36 @@
                             </div>
                             <div class="px-5 pt-4 pb-3">
                                 <div class="card-head">
-                                    <span class="ticker">AMZN</span>
-                                    <span class="when">14 Aug 17:36</span>
+                                    <span class="ticker">SBER</span>
+                                    <span class="when">29 Sep 14:51</span>
                                 </div>
                                 <div class="chip-row">
                                     <span class="ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none">
-                                            <path d="M8 14l-5-6h4V2h2v6h4l-5 6z" fill="#ef4444" />
+                                            <path d="M2 12l4-4 2 2 6-7v3h2V1h-5v2h3L9 9 7 7l-5 5z" fill="#f59e0b" />
                                         </svg></span>
-                                    <span class="dir-chip down">Breaking down · 264</span>
+                                    <span class="dir-chip up">Rebound within a four-day fall · 275</span>
                                 </div>
-                                <p class="was">five-session slide from 279.98 into today</p>
-                                <p class="now">lost the 270-276 floor, now 263.77</p>
+                                <p class="was">four lower closes from 280.75 to 272.45; today dipped to 270.89, then
+                                    turned up</p>
+                                <p class="now">up 0.77% versus the market's 0.46%, retracing a quarter of that fall, on a
+                                    burst of afternoon volume</p>
                             </div>
                             <div class="card-foot">
                                 <div class="read-row"><span class="read-tag st"><span class="dot"></span>Short
                                         term</span>
-                                    <p class="read-text">The broader market is flat, so this is stock-specific; wait
-                                        for a slide toward 227-240 before buying, with the down view wrong if price
-                                        climbs back into 270-276, 3.5% above.</p>
+                                    <p class="read-text">Up: a push through 281.80, the Sep 22 high, would say the
+                                        recovery has taken back the whole fall. Down: a close below 270.89, today's low,
+                                        would show the buyers gone.</p>
                                 </div>
                                 <div class="read-row"><span class="read-tag lt"><span class="dot"></span>Long
                                         term</span>
-                                    <p class="read-text">If the slide continues, the next real floor is 227-240,
-                                        11.7% below, within a few weeks, with 199-211 below that at 22.3%.</p>
+                                    <p class="read-text">Price sits 16.3% under April's 327.97 high and 11.8% over
+                                        July's 245.65 low, in the middle of a five-month decline from spring peaks.</p>
                                 </div>
                             </div>
                         </article>
-                        <p class="told">Nothing happened — four sessions inside 1.5%, never near 227-240. It said wait,
-                            and waiting was right.</p>
+                        <p class="told">Neither price came for three sessions — nothing to do. On the fourth it pushed
+                            through 281.80, and it closed at 283.04 two sessions later.</p>
                     </div>
                 </div>
             </div>
@@ -621,33 +583,44 @@
         </section>
 
         <!-- ===================== 5. YOUR SETTINGS =====================
-             Two panels lifted from settings.html so a visitor sees the real
-             controls, not a description of them. Same classes, so they cannot
-             drift apart visually. Everything shown here is a control that
-             exists on that page. -->
+             Panels in settings.html's own classes and copy (settings.js controlGroups, KIND_COPY,
+             NOTE_FIELDS). Every control exists there except "Your own groups" (PRO, owner 2026-10-09).
+             Kinds are PRO (owner). No alert counts (owner). -->
         <section class="workband py-14" id="settingsSection">
             <div class="shell" style="max-width:1320px">
                 <div class="max-w-[52ch] mb-8">
                     <h2 class="a-h1 text-[2rem]">You decide what reaches you</h2>
-                    <p class="mt-3 text-[15px] leading-relaxed text-ink/60">Pick the stocks, or a whole batch that
-                        stays current on its own. Say which kinds of alert you want and how often. Silence one stock
-                        for a week without losing it. All of it on one page, and none of it needs the bot.</p>
+                    <p class="mt-3 text-[15px] leading-relaxed text-ink/60">Pick a ready-made group or your own
+                        stocks. Then set each one your own way — down to alerts written for your position.</p>
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-5 items-start">
                     <div class="set-card mb-0">
                         <div class="set-head"><h2>What you watch</h2></div>
                         <div class="set-group">
-                            <div class="set-label">Batches <span class="set-note">— kept current for you</span></div>
+                            <div class="set-label">Ready-made groups <span class="set-note">— kept current for
+                                    you</span></div>
                             <div class="set-chips">
+                                <span class="sub-chip">MOEX top 10</span>
                                 <span class="sub-chip">MOEX top 30</span>
+                                <span class="sub-chip">MOEX top 50</span>
                                 <span class="sub-chip">US top 30</span>
                             </div>
-                            <p class="set-hint">A batch is live: “MOEX top 30” means today’s top 30, and the names in
-                                it change without you doing anything.</p>
+                            <p class="set-hint">A group is live: “MOEX top 30” means today’s top 30, and its names
+                                change without you doing anything.</p>
                         </div>
                         <div class="set-group">
-                            <div class="set-label">Your own picks</div>
+                            <div class="set-label">Your own groups <b class="text-gold">PRO</b></div>
+                            <div class="set-chips">
+                                <span class="sub-chip">My portfolio</span>
+                                <span class="sub-chip">Banks</span>
+                                <span class="sub-chip">Oil and gas</span>
+                            </div>
+                            <p class="set-hint">A few names or a whole range, with every event or only the major
+                                ones.</p>
+                        </div>
+                        <div class="set-group">
+                            <div class="set-label">Your own stocks</div>
                             <div class="set-chips">
                                 <span class="sub-chip">SBER</span>
                                 <span class="sub-chip">GAZP</span>
@@ -655,33 +628,43 @@
                             </div>
                         </div>
                         <div class="set-group">
-                            <div class="set-label">How much</div>
-                            <div class="flex flex-col gap-1.5">
-                                <label class="sub-opt"><input type="radio" name="demoTier" checked disabled>
-                                    <span><b>Every alert</b><em>About one a day per stock.</em></span></label>
-                                <label class="sub-opt"><input type="radio" name="demoTier" disabled>
-                                    <span><b>Only what the system judges important</b><em>A few a month per stock. Not
-                                        better calls — the ones it ranks highest.</em></span></label>
+                            <div class="set-label">Kinds of alert <b class="text-gold">PRO</b></div>
+                            <div class="set-chips">
+                                <span class="sub-chip">Breakouts</span>
+                                <span class="sub-chip">False breaks and rejections</span>
+                                <span class="sub-chip">Bounces off support</span>
+                                <span class="sub-chip">Momentum</span>
+                                <span class="sub-chip">Trend continuation</span>
+                                <span class="sub-chip">Exhaustion and reversals</span>
+                                <span class="sub-chip">Going sideways</span>
                             </div>
+                            <p class="set-hint">Switch off any kind you do not want.</p>
                         </div>
                     </div>
 
                     <div class="set-card mb-0">
-                        <div class="set-head"><h2>Which kinds <span class="text-ink/40 font-medium">— coming</span></h2></div>
+                        <div class="set-head"><h2>Each one, your own way</h2></div>
                         <div class="set-group">
+                            <div class="set-label">How much</div>
                             <div class="flex flex-col gap-1.5">
-                                <label class="sub-opt"><input type="checkbox" checked disabled>
-                                    <span><b>Breakouts</b><em>Price pushes through a level that had held it back before.</em></span></label>
-                                <label class="sub-opt"><input type="checkbox" checked disabled>
-                                    <span><b>Momentum and surges</b><em>The move is running faster than this stock normally moves in a day.</em></span></label>
-                                <label class="sub-opt"><input type="checkbox" disabled>
-                                    <span><b>Exhaustion and reversals</b><em>A long run shows its first sign of tiring, or it turns over sharply.</em></span></label>
-                                <label class="sub-opt"><input type="checkbox" disabled>
-                                    <span><b>Going sideways</b><em>Drifting inside a range with nothing yet deciding.</em></span></label>
+                                <label class="sub-opt"><input type="radio" name="demoTier" checked disabled>
+                                    <span><b>Every alert</b><em>Every meaningful move on it.</em></span></label>
+                                <label class="sub-opt"><input type="radio" name="demoTier" disabled>
+                                    <span><b>Major moves only</b><em>Breakouts through major levels and sharp
+                                            turns.</em></span></label>
                             </div>
-                            <p class="set-hint">Six kinds in all, and you can silence a single stock for a week
-                                without dropping it.</p>
                         </div>
+                        <div class="set-group">
+                            <div class="set-label">Written for you</div>
+                            <div class="set-note-grid">
+                                <label><span>What you own</span><input type="text" value="50" disabled></label>
+                                <label><span>What you paid</span><input type="text" value="285.40" disabled></label>
+                                <label class="wide"><span>A standing question</span><input type="text"
+                                        value="Should I take profit here?" disabled></label>
+                            </div>
+                            <p class="set-hint">Fill in any field, and every alert on that stock is written to you.</p>
+                        </div>
+                        <p class="set-hint">Our reasoning model, silent alerts and a one-week pause — stock by stock.</p>
                     </div>
                 </div>
 
@@ -692,17 +675,12 @@
         </section>
 
         <!-- ===================== 6. PRICING =====================
-             WHAT IS ACTUALLY ENFORCED, from app/accounts.py FEATURES and
-             src/web.ts: the chat limit (3/day against 30), credits with
-             refunds, and the reasoning re-read. A credit is 6 RUB and buying
-             is NOT switched on until the payment webhook exists, so the price
-             is stated and there is no Buy button. The two lines under
-             "coming" are saved-but-not-obeyed — do not move them up until
-             FEATURES says so. -->
+             Plans as accounts.py enforces them and settings.js renderPlan/renderBalance show them;
+             prices = accounts.PRICE_RUB. Own groups: owner 2026-10-09, not built yet. -->
         <section class="shell py-14" id="pricingSection">
             <h2 class="a-h1 text-[2rem] mb-3">Pricing</h2>
-            <p class="max-w-[52ch] mb-8 text-[15px] leading-relaxed text-ink/60">The alert text is the same whatever
-                you pay. What PRO buys is reach, depth on the ones that matter to you, and room to ask.</p>
+            <p class="max-w-[52ch] mb-8 text-[15px] leading-relaxed text-ink/60">Start free in Telegram. PRO opens
+                the whole market, on your terms.</p>
             <div class="grid md:grid-cols-2 gap-5 max-w-4xl" id="pricingCards">
                 <div class="rounded-xl2 border border-ink/12 bg-white shadow-card p-6 flex flex-col">
                     <h3 class="text-[19px] font-extrabold tracking-tight">Free</h3>
@@ -710,11 +688,13 @@
                             class="text-[34px] font-extrabold tracking-tight">0</span><span
                             class="text-[13px] font-semibold text-ink/50">forever</span></div>
                     <ul class="flex flex-col gap-3 flex-1 mt-6">
-                        <li class="price-row">30 stocks</li>
-                        <li class="price-row">every alert on them, written by our fast model</li>
-                        <li class="price-row">both reads — the week ahead and the months ahead</li>
-                        <li class="price-row">three questions a day about any alert</li>
-                        <li class="price-row">in Telegram, silent if you want</li>
+                        <li class="price-row">Ready-made groups of top stocks, kept current, with every major move</li>
+                        <li class="price-row">One stock of your own, with every alert on it</li>
+                        <li class="price-row">Major moves written by our reasoning model</li>
+                        <li class="price-row">Alerts written for you: your position, your goal, your question — from your
+                            balance</li>
+                        <li class="price-row">Silent alerts, or pause any stock for a week</li>
+                        <li class="price-row">In Telegram, in English</li>
                     </ul>
                     <button
                         class="mt-6 w-full py-3 rounded-full text-sm font-bold text-white bg-ink hover:bg-ink/85 transition-colors"
@@ -727,14 +707,13 @@
                             class="text-[34px] font-extrabold tracking-tight">590</span><span
                             class="text-[13px] font-semibold text-ink/50">₽ / month</span></div>
                     <ul class="flex flex-col gap-3 flex-1 mt-6">
-                        <li class="price-row pro">all 100 stocks we watch — Moscow and New York</li>
-                        <li class="price-row pro">everything in Free, on any of them</li>
-                        <li class="price-row pro">send any alert to the reasoning model for a full re-read</li>
-                        <li class="price-row pro">thirty questions a day</li>
-                        <li class="price-row pro">choose which kinds of alert you get <span
-                                class="text-ink/40 font-medium">— coming</span></li>
-                        <li class="price-row pro">alerts written around what you own <span
-                                class="text-ink/40 font-medium">— coming</span></li>
+                        <li class="price-row pro">Everything in Free</li>
+                        <li class="price-row pro">Any number of stocks</li>
+                        <li class="price-row pro">Every alert on up to 20 of them</li>
+                        <li class="price-row pro">Your own groups — a few names or a whole range — with every event or
+                            only the major ones</li>
+                        <li class="price-row pro">Choose which kinds of alert you get</li>
+                        <li class="price-row pro">Alerts in Russian</li>
                     </ul>
                     <button
                         class="mt-6 w-full py-3 rounded-full text-sm font-bold text-white bg-gold hover:opacity-90 transition-colors"
@@ -742,11 +721,22 @@
                         the bot</button>
                 </div>
             </div>
-            <div class="credits-note max-w-4xl">
-                <div class="axis-name">Credits</div>
-                <p>Your subscription covers the alerts. A deeper read of one alert costs a credit, and a credit is 6 ₽.
-                    If a paid read never comes back the credit returns to you on its own. Buying credits is not
-                    switched on yet, so nothing here can be charged.</p>
+            <div class="credits-note max-w-4xl" style="margin-left:0">
+                <div class="axis-name">At cost, from your balance</div>
+                <p>Your balance pays the models that write for you — exactly what they bill, nothing added. We earn on
+                    PRO, not on your balance.</p>
+                <ul class="flex flex-col gap-2 mt-3 text-sm text-ink/60">
+                    <li class="flex justify-between gap-3"><span>A major move</span><b
+                            class="font-semibold whitespace-nowrap">free</b></li>
+                    <li class="flex justify-between gap-3"><span>An everyday alert on PRO, split with everyone who gets
+                            it</span><b class="font-semibold whitespace-nowrap">about 0.1 ₽</b></li>
+                    <li class="flex justify-between gap-3"><span>An alert written by our reasoning model</span><b
+                            class="font-semibold whitespace-nowrap">up to about 1 ₽</b></li>
+                    <li class="flex justify-between gap-3"><span>An alert written for you from your note</span><b
+                            class="font-semibold whitespace-nowrap">about 0.08 ₽</b></li>
+                    <li class="flex justify-between gap-3"><span>A deep read of any stock, on demand</span><b
+                            class="font-semibold whitespace-nowrap">about 1.5 ₽</b></li>
+                </ul>
             </div>
         </section>
 
