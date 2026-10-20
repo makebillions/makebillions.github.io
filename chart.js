@@ -74,7 +74,7 @@ var chart = LightweightCharts.createChart(chartContainer, {
 });
 
 // Soft area line (design chart-svg): curved ink line, gradient fading to 0
-var series = chart.addSeries(LightweightCharts.AreaSeries, {
+var lineSeries = chart.addSeries(LightweightCharts.AreaSeries, {
     lineColor: "rgba(21,23,28, 0.55)",
     lineWidth: 2,
     lineType: LightweightCharts.LineType.Curved,
@@ -86,6 +86,20 @@ var series = chart.addSeries(LightweightCharts.AreaSeries, {
     crosshairMarkerBackgroundColor: INK,
     priceFormat: { type: "price", precision: 2, minMove: 0.01 },
 });
+
+// CANDLES when the API sends open/high/low ([gap, close, vol, open, high, low], python main._add_ohlc): the
+// signals read as moves on candles and as noise on a line (owner, 10-20). The line stays for bars without them.
+var candleSeries = chart.addSeries(LightweightCharts.CandlestickSeries, {
+    upColor: "rgba(22,163,74,0.85)",
+    downColor: "rgba(220,38,38,0.85)",
+    borderVisible: false,
+    wickUpColor: "rgba(22,163,74,0.9)",
+    wickDownColor: "rgba(220,38,38,0.9)",
+    priceLineVisible: false,
+    lastValueVisible: false,
+    priceFormat: { type: "price", precision: 2, minMove: 0.01 },
+});
+var series = lineSeries;
 
 var volumeSeries = chart.addSeries(LightweightCharts.HistogramSeries, {
     priceFormat: { type: "volume" },
@@ -99,9 +113,12 @@ volumeSeries.priceScale().applyOptions({
 });
 
 // v5: markers live in a plugin instance instead of series.setMarkers()
-var seriesMarkers = LightweightCharts.createSeriesMarkers(series, []);
+// one plugin per series; the dots go on whichever one is showing
+var lineMarkers = LightweightCharts.createSeriesMarkers(lineSeries, []);
+var candleMarkers = LightweightCharts.createSeriesMarkers(candleSeries, []);
 function setSeriesMarkers(markers) {
-    seriesMarkers.setMarkers(markers);
+    (series === candleSeries ? candleMarkers : lineMarkers).setMarkers(markers);
+    (series === candleSeries ? lineMarkers : candleMarkers).setMarkers([]);
 }
 
 chart.timeScale().fitContent();
@@ -142,8 +159,16 @@ function setChart(data) {
     }));
 
     const lastIndex = data.candles.length - 1;
-    // Candles arrive as compact [unix_time, close] pairs; area series plots close.
-    series.setData(data.candles.map((c) => ({ time: c[0], value: c[1] })));
+    // Bars arrive as [time, close, vol], and with the API's open/high/low as [time, close, vol, open, high, low]:
+    // candles then, the area line otherwise. A bar without them draws flat at its close.
+    const ohlc = data.candles.some((c) => c.length >= 6);
+    series = ohlc ? candleSeries : lineSeries;
+    (ohlc ? lineSeries : candleSeries).setData([]);
+    series.setData(ohlc
+        ? data.candles.map((c) => c.length >= 6
+            ? { time: c[0], open: c[3], high: c[4], low: c[5], close: c[1] }
+            : { time: c[0], open: c[1], high: c[1], low: c[1], close: c[1] })
+        : data.candles.map((c) => ({ time: c[0], value: c[1] })));
 
     currentCandleRange = {
         from: data.candles[0][0],

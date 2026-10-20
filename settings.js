@@ -77,7 +77,10 @@ const rub = (x) => {
 
 const isTicker = (s) => !!s && s === s.toUpperCase();
 const prefsOf = (s) => (s && (account.prefs || {})[s]) || {};
-const own = (s) => Object.keys(prefsOf(s)).length > 0;
+// KINDS OF ALERT ARE PRO (owner, 10-20): on a free account a kinds setting is not in effect, so it does not make
+// a stock "set up" — a click on ROSN's kinds had listed a stock the reader never chose.
+const PRO_ONLY = ["mute_kinds"];
+const own = (s) => Object.keys(prefsOf(s)).some((k) => account.pro || !PRO_ONLY.includes(k));
 const info = (t) => catalog.find((w) => w.ticker === t) || { ticker: t, name: t, market: "" };
 const KIND_LABEL = { etf: "ETF", index: "Index", future: "Future", crypto: "Crypto" };
 /** One badge: what the instrument is, or for a plain stock, where it trades. */
@@ -182,16 +185,24 @@ function stockTags(t) {
 
 function renderWatch() {
     const n = resolved ? resolved.length : 0;
-    $("watchCount").textContent = resolved ? `Stocks · you hear ${n}` : "Stocks";
+    $("watchCount").textContent = resolved ? `What you get alerts on · ${n} stocks` : "What you get alerts on";
 
-    const mine = myStocks();
-    $("myStocks").innerHTML = mine.length
-        ? mine.map((t) => `<span class="set-stock${scope === t ? " on" : ""}">
+    // YOUR OWN STOCKS ARE YOUR PICKS. A stock set up inside a batch is listed apart and has no ×: dropping
+    // it would remove it from the batch, which is not the same act as dropping a pick.
+    const picks = account.stocks || [];
+    const tuned = myStocks().filter((t) => !picks.includes(t));
+    const strip = (list, drop) => list.map((t) => `<span class="set-stock${scope === t ? " on" : ""}">
               <button class="open" data-open="${esc(t)}"><b>${esc(t)}</b>
               <span class="set-stock-name">${esc(info(t).name)}</span>
-              <span class="set-tags">${stockTags(t)}</span></button>
-              <button class="x" data-drop="${esc(t)}" title="Stop alerts on ${esc(t)}" aria-label="Stop alerts on ${esc(t)}">&times;</button></span>`).join("")
-        : `<span class="sub-empty">Nothing of your own yet — find a stock above.</span>`;
+              <span class="set-tags">${stockTags(t)}</span></button>${drop
+              ? `<button class="x" data-drop="${esc(t)}" title="Stop alerts on ${esc(t)}" aria-label="Stop alerts on ${esc(t)}">&times;</button>`
+              : ""}</span>`).join("");
+    $("myStocks").innerHTML = picks.length
+        ? strip(picks, true)
+        : `<span class="sub-empty">None yet. Your batches send their stocks; add one of your own below.</span>`;
+    $("tunedStocks").innerHTML = strip(tuned, false);
+    $("tunedWrap").classList.toggle("hidden", !tuned.length);
+    $("stockLegend").classList.toggle("hidden", !(picks.length || tuned.length));
 
     $("batchChips").innerHTML = (account.groups || []).length
         ? account.groups.map((g) =>
@@ -206,8 +217,14 @@ function renderWatch() {
     // ONE list for both kinds of silence. A reader asking "why am I not getting
     // VTBR" must find one place, not two.
     const rows = [];
+    // REMOVING FROM A BATCH IS PRO: on a free account a removal is kept but not in effect (accounts.followed)
+    if (!account.pro && (account.excludes || []).length) {
+        rows.push(`<p class="set-hint" style="margin:0 0 .6rem">Removing a stock from a batch is a PRO feature.
+            On the free plan these stocks still arrive with their batch; your removals apply again with PRO.</p>`);
+    }
     for (const t of account.excludes || []) {
-        rows.push(`<div class="set-silent-row"><b>${esc(t)}</b><span>removed from a batch</span>` +
+        rows.push(`<div class="set-silent-row"><b>${esc(t)}</b><span>${account.pro ? "removed from a batch"
+                  : "removed from a batch · not in effect on the free plan"}</span>` +
                   `<button data-putback="${esc(t)}">put back</button></div>`);
     }
     for (const [s, until] of Object.entries(account.snooze || {})) {
@@ -216,7 +233,9 @@ function renderWatch() {
                   `<button data-wake="${esc(s)}">wake now</button></div>`);
     }
     $("silentList").innerHTML = rows.join("");
-    $("silentGroup").classList.toggle("hidden", !rows.length);
+    if (!rows.length) {
+        $("silentList").innerHTML = `<p class="set-empty">Nothing is removed or paused: every stock in your batches can reach you.</p>`;
+    }
 }
 
 // --- the picker ---------------------------------------------
@@ -282,12 +301,16 @@ function closePicker() {
     document.body.classList.remove("sheet-open");
 }
 
+let pickerFor = "stocks";       // the page a picked stock opens on
 function pick(t) {
     closePicker();
-    openScope(t);
+    if (pickerFor === "notes") go("#notes/" + encodeURIComponent(t));
+    else openScope(t);
 }
 
-$("pickerOpen").addEventListener("click", openPicker);
+for (const [id, mode] of [["pickerOpen", "stocks"], ["pickerOpenSet", "stocks"], ["pickerOpenNotes", "notes"]]) {
+    $(id).addEventListener("click", () => { pickerFor = mode; openPicker(); });
+}
 $("pickerClose").addEventListener("click", closePicker);
 $("pickerSheet").addEventListener("click", (e) => {
     if (e.target.id === "pickerSheet") return closePicker();     // the backdrop
@@ -418,14 +441,20 @@ function controlGroups(s, name) {
             tag: allQuiet ? "" : sourceTag(s, "quiet") });
 
     const kindsLive = features.kinds !== false;
-    const muted = new Set(eff.mute_kinds || []);
-    const kinds = `<div class="set-group">
-        <div class="set-label">Kinds of alert ${sourceTag(s, "mute_kinds")}</div>
-        <div class="set-switches">${KIND_COPY.map(([v, t, d]) => switchRow({
+    // a free account gets every kind (accounts.settings_for), so it sees them all on and locked, and why
+    const muted = new Set(pro ? eff.mute_kinds || [] : []);
+    const list = `<div class="set-switches">${KIND_COPY.map(([v, t, d]) => switchRow({
             field: "kind", title: esc(t), text: esc(d), checked: !muted.has(v),
-            disabled: !kindsLive, attrs: ` data-kind="${esc(v)}"` })).join("")}</div>
-        <p class="set-hint">A few alerts fit none of these and always arrive.</p>
-    </div>`;
+            disabled: !kindsLive || !pro, attrs: ` data-kind="${esc(v)}"` })).join("")}</div>`;
+    const kinds = pro
+        ? `<div class="set-group">
+            <div class="set-label">Kinds of alert <em class="set-pro">PRO</em> ${sourceTag(s, "mute_kinds")}</div>
+            ${list}<p class="set-hint">A few alerts fit none of these and always arrive.</p></div>`
+        : `<div class="set-group">
+            <div class="set-label">Kinds of alert <em class="set-pro">PRO</em></div>
+            <p class="set-hint" style="margin-top:0">Choosing which kinds of alert you get is a PRO feature. On the free
+                plan every kind arrives.</p>
+            <details class="set-kinds-free"><summary>See the ${KIND_COPY.length} kinds</summary>${list}</details></div>`;
 
     return `<div class="set-group set-switches">${tier}${reasoning}${sound}</div>${kinds}`;
 }
@@ -450,13 +479,16 @@ function followRow(s) {
     const f = followed().has(s);
     const src = sourcesOf[s];
     const picked = (account.stocks || []).includes(s);
+    // a batch stock stays on for a free account: removing it from the batch is PRO (accounts._write refuses it)
+    const lock = f && !picked && !account.pro;
     const text = !f
         ? (account.pro || !(account.stocks || []).length
             ? "Turn on to get alerts on this stock."
             : "Free accounts follow one stock of their own, plus any batches. PRO follows as many as you like.")
         : picked ? "One of your own stocks."
-        : src && src.via ? `Arrives through ${esc(batchLabel(src.via))}.` : "Arrives through one of your batches.";
-    return switchRow({ field: "follow", title: `Alerts on ${esc(s)}`, text, checked: f });
+        : (src && src.via ? `Arrives through ${esc(batchLabel(src.via))}.` : "Arrives through one of your batches.")
+          + (lock ? " Removing a stock from a batch is a PRO feature." : "");
+    return switchRow({ field: "follow", title: `Alerts on ${esc(s)}`, text, checked: f, disabled: lock });
 }
 
 // What the reader tells us about a stock. EVERY NAME HERE IS A NAME THE FACT
@@ -508,10 +540,10 @@ function snoozeGroup(s) {
 
 function askBox(t) {
     const msgs = chatHistory[t] || [];
-    const mine = sent.filter((a) => a.stock === t);
-    const alerts = mine.length
+    const n = sent.filter((a) => a.stock === t).length;
+    const alerts = n
         ? `<div class="set-group"><div class="set-label">Sent to you</div>
-             <div class="set-alerts">${mine.map(alertRow).join("")}</div></div>`
+             <p class="set-hint" style="margin-top:0"><a href="#sent/${encodeURIComponent(t)}">${n} alert${n === 1 ? "" : "s"} on ${esc(t)} →</a></p></div>`
         : "";
     return alerts + `<div class="set-group">
         <div class="set-label">Ask about ${esc(t)}</div>
@@ -540,26 +572,31 @@ function alertRow(a) {
 
 function renderScopePane() {
     if (!scope) {
-        $("scopePane").innerHTML = `<div class="set-pane-empty">Find a stock above, or tap one of yours, to set it up.</div>`;
+        $("scopePane").innerHTML = `<div class="set-pane-empty">Pick one of your batches or stocks above, or find any stock, to set it up.</div>`;
         return;
     }
     const t = isTicker(scope) ? scope : null;
     const on = t ? followed().has(t) : (account.groups || []).includes(scope);
     const body = on
         ? controlGroups(scope, t || batchLabel(scope)) + snoozeGroup(scope)
-          + (t ? noteForm(t) + askBox(t) : "")
+          + (t ? noteLink(t) + askBox(t) : "")
         : (t ? askBox(t) : "");
     $("scopePane").innerHTML = paneHead(scope)
         + `<div class="set-group set-switches">${followRow(scope)}</div>`
         + body;
 }
 
-async function openScope(name, scroll = true) {
+// Opening a stock or batch is a page: #stocks/NAME, so Back returns to where the reader was.
+function openScope(name) {
+    go("#stocks/" + encodeURIComponent(name));
+}
+
+async function showScope(name) {
     scope = name;
     try { localStorage.setItem("setScope", name); } catch (e) { /* private mode */ }
     renderWatch();
+    renderChooser();
     renderScopePane();
-    if (scroll) $("scopePane").scrollIntoView({ behavior: "smooth", block: "start" });
     if (isTicker(name) && !sourcesOf[name]) {
         await loadSources(name);
         if (scope === name) renderScopePane();
@@ -618,7 +655,8 @@ function renderPlan() {
     const free = ["Batches, with every major move",
                   `${n === 1 ? "One stock" : `${n} stocks`} of your own, with every alert on ${n === 1 ? "it" : "them"}`,
                   "Reasoning, deep reads and alerts written for you, paid from your balance", "English"];
-    const paid = ["Any number of stocks", "Every alert on up to 20 of them", "Alerts in Russian",
+    const paid = ["Any number of stocks", "Every alert on up to 20 of them",
+                  "Choose which kinds of alert you get", "Remove stocks from a batch", "Alerts in Russian",
                   "Reasoning, deep reads and alerts written for you, paid from your balance"];
     const col = (title, rows, on, gold) => `<div class="set-plan${on ? " on" : ""}${gold ? " gold" : ""}">
         <div class="set-plan-head"><b>${title}</b>${on ? `<span class="set-plan-now">your plan</span>` : ""}</div>
@@ -670,6 +708,7 @@ function renderLoginWays() {
         ? `<ul class="set-ways">${ways.map((w) => `<li>${w}</li>`).join("")}</ul>`
         : `<span class="sub-empty">No way to log in yet.</span>`;
     $("addLoginForm").classList.toggle("hidden", !!account.email);
+    $("addLoginHint").classList.toggle("hidden", !!account.email);
 }
 
 function renderTelegram() {
@@ -681,6 +720,72 @@ function renderTelegram() {
         : `<div class="set-row"><b>Not connected</b>
              <span class="set-row-v">nothing can reach you — use the bar at the top of this page</span></div>`;
 }
+
+// --- the dashboard's own pages ------------------------------
+let notesScope = null;          // the stock the notes page shows
+let sentFilter = null;          // the stock the sent page shows, null = all
+
+const chip = (label, attr, val, on) =>
+    `<button type="button" ${attr}="${esc(val)}"${on ? ' class="on"' : ""}>${esc(label)}</button>`;
+
+function noteLink(t) {
+    return `<div class="set-group"><div class="set-label">Personal alerts</div>
+        <p class="set-hint" style="margin-top:0"><a href="#notes/${encodeURIComponent(t)}">${notes[t]
+            ? `Change what we know about your ${esc(t)} →` : `Make ${esc(t)}'s alerts personal →`}</a></p></div>`;
+}
+
+function renderChooser() {
+    const groups = account.groups || [];
+    const stocks = myStocks();
+    $("scopeChooser").innerHTML = groups.length || stocks.length
+        ? `<div class="set-label">Yours</div><div class="set-chooser">${
+            groups.map((g) => chip(batchLabel(g), "data-scope", g, scope === g)).join("")
+            + stocks.map((t) => chip(t, "data-scope", t, scope === t)).join("")}</div>`
+        : "";
+}
+
+function renderNotes() {
+    const list = [...new Set([...Object.keys(notes), ...(account.stocks || [])])].sort();
+    $("notesChooser").innerHTML = list.length
+        ? `<div class="set-label">Your stocks · ✎ personal already</div><div class="set-chooser">${
+            list.map((t) => chip(t + (notes[t] ? " ✎" : ""), "data-note", t, notesScope === t)).join("")}</div>`
+        : "";
+    $("notesPane").innerHTML = notesScope
+        ? `<div class="set-pane-top"><div><span class="tk">${esc(notesScope)}</span>
+             <span class="nm">${esc(info(notesScope).name)}</span></div></div>` + noteForm(notesScope)
+        : `<div class="set-pane-empty">Pick a stock above, or find another one, to make its alerts personal.</div>`;
+}
+
+function renderSent() {
+    const stocks = [...new Set(sent.map((a) => a.stock))];
+    $("sentFilter").innerHTML = stocks.length > 1
+        ? `<div class="set-chooser">${chip("All", "data-sent", "", !sentFilter)}${
+            stocks.map((t) => chip(t, "data-sent", t, sentFilter === t)).join("")}</div>`
+        : "";
+    const rows = sent.filter((a) => !sentFilter || a.stock === sentFilter)
+        .sort((a, b) => String(b.time || "").localeCompare(String(a.time || "")));
+    $("sentList").innerHTML = rows.length
+        ? rows.map(alertRow).join("")
+        : `<p class="set-empty">${sentFilter ? `No alerts on ${esc(sentFilter)} have reached you yet.`
+                                            : "No alerts have reached you yet."}</p>`;
+}
+
+$("scopeChooser").addEventListener("click", (e) => {
+    const s = e.target.closest("[data-scope]")?.dataset.scope;
+    if (s) openScope(s);
+});
+$("notesChooser").addEventListener("click", (e) => {
+    const t = e.target.closest("[data-note]")?.dataset.note;
+    if (t) go("#notes/" + encodeURIComponent(t));
+});
+$("sentFilter").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sent]");
+    if (b) go(b.dataset.sent ? "#sent/" + encodeURIComponent(b.dataset.sent) : "#sent");
+});
+$("tunedStocks").addEventListener("click", (e) => {
+    const t = e.target.closest("[data-open]")?.dataset.open;
+    if (t) openScope(t);
+});
 
 function render() {
     document.body.classList.toggle("is-paused", account.status === "paused");
@@ -694,7 +799,10 @@ function render() {
     $("pausedChip").classList.toggle("hidden", account.status !== "paused");
     $("pausedChip").classList.add("stop");
     renderWatch();
+    renderChooser();
     renderScopePane();
+    renderNotes();
+    renderSent();
     renderDefaults();
     renderPause();
     renderLang();
@@ -824,7 +932,7 @@ function queueNote(form) {
     writeChain = writeChain.then(() => saveNote(form));
 }
 
-$("scopePane").addEventListener("change", (e) => {
+$("notesPane").addEventListener("change", (e) => {
     const form = e.target.closest("#noteForm");
     if (form) queueNote(form);
 });
@@ -832,7 +940,7 @@ $("scopePane").addEventListener("change", (e) => {
 // AND on typing, settled: `change` fires on blur, so the last field touched is
 // lost if the tab closes without moving focus out of it.
 let noteTimer = null;
-$("scopePane").addEventListener("input", (e) => {
+$("notesPane").addEventListener("input", (e) => {
     const form = e.target.closest("#noteForm");
     if (!form) return;
     clearTimeout(noteTimer);
@@ -1013,14 +1121,28 @@ $("linkTgForm").addEventListener("submit", async (e) => {
     boot();
 });
 
-// --- the section nav ----------------------------------------
-const navLinks = [...$("setNav").querySelectorAll("a")];
-const navSpy = new IntersectionObserver((entries) => {
-    for (const en of entries) {
-        if (!en.isIntersecting) continue;
-        for (const a of navLinks) a.classList.toggle("on", a.hash === `#${en.target.id}`);
-    }
-}, { rootMargin: "-40% 0px -55% 0px" });
+// --- the pages ----------------------------------------------
+// THE DASHBOARD (owner, 10-20): one subject per page and the page in the #hash, so Back and a shared link
+// both work. #stocks/SBER opens SBER's settings, #notes/SBER its note, #sent/SBER the alerts sent on it.
+const PAGES = ["overview", "stocks", "notes", "sent", "silenced", "defaults", "plan", "account"];
+function go(hash) {
+    if (location.hash === hash) route();
+    else location.hash = hash;
+}
+function route() {
+    const [head, ...rest] = location.hash.slice(1).split("/");
+    const arg = rest.length ? decodeURIComponent(rest.join("/")) : null;
+    const page = PAGES.includes(head) ? head : "overview";
+    for (const el of document.querySelectorAll(".dash-page")) el.classList.toggle("on", el.dataset.page === page);
+    for (const a of $("setNav").querySelectorAll("a")) a.classList.toggle("on", a.dataset.page === page);
+    window.scrollTo({ top: 0 });
+    if (!account) return;
+    if (page === "stocks" && arg && arg !== scope) return showScope(arg);
+    if (page === "stocks") { renderChooser(); renderScopePane(); }
+    if (page === "notes") { if (arg) notesScope = arg.toUpperCase(); renderNotes(); }
+    if (page === "sent") { sentFilter = arg ? arg.toUpperCase() : null; renderSent(); }
+}
+window.addEventListener("hashchange", route);
 
 // --- boot ---------------------------------------------------
 
@@ -1047,26 +1169,19 @@ async function boot() {
     notes = n.payload && typeof n.payload === "object" ? n.payload : {};
     catalog = Array.isArray(s.payload) ? s.payload : [];
     await refreshResolved();
-    // Reopen the stock the reader last had open; else the first of their own.
+    // OPENS ONLY WHAT THE READER CHOSE (owner, 10-20: "I should not see stocks, I haven't chosen anything";
+    // a batch-only reader was opened on ROSN, the biggest name in their batch). The last batch or stock they
+    // opened, if it is still one of theirs, else nothing. The 09-10 rule (a stock, never a batch, so the note
+    // shows) went with the note's move to its own page.
     let last = null;
     try { last = localStorage.getItem("setScope"); } catch (e) { /* private mode */ }
-    // A STOCK, NEVER A BATCH (owner, 09-10): a batch has no note, so opening
-    // on one hides the part only the reader can fill in. That holds for the
-    // remembered scope too, which is a batch whenever one was tapped last. A
-    // batch-only reader opens on their biggest name — the catalog leads with
-    // the live universe in liquidity order.
-    const known = (x) => isTicker(x) && catalog.some((w) => w.ticker === x);
-    const held = followed();
-    const firstHeld = (catalog.find((w) => held.has(w.ticker)) || {}).ticker;
-    scope = known(last) ? last : (myStocks()[0] || firstHeld || null);
+    const mine = new Set([...(account.groups || []), ...myStocks()]);
+    scope = last && mine.has(last) ? last : null;
     render();
+    route();
     if (isTicker(scope)) {
         await loadSources(scope);
         renderScopePane();
-    }
-    for (const id of ["secStocks", "secLang", "secPlan", "secAccount"]) {
-        const el = $(id);
-        if (el) navSpy.observe(el);
     }
 }
 
