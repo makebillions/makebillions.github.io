@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth antialiased">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
+        rel="stylesheet">
+    <!-- Yandex.Metrika counter — the published site only, never a local copy -->
+    <script type="text/javascript">
+        if (!["localhost", "127.0.0.1", ""].includes(location.hostname)) {
+            (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+            ym(97901249, "init", {
+                 clickmap:true,
+                 trackLinks:true,
+                 accurateTrackBounce:true
+            });
+        }
+    </script>
+    <noscript>
+        <div><img src="https://mc.yandex.ru/watch/97901249" style="position:absolute; left:-9999px;" alt="" /></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
+
+    <link rel="stylesheet" href="output.css?v=7" crossorigin="" />
+    <title>How to use DeepDip — the guide</title>
+    <style>
+        .g-wrap { max-width: 780px; margin: 0 auto; padding: 40px 16px 72px; }
+        .g-wrap p, .g-wrap li { font-size: 16px; line-height: 1.65; color: rgb(20 20 30 / .80); }
+        .g-wrap p { margin: 0 0 14px; }
+        .g-lead { font-size: 18px !important; color: rgb(20 20 30 / .65) !important; max-width: 60ch; }
+        .g-toc { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                 list-style: none; padding: 0; margin: 24px 0 8px; }
+        .g-toc a { display: block; height: 100%; padding: 14px 16px; border: 1px solid rgb(20 20 30 / .10);
+                   border-radius: 14px; background: #fff; text-decoration: none; color: inherit; transition: border-color .15s; }
+        .g-toc a:hover { border-color: #7c3aed; }
+        .g-toc b { display: block; font-size: 15px; line-height: 1.35; margin-bottom: 4px; }
+        .g-toc span { display: block; font-size: 13px; line-height: 1.45; color: rgb(20 20 30 / .55); }
+        .g-toc i { font-style: normal; color: #7c3aed; font-weight: 800; margin-right: 6px; }
+        .g-part { padding-top: 40px; margin-top: 40px; border-top: 1px solid rgb(20 20 30 / .08); scroll-margin-top: 72px; }
+        .g-pair { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; margin: 4px 0 6px; }
+        @media (max-width: 640px) { .g-pair { grid-template-columns: 1fr; } }
+        .g-box { border-radius: 14px; padding: 14px 16px; }
+        .g-box p { margin: 0 !important; }
+        .g-prob { background: rgb(239 68 68 / .06); }
+        .g-sol { background: rgb(16 185 129 / .08); }
+        .g-tag { font-size: 11px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; margin-bottom: 6px;
+                 color: rgb(20 20 30 / .50); }
+        .g-h3 { font-size: 13px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: rgb(20 20 30 / .45);
+                margin: 26px 0 8px; }
+        .g-stepl { counter-reset: s; list-style: none; padding: 0; margin: 0 0 8px; }
+        .g-stepl > li { counter-increment: s; position: relative; padding-left: 38px; margin: 14px 0; }
+        .g-stepl > li::before { content: counter(s); position: absolute; left: 0; top: 1px; width: 26px; height: 26px;
+                 border-radius: 50%; background: #7c3aed; color: #fff; font-weight: 700; font-size: 13px; line-height: 26px;
+                 text-align: center; }
+        .g-ui { margin: 10px 0 4px; padding: 14px; border: 1px solid rgb(20 20 30 / .10); border-radius: 14px; background: #fff;
+                box-shadow: 0 1px 3px rgb(0 0 0 / .05); pointer-events: none; }
+        .g-ui-cap { font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: rgb(20 20 30 / .40);
+                    margin-bottom: 10px; }
+        .g-ui .set-group { margin: 0; }
+        .g-msgs { list-style: none; padding: 0; margin: 0 0 16px; border-left: 2px solid rgb(124 58 237 / .25); }
+        .g-msgs li { padding: 7px 0 7px 14px; }
+        .g-next { background: rgb(124 58 237 / .07); border-radius: 12px; padding: 12px 14px; }
+        .g-note { font-size: 13px !important; color: rgb(20 20 30 / .45) !important; }
+        .alert-card { max-width: 560px; }
+    </style>
+</head>
+<body class="a-page min-h-screen text-ink font-sans">
+    <header class="sticky top-0 z-40 w-full border-b border-ink/10 bg-paper/85 backdrop-blur">
+        <nav class="shell h-16 flex items-center gap-6">
+            <a href="index.html" class="flex items-center gap-2.5 font-extrabold text-lg tracking-tight no-underline text-ink">
+                <span class="w-7 h-7 rounded-lg bg-violet grid place-items-center text-white text-sm -rotate-6">D</span>
+                Deep<span class="text-violet -ml-[3px]">DIP</span>
+            </a>
+            <div class="hidden md:flex items-center gap-7 text-[14px] font-semibold text-ink/55 ml-3">
+                <a class="hover:text-ink transition-colors" href="index.html#recordSection">The alerts</a>
+                <a class="hover:text-ink transition-colors" href="index.html#proSection">Free vs PRO</a>
+                <a class="hover:text-ink transition-colors" href="index.html#pricingSection">Pricing</a>
+                <a class="text-ink" href="guide.html">Guide</a>
+            </div>
+            <div class="flex-1"></div>
+            <a href="settings.html"
+                class="hidden sm:inline-flex px-2 py-1.5 text-sm font-semibold text-ink/65 hover:text-ink transition-colors no-underline">Go
+                to settings</a>
+            <a href="index.html#signupSection"
+                class="px-5 py-2.5 text-sm font-bold text-white bg-ink hover:bg-ink/85 rounded-full transition-colors whitespace-nowrap no-underline">Start
+                free</a>
+        </nav>
+    </header>
+    <main class="g-wrap">
+<div class="a-kicker mb-3">Guide</div>
+<h1 class="a-h1 text-[2rem] mb-3">How to use DeepDip</h1>
+<p class="g-lead">Five everyday problems, and how DeepDip solves each one. Every part shows the steps in settings and a real alert.</p>
+<ul class="g-toc"><li><a href="#part-1"><b><i>1</i>Never miss a big move in your stocks</b><span>Alerts on the stocks you hold or want.</span></a></li><li><a href="#part-2"><b><i>2</i>Find a good moment to buy</b><span>When a dip on your stock is being bought.</span></a></li><li><a href="#part-3"><b><i>3</i>Catch momentum as it starts</b><span>Fast moves, within minutes.</span></a></li><li><a href="#part-4"><b><i>4</i>Hold a stock without watching the chart</b><span>Focus: every swing, all day.</span></a></li><li><a href="#part-5"><b><i>5</i>Get alerts written for your position</b><span>Your price, your plan, your question.</span></a></li></ul>
+<section id="part-1" class="g-part"><h2 class="a-h1 text-[1.5rem] mb-4">1. Never miss a big move in your stocks</h2>
+<div class="g-pair"><div class="g-box g-prob"><div class="g-tag">The problem</div><p>You own a few stocks, or you are waiting to buy one. Prices move while you work or sleep. When you finally look, the big move is over, and you do not know what happened or what to do now.</p></div><div class="g-box g-sol"><div class="g-tag">The solution</div><p>DeepDip watches your stocks every minute. When one of them makes a big move, you get a short alert in Telegram: what happened, and which prices matter now.</p></div></div>
+<div class="g-h3">Steps</div>
+<ol class="g-stepl"><li>Create a free account on deepdip.tech.</li><li>Connect Telegram. Alerts come only there.<div class="g-ui" aria-hidden="true"><div class="g-ui-cap">Settings</div><div class="set-blocked set-link-tg"><b>Connect Telegram to start receiving alerts.</b><p>Your stocks and plan are saved here, but the alerts themselves arrive in Telegram. Open buydipru_bot, send <b>/password</b>, and paste the code it gives you.</p><form class="set-link-form"><input type="text" placeholder="6-digit code" tabindex="-1"><button type="button" tabindex="-1">Connect</button></form></div></div></li><li>You already follow two batches: US top 20 and MOEX top 30. They send you their major moves, free.</li><li>Add your own stock: tap "Find a stock to follow", pick it, and turn on "Alerts on" for it.<div class="g-ui" aria-hidden="true"><div class="g-ui-cap">Settings · Stock settings</div><button class="set-picker" type="button" tabindex="-1"><span class="set-picker-icon">⌕</span><span class="set-picker-text">Find a stock to follow — SBER, Apple, gold, Bitcoin</span><span class="set-picker-kbd">MOEX · US · crypto</span></button><div class="set-group set-switches" style="margin-top:12px"><label class="set-switch-row"><span class="set-switch-text"><b>Alerts on AMZN</b><em>One of your own stocks.</em></span><input type="checkbox" role="switch" class="set-switch" checked tabindex="-1"></label></div></div></li><li>Choose how much you hear. "Major moves only" sends just the big ones. Turn it off to get every alert on that stock. A free account gets every alert on one stock.<div class="g-ui" aria-hidden="true"><div class="g-ui-cap">Settings · AMZN</div><div class="set-group set-switches"><label class="set-switch-row"><span class="set-switch-text"><b>Major moves only</b><em>Only the big moves on AMZN — breakouts through major levels, sharp turns. Free.</em></span><input type="checkbox" role="switch" class="set-switch" checked tabindex="-1"></label></div></div></li></ol>
+<div class="g-h3">What you get</div>
+<p> A real moment from Monday, October 19, at 17:07 Moscow time (10:07 in New York), and the alert DeepDip writes for it:</p>
+<article class="alert-card my-5"><div class="px-5 pt-4 pb-3">
+<div class="card-head"><span class="ticker">AMZN ▲</span><span class="when">17:07 · free alert</span></div>
+<div class="chip-row"><span class="ico" aria-hidden="true">📈</span><span class="dir-chip up">Rebound off Friday's drop · 257</span></div>
+<p class="now">Up 3.0%, far ahead of the market. AMZN opened higher and is back above 254.73, Thursday's close, where Friday's drop began.</p></div>
+<div class="card-foot"><div class="read-row"><span class="read-tag st"><span class="dot"></span>Short term</span><p class="read-text">A run toward the 262-268 area and the 263.70 high looks likely. A close back under 255.26, today's low, would undercut the rebound.</p></div></div></article>
+<p>Prefer numbers to a read? In the Statistical voice, Short term reads:</p>
+<article class="alert-card my-5">
+<div class="card-foot"><div class="read-row"><span class="read-tag st"><span class="dot"></span>Short term</span><p class="read-text">On 8 of 10 similar days, the close was between 253.22 and 261.55. The nearest marked prices are 263.70 above, the Oct 12 high, and 255.26 below, today's low.</p></div></div></article>
+<div class="g-h3">What happened next</div>
+<p class="g-next">From the alert on, AMZN kept climbing. It rose to 263.72, right at the 263.70 high the alert had marked, and ended the day up about 5%.</p>
+<p class="g-note">One real example, not a promise.</p>
+</section>
+<section id="part-2" class="g-part"><h2 class="a-h1 text-[1.5rem] mb-4">2. Find a good moment to buy</h2>
+<div class="g-pair"><div class="g-box g-prob"><div class="g-tag">The problem</div><p>You want to buy a stock you like, but not at a random moment. A good moment is often after a dip, when buyers come back. But you cannot sit at the screen all day waiting for it.</p></div><div class="g-box g-sol"><div class="g-tag">The solution</div><p>DeepDip tells you when a dip on your stock is being bought, and which prices matter now.</p></div></div>
+<div class="g-h3">Steps</div>
+<ol class="g-stepl"><li>Add the stock you want to buy, as in part 1.</li><li>Turn off "Major moves only", so you get every alert on it. A free account gets every alert on one stock.<div class="g-ui" aria-hidden="true"><div class="g-ui-cap">Settings · JPM</div><div class="set-group set-switches"><label class="set-switch-row"><span class="set-switch-text"><b>Major moves only</b><em>Every meaningful move on JPM. Free accounts get every alert on one stock.</em></span><input type="checkbox" role="switch" class="set-switch" tabindex="-1"></label></div></div></li><li>With PRO, keep "Bounces" on and switch off the kinds you do not need.<div class="g-ui" aria-hidden="true"><div class="g-ui-cap">Settings · JPM</div><div class="set-group"><div class="set-label">Kinds of alert <em class="set-pro">PRO</em></div><div class="set-switches"><label class="set-switch-row"><span class="set-switch-text"><b>Breakouts</b><em>Price pushes through a level that had held it back before.</em></span><input type="checkbox" role="switch" class="set-switch" tabindex="-1"></label><label class="set-switch-row"><span class="set-switch-text"><b>Bounces off support</b><em>A dip into a level that has held before, with buyers stepping back in.</em></span><input type="checkbox" role="switch" class="set-switch" checked tabindex="-1"></label><label class="set-switch-row"><span class="set-switch-text"><b>Momentum</b><em>The move is running faster than this stock normally moves in a day.</em></span><input type="checkbox" role="switch" class="set-switch" tabindex="-1"></label></div></div></div></li><li>Choose the Trader voice if you want a plan: where to buy, a stop, and a goal, with how often similar days reached the stop.<div class="g-ui" aria-hidden="true"><div class="g-ui-cap">Settings · JPM</div><div class="set-label">Voice</div><div class="set-tabs"><button type="button" tabindex="-1">What comes next</button><button type="button" tabindex="-1">Statistical</button><button type="button" tabindex="-1" class="on">Trader</button><button type="button" tabindex="-1">Personal</button></div></div></li></ol>
+<div class="g-h3">What you get</div>
+<p> A real moment from Tuesday, September 15, at 21:50 Moscow time (14:50 in New York), and the alert DeepDip writes for it:</p>
+<article class="alert-card my-5"><div class="px-5 pt-4 pb-3">
+<div class="card-head"><span class="ticker">JPM ▲</span><span class="when">21:50 · free alert</span></div>
+<div class="chip-row"><span class="ico" aria-hidden="true">📈</span><span class="dir-chip up">Rebound off morning drop · 347</span></div>
+<p class="now">JPM fell 2% this morning, to 343.07, just above the 342.11 level. Buyers have pushed it back to 347.00.</p></div>
+<div class="card-foot"><div class="read-row"><span class="read-tag st"><span class="dot"></span>Short term</span><p class="read-text">The rebound will likely test the 350-353 area above. A close above 351.12, today's high, would keep it going. A close back under 343.07, today's low, would end it.</p></div></div></article>
+<p>In the Trader voice, Short term reads:</p>
+<article class="alert-card my-5">
+<div class="card-foot"><div class="read-row"><span class="read-tag st"><span class="dot"></span>Short term</span><p class="read-text">Wait for 345.52: a buy order there filled by the close on 22 in 100 similar days. Stop at 342.10, just under the 342.11 level: touched within two sessions on 35 in 100. Goal: 351.12, today's high.</p></div></div></article>
+<div class="g-h3">What happened next</div>
+<p class="g-next">JPM rose to 354.68 and closed above 351.12. A day that was 2% down at midday ended higher. It never came back to 345.52, so the Trader's order did not fill.</p>
+<p class="g-note">One real example, not a promise.</p>
+</section>
+<section id="part-3" class="g-part"><h2 class="a-h1 text-[1.5rem] mb-4">3. Catch momentum as it starts</h2>
+<div class="g-pair"><div class="g-box g-prob"><div class="g-tag">The problem</div><p>You like to buy strength: a stock that starts to move fast. By the time you see it on a chart, half of the move is done.</p></div><div class="g-box g-sol"><div class="g-tag">The solution</div><p>DeepDip sends an alert within minutes when a stock moves much faster than usual. Fast-move alerts work on US stocks.</p></div></div>
+<div class="g-h3">Steps</div>
+<ol class="g-stepl"><li>Add the stock, as in part 1.</li><li>Fast moves usually count as major moves, so they come even with "Major moves only" on.</li><li>With PRO, keep "Momentum" on if you switch other kinds off.<div class="g-ui" aria-hidden="true"><div class="g-ui-cap">Settings · V</div><div class="set-group"><div class="set-label">Kinds of alert <em class="set-pro">PRO</em></div><div class="set-switches"><label class="set-switch-row"><span class="set-switch-text"><b>Breakouts</b><em>Price pushes through a level that had held it back before.</em></span><input type="checkbox" role="switch" class="set-switch" tabindex="-1"></label><label class="set-switch-row"><span class="set-switch-text"><b>Bounces off support</b><em>A dip into a level that has held before, with buyers stepping back in.</em></span><input type="checkbox" role="switch" class="set-switch" tabindex="-1"></label><label class="set-switch-row"><span class="set-switch-text"><b>Momentum</b><em>The move is running faster than this stock normally moves in a day.</em></span><input type="checkbox" role="switch" class="set-switch" checked tabindex="-1"></label></div></div></div></li><li>Choose the Trader voice if you want a plan with the alert: a stop and a goal.</li></ol>
+<div class="g-h3">What you get</div>
+<p> A real moment from Wednesday, July 1, at 17:14 Moscow time (10:14 in New York), and the alert DeepDip writes for it:</p>
+<article class="alert-card my-5"><div class="px-5 pt-4 pb-3">
+<div class="card-head"><span class="ticker">V ▲</span><span class="when">17:14 · free alert</span></div>
+<div class="chip-row"><span class="ico" aria-hidden="true">⚡</span><span class="dir-chip up">Fast rise to the June high · 345</span></div>
+<p class="now">A fast rise: from 341.57 to 345.01 in 15 minutes, right under the Jun 29 high of 345.81.</p></div>
+<div class="card-foot"><div class="read-row"><span class="read-tag st"><span class="dot"></span>Short term</span><p class="read-text">The climb will likely test 345.81, the Jun 29 high. A close above it would keep the run going. A close back under 340.98, today's low, would undercut the push.</p></div></div></article>
+<p>In the Trader voice, Short term reads:</p>
+<article class="alert-card my-5">
+<div class="card-foot"><div class="read-row"><span class="read-tag st"><span class="dot"></span>Short term</span><p class="read-text">Hold. A buyer can buy now, with a stop at 337.73, 2.1% below: similar days touched it within two sessions on 32 in 100. Goal: 358.62, the January high.</p></div></div></article>
+<div class="g-h3">What happened next</div>
+<p class="g-next">V rose to 353.36, 2.4% above the alert price, and closed well above 345.81, up about 2.5% on the day. The stop at 337.73 was not touched in the next two sessions.</p>
+<p class="g-note">One real example, not a promise.</p>
+</section>
+<section id="part-4" class="g-part"><h2 class="a-h1 text-[1.5rem] mb-4">4. Hold a stock without watching the chart</h2>
+<!-- internal: Focus is not fully built (owner, 10-21). Its example is polished from the quant's replay of TSLA 10-16
+(intraday_state.run, KS=0.10, the version the owner accepted on 10-18; unit 2.72%), every price from true prints. -->
+<div class="g-pair"><div class="g-box g-prob"><div class="g-tag">The problem</div><p>You bought a stock, or you are about to buy one. Now you want to know what it does during the trading day, but you cannot watch the chart for hours. And when it moves, you do not know if the move is normal for this stock, or a reason to worry.</p></div><div class="g-box g-sol"><div class="g-tag">The solution</div><p>Turn on Focus for that stock. During the trading day, Focus follows every swing and tells you what the stock is doing right now, and what may come next: how it opened, each top and bottom, a break of its range, a test of yesterday's high or low, and fast moves. It measures every move against this stock's own normal day, so it also helps you pick the moment to buy. Focus works on US stocks.</p></div></div>
+<div class="g-h3">Steps</div>
+<ol class="g-stepl"><li>Focus is part of PRO.</li><li>Open the stock in settings and turn on Focus.<div class="g-ui" aria-hidden="true"><div class="g-ui-cap">Settings · TSLA</div><div class="set-group set-switches"><label class="set-switch-row"><span class="set-switch-text"><b>Focus <em class="set-pro">PRO</em></b><em>Every swing of TSLA during the trading day, and a message on the key ones: 5 to 9 a day. US stocks.</em></span><input type="checkbox" role="switch" class="set-switch" checked tabindex="-1"></label></div></div></li><li>During the trading day, you see every swing on a live timeline, and you get a message on the key ones.</li></ol>
+<div class="g-h3">What you get</div>
+<p> TSLA on Friday, October 16. A holder with Focus on got these messages:</p>
+<ul class="g-msgs"><li>16:45 · TSLA opened 1.7% higher, at 368.48, and is at 368.98. The first 15 minutes traded from 364.31 to 370.16.</li><li>16:51 · Fast fall: 370.18 to 363.75 in 5 minutes, down 1.7%. Price is at yesterday's high, 363.67.</li><li>17:10 · A second top near 370 fails, and TSLA is back at 366.13. Sellers are defending 370. A fall below 363.67, yesterday's high, would turn the day down.</li><li>17:53 · TSLA breaks below its opening range and yesterday's high, to 361.16. It is under yesterday's close of 362.43: the morning gap is gone, and the day has turned down.</li><li>20:04 · Breaks below yesterday's low, 355.28, and is at 352.16. The fall has run almost 5% from the high.</li><li>22:06 · Low of the day: 349.41, down 3.6% on the day.</li><li>22:52 · Fast late rebound: 350.99 to 355.39, up 1.3%. Buyers are back for the close.</li></ul>
+<p>On the timeline, the holder also saw every smaller swing of the day.</p>
+<div class="g-h3">What happened next</div>
+<p class="g-next">TSLA closed at 354.65, down 2.15%. The holder saw the day turn at 17:10, when the second top near 370 failed, about 5% above the day's low.</p>
+<p class="g-note">One real example, not a promise.</p>
+</section>
+<section id="part-5" class="g-part"><h2 class="a-h1 text-[1.5rem] mb-4">5. Get alerts written for your position</h2>
+<div class="g-pair"><div class="g-box g-prob"><div class="g-tag">The problem</div><p>An alert speaks to everyone. But you have your own price, your own plan and your own view. You want to know what today's move means for you.</p></div><div class="g-box g-sol"><div class="g-tag">The solution</div><p>Tell DeepDip about your position once. Every alert on that stock is then written for you: how much you are up or down, whether the chart fits your view, and an answer to your question.</p></div></div>
+<div class="g-h3">Steps</div>
+<ol class="g-stepl"><li>Open Personal alerts in settings and pick the stock.</li><li>Fill in any field: what you own, what you paid, when you bought, what you want from it, what you believe, a standing question, or how you want it said.<div class="g-ui" aria-hidden="true"><div class="g-ui-cap">Settings · Personal alerts · V</div><div class="set-group set-mine"><div class="set-label">Written for you</div><form class="set-note-grid"><label><span>What you own <i class="opt">optional</i></span><input type="text" value="10" tabindex="-1"></label><label><span>What you paid <i class="opt">optional</i></span><input type="text" value="330" tabindex="-1"></label><label><span>When you bought <i class="opt">optional</i></span><input type="text" value="in June" tabindex="-1"></label><label class="wide"><span>What you believe <i class="opt">optional</i></span><textarea rows="2" tabindex="-1">the results at the end of July should be strong</textarea></label><label class="wide"><span>A standing question <i class="opt">optional</i></span><textarea rows="2" tabindex="-1">is it a good moment to buy more?</textarea></label></form></div></div></li><li>Every alert on that stock now comes written for you, marked 👤.</li></ol>
+<div class="g-h3">What you get</div>
+<p> V on Wednesday, July 1, at 17:14 Moscow time. The reader holds 10 shares bought at 330 in June. In the note they wrote "the results at the end of July should be strong" and asked "is it a good moment to buy more?":</p>
+<article class="alert-card my-5"><div class="px-5 pt-4 pb-3">
+<div class="card-head"><span class="ticker">V ▲</span><span class="when">17:14 · free alert · 👤 written for you</span></div>
+<div class="chip-row"><span class="ico" aria-hidden="true">⚡</span><span class="dir-chip up">Buyers stepping in · 345</span></div>
+<p class="now">V opened above yesterday's close, dipped to 340.98, then pushed back to 345.01, near the day's high.</p></div>
+<div class="card-foot"><div class="read-row"><span class="read-tag st"><span class="dot"></span>Short term</span><p class="read-text">Your 10 shares from 330.00 are 4.5% up, at 345.01. Buying more now means paying up after three up days. The July results are not on the chart yet; until then, a close above 345.81, the Jun 29 high, would show the climb is still on, with nothing marked above until 358.62.</p></div></div></article>
+<div class="g-h3">What happened next</div>
+<p class="g-next">V closed above 345.81 that same day, and the reader's position ended the day about 6% up. The next day V jumped to about 361. By the end of July it traded near 366, and the position was up about 11%.</p>
+<p class="g-note">One real example, not a promise.</p>
+<div class="g-h3">Good to know</div>
+<p>Nobody else sees your note. Each personal alert costs about 0.08 ₽ from your balance.</p>
+</section>
+    </main>
+    <footer class="shell py-8 hairline">
+        <div class="flex items-center gap-2.5 font-extrabold tracking-tight mb-3">
+            <span class="w-6 h-6 rounded-md bg-violet grid place-items-center text-white text-[11px] -rotate-6">D</span>
+            Deep<span class="text-violet -ml-[3px]">DIP</span>
+        </div>
+        <p class="text-xs text-ink/40 leading-relaxed max-w-[80ch]">
+            &copy; 2026 — <b>Risk Warning:</b> Trading financial instruments involves high risks, including the risk of
+            losing part or all of your investment. Information on this site is indicative. The service owner disclaims
+            responsibility for any losses incurred as a result of trades made based on this information. Alerts are
+            informational and are not individual investment advice.
+        </p>
+    </footer>
+</body>
+</html>
